@@ -22,7 +22,7 @@ const item = {
 const SchoolExams = () => {
   const navigate = useNavigate();
 
-  const toSlug = (name: string) => encodeURIComponent(name.replace(/\s+/g, "-"));
+  const toSlug = (name: string) => name.replace(/[^a-zA-Z0-9]+/g, "-").replace(/^-|-$/g, "");
 
   const ExamCard = ({ exam, icon: Icon, color, borderColor, iconColor }: { exam: string; icon: any; color: string; borderColor: string; iconColor: string }) => (
     <motion.div
