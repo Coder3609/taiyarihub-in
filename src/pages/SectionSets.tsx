@@ -1,10 +1,11 @@
 import { useState } from "react";
 import { motion } from "framer-motion";
-import { ArrowLeft, ScrollText, ClipboardList, Building2, BookOpen, ChevronRight, Lock, Crown } from "lucide-react";
+import { ArrowLeft, ScrollText, ClipboardList, Building2, BookOpen, ChevronRight, Lock, Crown, LogIn } from "lucide-react";
 import { Button } from "@/components/ui/button";
 import { useNavigate, useParams } from "react-router-dom";
 import Navbar from "@/components/Navbar";
 import Footer from "@/components/Footer";
+import { useAuth } from "@/contexts/AuthContext";
 import { useAccessControl } from "@/hooks/useAccessControl";
 import {
   Dialog,
@@ -30,12 +31,18 @@ const SectionSets = () => {
   const meta = sectionMeta[sectionId || ""] || sectionMeta.pyqs;
   const Icon = meta.icon;
   const examName = decodeURIComponent(examSlug || "").replace(/-/g, " ");
+  const { user } = useAuth();
   const { canAccessSet, loading: accessLoading } = useAccessControl();
   const [showPaywall, setShowPaywall] = useState(false);
+  const [showLoginPrompt, setShowLoginPrompt] = useState(false);
 
   const sets = Array.from({ length: TOTAL_SETS }, (_, i) => i + 1);
 
   const handleSetClick = (num: number) => {
+    if (!user) {
+      setShowLoginPrompt(true);
+      return;
+    }
     if (!canAccessSet(num)) {
       setShowPaywall(true);
       return;
@@ -78,7 +85,7 @@ const SectionSets = () => {
             className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-3 gap-3"
           >
             {sets.map((num) => {
-              const locked = !accessLoading && !canAccessSet(num);
+              const locked = !user || (!accessLoading && !canAccessSet(num));
               return (
                 <motion.div
                   key={num}
@@ -123,7 +130,7 @@ const SectionSets = () => {
             </DialogDescription>
           </DialogHeader>
           <div className="py-2 space-y-2 text-sm text-muted-foreground">
-            <p>✅ First 2 sets are free for everyone</p>
+            <p>✅ First 2 sets are free for registered users</p>
             <p>🔒 Sets 3–45 require a premium subscription</p>
           </div>
           <DialogFooter className="flex-col gap-2 sm:flex-col">
@@ -132,6 +139,34 @@ const SectionSets = () => {
             </Button>
             <Button variant="ghost" onClick={() => setShowPaywall(false)} className="w-full">
               Go Back
+            </Button>
+          </DialogFooter>
+        </DialogContent>
+      </Dialog>
+
+      {/* Login Prompt Dialog */}
+      <Dialog open={showLoginPrompt} onOpenChange={setShowLoginPrompt}>
+        <DialogContent className="sm:max-w-sm text-center">
+          <DialogHeader className="items-center">
+            <div className="mx-auto mb-2 p-3 rounded-full bg-primary/10">
+              <LogIn className="h-8 w-8 text-primary" />
+            </div>
+            <DialogTitle className="font-display text-xl">Register to Practice</DialogTitle>
+            <DialogDescription>
+              Create a free account to unlock practice sets and track your progress.
+            </DialogDescription>
+          </DialogHeader>
+          <div className="py-2 space-y-2 text-sm text-muted-foreground">
+            <p>✅ Free access to first 2 sets of every section</p>
+            <p>📊 Track your scores and progress</p>
+            <p>⏱️ Timed exam simulations</p>
+          </div>
+          <DialogFooter className="flex-col gap-2 sm:flex-col">
+            <Button className="w-full font-display font-semibold" onClick={() => navigate("/auth")}>
+              Sign Up / Sign In
+            </Button>
+            <Button variant="ghost" onClick={() => setShowLoginPrompt(false)} className="w-full">
+              Browse More
             </Button>
           </DialogFooter>
         </DialogContent>

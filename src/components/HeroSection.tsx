@@ -64,7 +64,11 @@ const HeroSection = () => {
             transition={{ duration: 0.6, delay: 0.3 }}
             className="flex flex-col sm:flex-row gap-4 justify-center mb-16"
           >
-            <Button size="lg" className="font-display font-semibold text-base px-8 shadow-glow animate-pulse-glow">
+            <Button
+              size="lg"
+              className="font-display font-semibold text-base px-8 shadow-glow animate-pulse-glow"
+              onClick={() => setDialogOpen(true)}
+            >
               Start Free Practice
               <ArrowRight className="ml-2 h-5 w-5" />
             </Button>
