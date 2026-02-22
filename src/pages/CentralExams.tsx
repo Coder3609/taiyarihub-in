@@ -1,5 +1,5 @@
 import { motion } from "framer-motion";
-import { ArrowLeft, Shield, Award, FileText, Wrench, BookOpen, ArrowRight } from "lucide-react";
+import { ArrowLeft, Shield, Award, FileText, Wrench, BookOpen, ArrowRight, CheckCircle } from "lucide-react";
 import { Button } from "@/components/ui/button";
 import { useNavigate } from "react-router-dom";
 import Navbar from "@/components/Navbar";
@@ -9,6 +9,7 @@ interface ExamInfo {
   name: string;
   questions: string;
   tests: string;
+  solutions: string;
   difficulty: "Easy" | "Medium" | "Hard" | "Very Hard";
 }
 
@@ -28,21 +29,21 @@ const groups = [
     borderColor: "border-amber-500/30",
     badgeColor: "bg-amber-500/10 text-amber-400",
     exams: [
-      { name: "UPSC Civil Services Examination (IAS/IPS/IFS/IRS)", questions: "5,000+", tests: "120+", difficulty: "Very Hard" },
-      { name: "UPSC Engineering Services Examination (ESE/IES)", questions: "3,200+", tests: "80+", difficulty: "Very Hard" },
-      { name: "UPSC Combined Defence Services (CDS)", questions: "2,500+", tests: "60+", difficulty: "Hard" },
-      { name: "UPSC National Defence Academy (NDA)", questions: "2,800+", tests: "65+", difficulty: "Hard" },
-      { name: "UPSC Indian Forest Service (IFoS)", questions: "1,800+", tests: "45+", difficulty: "Very Hard" },
-      { name: "UPSC Central Armed Police Forces (Assistant Commandant)", questions: "1,500+", tests: "40+", difficulty: "Hard" },
-      { name: "UPSC Indian Economic Service (IES)", questions: "1,200+", tests: "35+", difficulty: "Very Hard" },
-      { name: "UPSC Indian Statistical Service (ISS)", questions: "1,000+", tests: "30+", difficulty: "Very Hard" },
-      { name: "UPSC Combined Medical Services (CMS)", questions: "2,000+", tests: "50+", difficulty: "Hard" },
-      { name: "UPSC Geo-Scientist Examination", questions: "900+", tests: "25+", difficulty: "Very Hard" },
-      { name: "GATE (Graduate Aptitude Test in Engineering)", questions: "8,000+", tests: "200+", difficulty: "Hard" },
-      { name: "RBI Grade B Officer", questions: "2,000+", tests: "50+", difficulty: "Hard" },
-      { name: "NABARD Grade A Officer", questions: "1,500+", tests: "40+", difficulty: "Hard" },
-      { name: "AFCAT (Air Force Common Admission Test)", questions: "1,800+", tests: "45+", difficulty: "Medium" },
-      { name: "Indian Coast Guard Assistant Commandant", questions: "1,200+", tests: "30+", difficulty: "Medium" },
+      { name: "UPSC Civil Services Examination (IAS/IPS/IFS/IRS)", questions: "5,000+", tests: "120+", solutions: "4,500+", difficulty: "Very Hard" },
+      { name: "UPSC Engineering Services Examination (ESE/IES)", questions: "3,200+", tests: "80+", solutions: "2,800+", difficulty: "Very Hard" },
+      { name: "UPSC Combined Defence Services (CDS)", questions: "2,500+", tests: "60+", solutions: "2,200+", difficulty: "Hard" },
+      { name: "UPSC National Defence Academy (NDA)", questions: "2,800+", tests: "65+", solutions: "2,500+", difficulty: "Hard" },
+      { name: "UPSC Indian Forest Service (IFoS)", questions: "1,800+", tests: "45+", solutions: "1,500+", difficulty: "Very Hard" },
+      { name: "UPSC Central Armed Police Forces (Assistant Commandant)", questions: "1,500+", tests: "40+", solutions: "1,200+", difficulty: "Hard" },
+      { name: "UPSC Indian Economic Service (IES)", questions: "1,200+", tests: "35+", solutions: "1,000+", difficulty: "Very Hard" },
+      { name: "UPSC Indian Statistical Service (ISS)", questions: "1,000+", tests: "30+", solutions: "800+", difficulty: "Very Hard" },
+      { name: "UPSC Combined Medical Services (CMS)", questions: "2,000+", tests: "50+", solutions: "1,800+", difficulty: "Hard" },
+      { name: "UPSC Geo-Scientist Examination", questions: "900+", tests: "25+", solutions: "750+", difficulty: "Very Hard" },
+      { name: "GATE (Graduate Aptitude Test in Engineering)", questions: "8,000+", tests: "200+", solutions: "7,500+", difficulty: "Hard" },
+      { name: "RBI Grade B Officer", questions: "2,000+", tests: "50+", solutions: "1,800+", difficulty: "Hard" },
+      { name: "NABARD Grade A Officer", questions: "1,500+", tests: "40+", solutions: "1,300+", difficulty: "Hard" },
+      { name: "AFCAT (Air Force Common Admission Test)", questions: "1,800+", tests: "45+", solutions: "1,600+", difficulty: "Medium" },
+      { name: "Indian Coast Guard Assistant Commandant", questions: "1,200+", tests: "30+", solutions: "1,000+", difficulty: "Medium" },
     ] as ExamInfo[],
   },
   {
@@ -53,16 +54,16 @@ const groups = [
     borderColor: "border-slate-400/30",
     badgeColor: "bg-slate-400/10 text-slate-300",
     exams: [
-      { name: "SSC Combined Graduate Level (SSC CGL)", questions: "6,000+", tests: "150+", difficulty: "Hard" },
-      { name: "SSC Central Police Organization (SSC CPO)", questions: "2,500+", tests: "60+", difficulty: "Medium" },
-      { name: "SSC Junior Engineer (SSC JE)", questions: "3,000+", tests: "70+", difficulty: "Medium" },
-      { name: "SSC Stenographer Grade B", questions: "1,500+", tests: "40+", difficulty: "Medium" },
-      { name: "IBPS Probationary Officer (IBPS PO)", questions: "4,000+", tests: "100+", difficulty: "Hard" },
-      { name: "SBI Probationary Officer (SBI PO)", questions: "4,500+", tests: "110+", difficulty: "Hard" },
-      { name: "IBPS Specialist Officer (IBPS SO)", questions: "2,000+", tests: "50+", difficulty: "Medium" },
-      { name: "RBI Assistant Manager (various)", questions: "1,800+", tests: "45+", difficulty: "Hard" },
-      { name: "NABARD Grade B", questions: "1,200+", tests: "35+", difficulty: "Hard" },
-      { name: "Assistant Section Officer (through SSC CGL)", questions: "1,500+", tests: "40+", difficulty: "Medium" },
+      { name: "SSC Combined Graduate Level (SSC CGL)", questions: "6,000+", tests: "150+", solutions: "5,500+", difficulty: "Hard" },
+      { name: "SSC Central Police Organization (SSC CPO)", questions: "2,500+", tests: "60+", solutions: "2,200+", difficulty: "Medium" },
+      { name: "SSC Junior Engineer (SSC JE)", questions: "3,000+", tests: "70+", solutions: "2,700+", difficulty: "Medium" },
+      { name: "SSC Stenographer Grade B", questions: "1,500+", tests: "40+", solutions: "1,300+", difficulty: "Medium" },
+      { name: "IBPS Probationary Officer (IBPS PO)", questions: "4,000+", tests: "100+", solutions: "3,600+", difficulty: "Hard" },
+      { name: "SBI Probationary Officer (SBI PO)", questions: "4,500+", tests: "110+", solutions: "4,000+", difficulty: "Hard" },
+      { name: "IBPS Specialist Officer (IBPS SO)", questions: "2,000+", tests: "50+", solutions: "1,800+", difficulty: "Medium" },
+      { name: "RBI Assistant Manager (various)", questions: "1,800+", tests: "45+", solutions: "1,500+", difficulty: "Hard" },
+      { name: "NABARD Grade B", questions: "1,200+", tests: "35+", solutions: "1,000+", difficulty: "Hard" },
+      { name: "Assistant Section Officer (through SSC CGL)", questions: "1,500+", tests: "40+", solutions: "1,300+", difficulty: "Medium" },
     ] as ExamInfo[],
   },
   {
@@ -73,20 +74,20 @@ const groups = [
     borderColor: "border-orange-500/30",
     badgeColor: "bg-orange-500/10 text-orange-400",
     exams: [
-      { name: "SSC Combined Higher Secondary Level (SSC CHSL)", questions: "5,000+", tests: "120+", difficulty: "Medium" },
-      { name: "SSC Multi-Tasking Staff (SSC MTS)", questions: "3,000+", tests: "80+", difficulty: "Easy" },
-      { name: "SSC Stenographer Grade C", questions: "1,500+", tests: "40+", difficulty: "Medium" },
-      { name: "SSC Selection Post", questions: "2,000+", tests: "50+", difficulty: "Medium" },
-      { name: "IBPS Clerk", questions: "4,000+", tests: "100+", difficulty: "Medium" },
-      { name: "SBI Clerk", questions: "4,500+", tests: "110+", difficulty: "Medium" },
-      { name: "RBI Assistant", questions: "2,000+", tests: "50+", difficulty: "Medium" },
-      { name: "NABARD Assistant", questions: "1,200+", tests: "30+", difficulty: "Medium" },
-      { name: "RRB NTPC", questions: "5,000+", tests: "130+", difficulty: "Medium" },
-      { name: "RRB ALP (Assistant Loco Pilot)", questions: "3,500+", tests: "90+", difficulty: "Medium" },
-      { name: "RRB Technician", questions: "2,500+", tests: "60+", difficulty: "Medium" },
-      { name: "India Post GDS", questions: "1,500+", tests: "40+", difficulty: "Easy" },
-      { name: "Postal Assistant", questions: "1,800+", tests: "45+", difficulty: "Easy" },
-      { name: "Sorting Assistant", questions: "1,200+", tests: "30+", difficulty: "Easy" },
+      { name: "SSC Combined Higher Secondary Level (SSC CHSL)", questions: "5,000+", tests: "120+", solutions: "4,500+", difficulty: "Medium" },
+      { name: "SSC Multi-Tasking Staff (SSC MTS)", questions: "3,000+", tests: "80+", solutions: "2,700+", difficulty: "Easy" },
+      { name: "SSC Stenographer Grade C", questions: "1,500+", tests: "40+", solutions: "1,300+", difficulty: "Medium" },
+      { name: "SSC Selection Post", questions: "2,000+", tests: "50+", solutions: "1,800+", difficulty: "Medium" },
+      { name: "IBPS Clerk", questions: "4,000+", tests: "100+", solutions: "3,600+", difficulty: "Medium" },
+      { name: "SBI Clerk", questions: "4,500+", tests: "110+", solutions: "4,000+", difficulty: "Medium" },
+      { name: "RBI Assistant", questions: "2,000+", tests: "50+", solutions: "1,800+", difficulty: "Medium" },
+      { name: "NABARD Assistant", questions: "1,200+", tests: "30+", solutions: "1,000+", difficulty: "Medium" },
+      { name: "RRB NTPC", questions: "5,000+", tests: "130+", solutions: "4,500+", difficulty: "Medium" },
+      { name: "RRB ALP (Assistant Loco Pilot)", questions: "3,500+", tests: "90+", solutions: "3,000+", difficulty: "Medium" },
+      { name: "RRB Technician", questions: "2,500+", tests: "60+", solutions: "2,200+", difficulty: "Medium" },
+      { name: "India Post GDS", questions: "1,500+", tests: "40+", solutions: "1,300+", difficulty: "Easy" },
+      { name: "Postal Assistant", questions: "1,800+", tests: "45+", solutions: "1,600+", difficulty: "Easy" },
+      { name: "Sorting Assistant", questions: "1,200+", tests: "30+", solutions: "1,000+", difficulty: "Easy" },
     ] as ExamInfo[],
   },
   {
@@ -97,11 +98,11 @@ const groups = [
     borderColor: "border-zinc-500/30",
     badgeColor: "bg-zinc-500/10 text-zinc-300",
     exams: [
-      { name: "RRB Group D", questions: "5,000+", tests: "120+", difficulty: "Easy" },
-      { name: "SSC Multi-Tasking Staff (MTS – some posts)", questions: "3,000+", tests: "80+", difficulty: "Easy" },
-      { name: "Various Central Department Peon recruitments", questions: "800+", tests: "20+", difficulty: "Easy" },
-      { name: "Safai Karamchari (various central bodies)", questions: "500+", tests: "15+", difficulty: "Easy" },
-      { name: "Helper / Support Staff (central units)", questions: "600+", tests: "15+", difficulty: "Easy" },
+      { name: "RRB Group D", questions: "5,000+", tests: "120+", solutions: "4,500+", difficulty: "Easy" },
+      { name: "SSC Multi-Tasking Staff (MTS – some posts)", questions: "3,000+", tests: "80+", solutions: "2,700+", difficulty: "Easy" },
+      { name: "Various Central Department Peon recruitments", questions: "800+", tests: "20+", solutions: "700+", difficulty: "Easy" },
+      { name: "Safai Karamchari (various central bodies)", questions: "500+", tests: "15+", solutions: "400+", difficulty: "Easy" },
+      { name: "Helper / Support Staff (central units)", questions: "600+", tests: "15+", solutions: "500+", difficulty: "Easy" },
     ] as ExamInfo[],
   },
 ];
@@ -181,26 +182,35 @@ const CentralExams = () => {
                   {group.exams.map((exam) => (
                     <motion.div
                       key={exam.name}
-                      whileHover={{ y: -4, scale: 1.02 }}
-                      className={`rounded-2xl p-6 md:p-8 bg-gradient-to-br ${group.color} border ${group.borderColor} cursor-pointer transition-all hover:shadow-card group/card`}
+                      whileHover={{ y: -4, scale: 1.01 }}
+                      className={`rounded-2xl p-6 md:p-7 bg-gradient-to-br ${group.color} border ${group.borderColor} cursor-pointer transition-all hover:shadow-card group/card aspect-square flex flex-col justify-between`}
                     >
-                      <h4 className="text-base md:text-lg font-bold text-foreground mb-4 leading-snug min-h-[3rem]">
-                        {exam.name}
-                      </h4>
-                      <div className="flex items-center gap-5 text-sm text-muted-foreground mb-4">
-                        <span className="flex items-center gap-1.5">
-                          <BookOpen className="h-4 w-4" />
-                          {exam.questions} Qs
-                        </span>
-                        <span>{exam.tests} Tests</span>
+                      <div>
+                        <h4 className="text-base md:text-lg font-bold text-foreground mb-4 leading-snug">
+                          {exam.name}
+                        </h4>
+                        <div className="grid grid-cols-2 gap-3 text-sm text-muted-foreground">
+                          <span className="flex items-center gap-1.5">
+                            <BookOpen className="h-4 w-4 shrink-0" />
+                            {exam.questions} Qs
+                          </span>
+                          <span className="flex items-center gap-1.5">
+                            <FileText className="h-4 w-4 shrink-0" />
+                            {exam.tests} Tests
+                          </span>
+                          <span className="flex items-center gap-1.5 text-emerald-400">
+                            <CheckCircle className="h-4 w-4 shrink-0" />
+                            {exam.solutions} Solutions
+                          </span>
+                          <span className={`text-xs font-semibold ${difficultyColor[exam.difficulty]} flex items-center`}>
+                            {exam.difficulty}
+                          </span>
+                        </div>
                       </div>
-                      <div className="flex items-center justify-between pt-2 border-t border-border/30">
-                        <span className={`text-xs font-semibold ${difficultyColor[exam.difficulty]}`}>
-                          {exam.difficulty}
-                        </span>
-                        <span className="text-xs text-primary flex items-center gap-1 opacity-0 group-hover/card:opacity-100 transition-opacity">
-                          Explore <ArrowRight className="h-3.5 w-3.5" />
-                        </span>
+                      <div className="flex items-center justify-end pt-4 border-t border-border/30 mt-4">
+                        <Button variant="ghost" size="sm" className="text-primary hover:bg-primary/10 gap-1.5 group-hover/card:translate-x-1 transition-transform">
+                          Visit Page <ArrowRight className="h-4 w-4" />
+                        </Button>
                       </div>
                     </motion.div>
                   ))}
