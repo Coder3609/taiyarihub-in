@@ -183,6 +183,7 @@ const CentralExams = () => {
                     <motion.div
                       key={exam.name}
                       whileHover={{ y: -3, scale: 1.01 }}
+                      onClick={() => navigate(`/exam/${encodeURIComponent(exam.name.replace(/\s+/g, "-"))}`)}
                       className={`rounded-xl p-4 bg-gradient-to-br ${group.color} border ${group.borderColor} cursor-pointer transition-all hover:shadow-card group/card flex flex-col justify-between`}
                     >
                       <div>
