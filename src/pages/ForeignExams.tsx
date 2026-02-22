@@ -79,7 +79,7 @@ const sections = [
 const ForeignExams = () => {
   const navigate = useNavigate();
 
-  const toSlug = (name: string) => encodeURIComponent(name.replace(/\s+/g, "-"));
+  const toSlug = (name: string) => name.replace(/[^a-zA-Z0-9]+/g, "-").replace(/^-|-$/g, "");
 
   return (
     <div className="min-h-screen bg-background">

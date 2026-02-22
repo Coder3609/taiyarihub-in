@@ -62,7 +62,7 @@ const ExamDetail = () => {
   const navigate = useNavigate();
   const { examSlug } = useParams();
 
-  const examName = decodeURIComponent(examSlug || "").replace(/-/g, " ");
+  const examName = (examSlug || "").replace(/-/g, " ");
 
   return (
     <div className="min-h-screen bg-background">
