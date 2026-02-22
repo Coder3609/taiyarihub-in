@@ -1,5 +1,5 @@
 import { motion } from "framer-motion";
-import { ArrowLeft, Globe, GraduationCap, BookOpen } from "lucide-react";
+import { ArrowLeft, Globe, GraduationCap, BookOpen, ArrowRight, FileText, CheckCircle } from "lucide-react";
 import { Button } from "@/components/ui/button";
 import { useNavigate } from "react-router-dom";
 import Navbar from "@/components/Navbar";
@@ -79,6 +79,8 @@ const sections = [
 const ForeignExams = () => {
   const navigate = useNavigate();
 
+  const toSlug = (name: string) => encodeURIComponent(name.replace(/\s+/g, "-"));
+
   return (
     <div className="min-h-screen bg-background">
       <Navbar />
@@ -135,16 +137,35 @@ const ForeignExams = () => {
                     <motion.div
                       key={exam}
                       variants={item}
-                      whileHover={{ y: -2, scale: 1.01 }}
-                      className={`rounded-xl p-4 bg-gradient-to-br ${section.color} border ${section.borderColor} cursor-not-allowed opacity-70 transition-all flex items-center justify-between`}
+                      whileHover={{ y: -3, scale: 1.01 }}
+                      onClick={() => navigate(`/exam/${toSlug(exam)}`)}
+                      className={`rounded-xl p-4 bg-gradient-to-br ${section.color} border ${section.borderColor} cursor-pointer transition-all hover:shadow-card group/card flex flex-col justify-between`}
                     >
-                      <div className="flex items-center gap-3">
-                        <section.icon className={`h-4 w-4 ${section.iconColor} shrink-0`} />
-                        <span className="text-sm font-semibold text-foreground">{exam}</span>
+                      <div>
+                        <div className="flex items-center gap-3 mb-3">
+                          <section.icon className={`h-4 w-4 ${section.iconColor} shrink-0`} />
+                          <h4 className="text-sm font-bold text-foreground leading-snug">{exam}</h4>
+                        </div>
+                        <div className="grid grid-cols-2 gap-1.5 text-xs text-muted-foreground">
+                          <span className="flex items-center gap-1">
+                            <BookOpen className="h-3 w-3 shrink-0" />
+                            Questions
+                          </span>
+                          <span className="flex items-center gap-1">
+                            <FileText className="h-3 w-3 shrink-0" />
+                            Mock Tests
+                          </span>
+                          <span className="flex items-center gap-1 text-emerald-400">
+                            <CheckCircle className="h-3 w-3 shrink-0" />
+                            Solutions
+                          </span>
+                        </div>
                       </div>
-                      <span className="px-2 py-0.5 rounded-full text-[10px] font-semibold bg-muted text-muted-foreground shrink-0">
-                        COMING SOON
-                      </span>
+                      <div className="flex items-center justify-end pt-2 border-t border-border/30 mt-3">
+                        <span className="text-xs text-primary flex items-center gap-1 group-hover/card:translate-x-1 transition-transform">
+                          Visit Page <ArrowRight className="h-3 w-3" />
+                        </span>
+                      </div>
                     </motion.div>
                   ))}
                 </motion.div>

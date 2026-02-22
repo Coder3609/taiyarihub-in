@@ -1,5 +1,5 @@
 import { motion } from "framer-motion";
-import { ArrowLeft, GraduationCap, FlaskConical } from "lucide-react";
+import { ArrowLeft, GraduationCap, FlaskConical, ArrowRight, BookOpen, FileText, CheckCircle } from "lucide-react";
 import { Button } from "@/components/ui/button";
 import { useNavigate } from "react-router-dom";
 import Navbar from "@/components/Navbar";
@@ -21,6 +21,43 @@ const item = {
 
 const SchoolExams = () => {
   const navigate = useNavigate();
+
+  const toSlug = (name: string) => encodeURIComponent(name.replace(/\s+/g, "-"));
+
+  const ExamCard = ({ exam, icon: Icon, color, borderColor, iconColor }: { exam: string; icon: any; color: string; borderColor: string; iconColor: string }) => (
+    <motion.div
+      variants={item}
+      whileHover={{ y: -3, scale: 1.01 }}
+      onClick={() => navigate(`/exam/${toSlug(exam)}`)}
+      className={`rounded-xl p-4 bg-gradient-to-br ${color} border ${borderColor} cursor-pointer transition-all hover:shadow-card group/card flex flex-col justify-between`}
+    >
+      <div>
+        <div className="flex items-center gap-3 mb-3">
+          <Icon className={`h-4 w-4 ${iconColor} shrink-0`} />
+          <h4 className="text-sm font-bold text-foreground leading-snug">{exam}</h4>
+        </div>
+        <div className="grid grid-cols-2 gap-1.5 text-xs text-muted-foreground">
+          <span className="flex items-center gap-1">
+            <BookOpen className="h-3 w-3 shrink-0" />
+            Questions
+          </span>
+          <span className="flex items-center gap-1">
+            <FileText className="h-3 w-3 shrink-0" />
+            Mock Tests
+          </span>
+          <span className="flex items-center gap-1 text-emerald-400">
+            <CheckCircle className="h-3 w-3 shrink-0" />
+            Solutions
+          </span>
+        </div>
+      </div>
+      <div className="flex items-center justify-end pt-2 border-t border-border/30 mt-3">
+        <span className="text-xs text-primary flex items-center gap-1 group-hover/card:translate-x-1 transition-transform">
+          Visit Page <ArrowRight className="h-3 w-3" />
+        </span>
+      </div>
+    </motion.div>
+  );
 
   return (
     <div className="min-h-screen bg-background">
@@ -70,23 +107,10 @@ const SchoolExams = () => {
               variants={container}
               initial="hidden"
               animate="show"
-              className="grid grid-cols-2 gap-3"
+              className="grid grid-cols-1 sm:grid-cols-2 gap-3"
             >
               {boards.map((board) => (
-                <motion.div
-                  key={board}
-                  variants={item}
-                  whileHover={{ y: -2, scale: 1.01 }}
-                  className="rounded-xl p-4 bg-gradient-to-br from-blue-500/20 to-blue-600/5 border border-blue-500/30 cursor-not-allowed opacity-70 transition-all flex items-center justify-between"
-                >
-                  <div className="flex items-center gap-3">
-                    <GraduationCap className="h-4 w-4 text-blue-400 shrink-0" />
-                    <span className="text-sm font-semibold text-foreground">{board}</span>
-                  </div>
-                  <span className="px-2 py-0.5 rounded-full text-[10px] font-semibold bg-muted text-muted-foreground shrink-0">
-                    COMING SOON
-                  </span>
-                </motion.div>
+                <ExamCard key={board} exam={board} icon={GraduationCap} color="from-blue-500/20 to-blue-600/5" borderColor="border-blue-500/30" iconColor="text-blue-400" />
               ))}
             </motion.div>
           </div>
@@ -109,23 +133,10 @@ const SchoolExams = () => {
               variants={container}
               initial="hidden"
               animate="show"
-              className="grid grid-cols-2 sm:grid-cols-4 gap-3"
+              className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-3 xl:grid-cols-4 gap-3"
             >
               {entranceExams.map((exam) => (
-                <motion.div
-                  key={exam}
-                  variants={item}
-                  whileHover={{ y: -2, scale: 1.01 }}
-                  className="rounded-xl p-4 bg-gradient-to-br from-orange-500/20 to-orange-600/5 border border-orange-500/30 cursor-not-allowed opacity-70 transition-all flex items-center justify-between"
-                >
-                  <div className="flex items-center gap-3">
-                    <FlaskConical className="h-4 w-4 text-orange-400 shrink-0" />
-                    <span className="text-sm font-semibold text-foreground">{exam}</span>
-                  </div>
-                  <span className="px-2 py-0.5 rounded-full text-[10px] font-semibold bg-muted text-muted-foreground shrink-0">
-                    COMING SOON
-                  </span>
-                </motion.div>
+                <ExamCard key={exam} exam={exam} icon={FlaskConical} color="from-orange-500/20 to-orange-600/5" borderColor="border-orange-500/30" iconColor="text-orange-400" />
               ))}
             </motion.div>
           </div>
