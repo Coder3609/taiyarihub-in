@@ -25,8 +25,8 @@ const categories = [
         ],
       },
       {
-        name: "Lifetime (3-Year)",
-        price: "₹3,999",
+        name: "Lifetime Access",
+        price: "₹3,199",
         period: "one-time",
         features: [
           "Everything in 1-Year plan",
@@ -60,7 +60,7 @@ const categories = [
         ],
       },
       {
-        name: "Lifetime (3-Year)",
+        name: "Lifetime Access",
         price: "₹2,999",
         period: "one-time",
         features: [
@@ -95,7 +95,7 @@ const categories = [
         ],
       },
       {
-        name: "Lifetime (3-Year)",
+        name: "5-Year Access",
         price: "₹1,999",
         period: "one-time",
         features: [
@@ -130,7 +130,7 @@ const categories = [
         ],
       },
       {
-        name: "Lifetime (3-Year)",
+        name: "Lifetime Access",
         price: "₹4,999",
         period: "one-time",
         features: [
@@ -297,8 +297,8 @@ const PricingSection = () => {
                 <td className="py-3 px-4 text-center text-muted-foreground">₹1,999</td>
               </tr>
               <tr>
-                <td className="py-3 pr-4 font-medium text-foreground">Lifetime (3-Year)</td>
-                <td className="py-3 px-4 text-center text-muted-foreground">₹3,999</td>
+                <td className="py-3 pr-4 font-medium text-foreground">Lifetime / Long-term</td>
+                <td className="py-3 px-4 text-center text-muted-foreground">₹3,199</td>
                 <td className="py-3 px-4 text-center text-muted-foreground">₹2,999</td>
                 <td className="py-3 px-4 text-center text-muted-foreground">₹1,999</td>
                 <td className="py-3 px-4 text-center text-muted-foreground">₹4,999</td>
