@@ -1,11 +1,19 @@
+import { useState } from "react";
 import { motion } from "framer-motion";
-import { ArrowLeft, ScrollText, ClipboardList, Building2, BookOpen, ChevronRight, Lock } from "lucide-react";
+import { ArrowLeft, ScrollText, ClipboardList, Building2, BookOpen, ChevronRight, Lock, Crown } from "lucide-react";
 import { Button } from "@/components/ui/button";
 import { useNavigate, useParams } from "react-router-dom";
 import Navbar from "@/components/Navbar";
 import Footer from "@/components/Footer";
 import { useAccessControl } from "@/hooks/useAccessControl";
-import { toast } from "sonner";
+import {
+  Dialog,
+  DialogContent,
+  DialogHeader,
+  DialogTitle,
+  DialogDescription,
+  DialogFooter,
+} from "@/components/ui/dialog";
 
 const sectionMeta: Record<string, { title: string; icon: React.ElementType; color: string; borderColor: string; badgeColor: string }> = {
   pyqs: { title: "Previous Year Questions (PYQs)", icon: ScrollText, color: "from-blue-500/20 to-blue-600/5", borderColor: "border-blue-500/30", badgeColor: "bg-blue-500/10 text-blue-400" },
@@ -23,12 +31,13 @@ const SectionSets = () => {
   const Icon = meta.icon;
   const examName = decodeURIComponent(examSlug || "").replace(/-/g, " ");
   const { canAccessSet, loading: accessLoading } = useAccessControl();
+  const [showPaywall, setShowPaywall] = useState(false);
 
   const sets = Array.from({ length: TOTAL_SETS }, (_, i) => i + 1);
 
   const handleSetClick = (num: number) => {
     if (!canAccessSet(num)) {
-      toast.error("This set is locked. Upgrade to premium to unlock all sets.");
+      setShowPaywall(true);
       return;
     }
     navigate(`/exam/${examSlug}/${sectionId}/${num}`);
@@ -100,6 +109,33 @@ const SectionSets = () => {
         </div>
       </main>
       <Footer />
+
+      {/* Paywall Dialog */}
+      <Dialog open={showPaywall} onOpenChange={setShowPaywall}>
+        <DialogContent className="sm:max-w-sm text-center">
+          <DialogHeader className="items-center">
+            <div className="mx-auto mb-2 p-3 rounded-full bg-primary/10">
+              <Crown className="h-8 w-8 text-primary" />
+            </div>
+            <DialogTitle className="font-display text-xl">Premium Content</DialogTitle>
+            <DialogDescription>
+              This set is locked. Please upgrade to premium to unlock all 45 sets across every section.
+            </DialogDescription>
+          </DialogHeader>
+          <div className="py-2 space-y-2 text-sm text-muted-foreground">
+            <p>✅ First 2 sets are free for everyone</p>
+            <p>🔒 Sets 3–45 require a premium subscription</p>
+          </div>
+          <DialogFooter className="flex-col gap-2 sm:flex-col">
+            <Button className="w-full font-display font-semibold" disabled>
+              Pay & Unlock (Coming Soon)
+            </Button>
+            <Button variant="ghost" onClick={() => setShowPaywall(false)} className="w-full">
+              Go Back
+            </Button>
+          </DialogFooter>
+        </DialogContent>
+      </Dialog>
     </div>
   );
 };
