@@ -44,6 +44,8 @@ const groups = [
       { name: "NABARD Grade A Officer", questions: "1,500+", tests: "40+", solutions: "1,300+", difficulty: "Hard" },
       { name: "AFCAT (Air Force Common Admission Test)", questions: "1,800+", tests: "45+", solutions: "1,600+", difficulty: "Medium" },
       { name: "Indian Coast Guard Assistant Commandant", questions: "1,200+", tests: "30+", solutions: "1,000+", difficulty: "Medium" },
+      { name: "CAT (Common Admission Test)", questions: "3,500+", tests: "90+", solutions: "3,200+", difficulty: "Very Hard" },
+      { name: "CA (Chartered Accountant – Foundation, Inter & Final)", questions: "4,000+", tests: "100+", solutions: "3,500+", difficulty: "Very Hard" },
     ] as ExamInfo[],
   },
   {
