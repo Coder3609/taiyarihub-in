@@ -62,6 +62,7 @@ const SectionSets = () => {
                 key={num}
                 variants={{ hidden: { opacity: 0, y: 12 }, show: { opacity: 1, y: 0 } }}
                 whileHover={{ y: -2, scale: 1.01 }}
+                onClick={() => navigate(`/exam/${examSlug}/${sectionId}/${num}`)}
                 className={`rounded-xl p-3.5 bg-gradient-to-br ${meta.color} border ${meta.borderColor} cursor-pointer transition-all hover:shadow-md flex items-center justify-between group`}
               >
                 <div className="flex items-center gap-3">
