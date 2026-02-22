@@ -43,7 +43,7 @@ const categories = [
     description: "GRE, TOEFL, IELTS, SAT & more",
     color: "from-purple-500/20 to-purple-600/5",
     borderColor: "hover:border-purple-500/50",
-    route: null,
+    route: "/exams/foreign",
     free: false,
   },
 ];
