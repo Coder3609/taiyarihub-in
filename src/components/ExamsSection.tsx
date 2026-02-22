@@ -11,14 +11,14 @@ import {
 } from "lucide-react";
 
 const exams = [
-  { icon: Cpu, name: "GATE", subjects: "CSE, ECE, ME, EE & more", color: "from-blue-500/20 to-blue-600/5" },
-  { icon: Landmark, name: "UPSC", subjects: "Prelims, Mains & Interview", color: "from-emerald-500/20 to-emerald-600/5" },
-  { icon: FlaskConical, name: "JEE", subjects: "Mains & Advanced", color: "from-orange-500/20 to-orange-600/5" },
-  { icon: FileText, name: "SSC", subjects: "CGL, CHSL & MTS", color: "from-purple-500/20 to-purple-600/5" },
-  { icon: Briefcase, name: "Banking", subjects: "SBI PO, IBPS & RBI", color: "from-cyan-500/20 to-cyan-600/5" },
-  { icon: GraduationCap, name: "CBSE/Boards", subjects: "Class X, XI & XII", color: "from-pink-500/20 to-pink-600/5" },
-  { icon: Globe, name: "GRE/TOEFL", subjects: "Verbal, Quant & AWA", color: "from-yellow-500/20 to-yellow-600/5" },
-  { icon: Calculator, name: "CA/CS", subjects: "Foundation to Final", color: "from-red-500/20 to-red-600/5" },
+  { icon: Cpu, name: "GATE", subjects: "CSE, ECE, ME, EE & more", color: "from-blue-500/30 to-blue-600/10", accent: "text-blue-500" },
+  { icon: Landmark, name: "UPSC", subjects: "Prelims, Mains & Interview", color: "from-emerald-500/30 to-emerald-600/10", accent: "text-emerald-500" },
+  { icon: FlaskConical, name: "JEE", subjects: "Mains & Advanced", color: "from-orange-500/30 to-orange-600/10", accent: "text-orange-500" },
+  { icon: FileText, name: "SSC", subjects: "CGL, CHSL & MTS", color: "from-purple-500/30 to-purple-600/10", accent: "text-purple-500" },
+  { icon: Briefcase, name: "Banking", subjects: "SBI PO, IBPS & RBI", color: "from-cyan-500/30 to-cyan-600/10", accent: "text-cyan-500" },
+  { icon: GraduationCap, name: "CBSE/Boards", subjects: "Class X, XI & XII", color: "from-pink-500/30 to-pink-600/10", accent: "text-pink-500" },
+  { icon: Globe, name: "GRE/TOEFL", subjects: "Verbal, Quant & AWA", color: "from-yellow-500/30 to-yellow-600/10", accent: "text-yellow-500" },
+  { icon: Calculator, name: "CA/CS", subjects: "Foundation to Final", color: "from-red-500/30 to-red-600/10", accent: "text-red-500" },
 ];
 
 const container = {
@@ -57,20 +57,20 @@ const ExamsSection = () => {
           initial="hidden"
           whileInView="show"
           viewport={{ once: true }}
-          className="grid grid-cols-2 md:grid-cols-4 gap-4 md:gap-6"
+          className="grid grid-cols-2 sm:grid-cols-3 md:grid-cols-4 gap-3 md:gap-4 max-w-4xl mx-auto"
         >
           {exams.map((exam) => (
             <motion.div
               key={exam.name}
               variants={item}
               whileHover={{ y: -4, scale: 1.02 }}
-              className={`relative rounded-xl p-6 bg-gradient-to-br ${exam.color} border border-border/50 cursor-pointer group transition-shadow hover:shadow-card`}
+              className={`relative rounded-xl p-4 bg-gradient-to-br ${exam.color} border border-border/50 cursor-pointer group transition-shadow hover:shadow-card`}
             >
-              <exam.icon className="h-8 w-8 text-primary mb-4 group-hover:scale-110 transition-transform" />
-              <h3 className="font-display font-bold text-lg text-foreground mb-1">
+              <exam.icon className={`h-6 w-6 ${exam.accent} mb-3 group-hover:scale-110 transition-transform`} />
+              <h3 className="font-display font-bold text-sm text-foreground mb-0.5">
                 {exam.name}
               </h3>
-              <p className="text-xs text-muted-foreground">{exam.subjects}</p>
+              <p className="text-[11px] text-muted-foreground">{exam.subjects}</p>
             </motion.div>
           ))}
         </motion.div>
