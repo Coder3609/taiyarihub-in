@@ -1,6 +1,8 @@
+import { useState } from "react";
 import { motion } from "framer-motion";
 import { ArrowRight, Users, BookOpen, Trophy } from "lucide-react";
 import { Button } from "@/components/ui/button";
+import ExamCategoryDialog from "@/components/ExamCategoryDialog";
 import heroBg from "@/assets/hero-bg.jpg";
 
 const stats = [
@@ -10,6 +12,8 @@ const stats = [
 ];
 
 const HeroSection = () => {
+  const [dialogOpen, setDialogOpen] = useState(false);
+
   return (
     <section className="relative min-h-screen flex items-center overflow-hidden pt-20">
       {/* Background */}
@@ -68,6 +72,7 @@ const HeroSection = () => {
               size="lg"
               variant="outline"
               className="font-display font-semibold text-base px-8 border-border hover:bg-secondary"
+              onClick={() => setDialogOpen(true)}
             >
               Explore Exams
             </Button>
@@ -92,6 +97,8 @@ const HeroSection = () => {
           </motion.div>
         </div>
       </div>
+
+      <ExamCategoryDialog open={dialogOpen} onOpenChange={setDialogOpen} />
     </section>
   );
 };
