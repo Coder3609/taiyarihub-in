@@ -34,7 +34,7 @@ const categories = [
     description: "CBSE, ICSE & State Boards",
     color: "from-blue-500/20 to-blue-600/5",
     borderColor: "hover:border-blue-500/50",
-    route: null,
+    route: "/exams/state",
     free: false,
   },
   {
