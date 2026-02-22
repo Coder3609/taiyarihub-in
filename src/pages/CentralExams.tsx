@@ -177,29 +177,29 @@ const CentralExams = () => {
                   </div>
                 </div>
 
-                <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-3 gap-4">
+                <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-3 gap-5 md:gap-6">
                   {group.exams.map((exam) => (
                     <motion.div
                       key={exam.name}
-                      whileHover={{ y: -3, scale: 1.02 }}
-                      className={`rounded-xl p-5 bg-gradient-to-br ${group.color} border ${group.borderColor} cursor-pointer transition-all hover:shadow-card group/card`}
+                      whileHover={{ y: -4, scale: 1.02 }}
+                      className={`rounded-2xl p-6 md:p-8 bg-gradient-to-br ${group.color} border ${group.borderColor} cursor-pointer transition-all hover:shadow-card group/card`}
                     >
-                      <h4 className="text-sm font-bold text-foreground mb-3 leading-snug min-h-[2.5rem]">
+                      <h4 className="text-base md:text-lg font-bold text-foreground mb-4 leading-snug min-h-[3rem]">
                         {exam.name}
                       </h4>
-                      <div className="flex items-center gap-4 text-xs text-muted-foreground mb-3">
-                        <span className="flex items-center gap-1">
-                          <BookOpen className="h-3 w-3" />
+                      <div className="flex items-center gap-5 text-sm text-muted-foreground mb-4">
+                        <span className="flex items-center gap-1.5">
+                          <BookOpen className="h-4 w-4" />
                           {exam.questions} Qs
                         </span>
                         <span>{exam.tests} Tests</span>
                       </div>
-                      <div className="flex items-center justify-between">
-                        <span className={`text-[11px] font-semibold ${difficultyColor[exam.difficulty]}`}>
+                      <div className="flex items-center justify-between pt-2 border-t border-border/30">
+                        <span className={`text-xs font-semibold ${difficultyColor[exam.difficulty]}`}>
                           {exam.difficulty}
                         </span>
-                        <span className="text-[11px] text-primary flex items-center gap-1 opacity-0 group-hover/card:opacity-100 transition-opacity">
-                          Explore <ArrowRight className="h-3 w-3" />
+                        <span className="text-xs text-primary flex items-center gap-1 opacity-0 group-hover/card:opacity-100 transition-opacity">
+                          Explore <ArrowRight className="h-3.5 w-3.5" />
                         </span>
                       </div>
                     </motion.div>
