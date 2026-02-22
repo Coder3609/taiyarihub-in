@@ -151,7 +151,7 @@ const CentralExams = () => {
             <div className="mt-4 inline-flex items-center gap-2 text-sm text-primary">
               <span className="font-semibold">1-Year: ₹1,799</span>
               <span className="text-muted-foreground">|</span>
-              <span className="font-semibold">Lifetime: ₹3,199</span>
+              <span className="font-semibold">Long-term (3yrs): ₹3,199</span>
               <span className="ml-2 px-2 py-0.5 rounded-full text-[10px] bg-emerald-500/10 text-emerald-400 border border-emerald-500/20">
                 FREE TIER AVAILABLE
               </span>

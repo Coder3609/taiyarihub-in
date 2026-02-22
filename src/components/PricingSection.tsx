@@ -25,7 +25,7 @@ const categories = [
         ],
       },
       {
-        name: "Lifetime Access",
+        name: "Long-term Access (3yrs)",
         price: "₹3,199",
         period: "one-time",
         features: [
@@ -60,7 +60,7 @@ const categories = [
         ],
       },
       {
-        name: "Lifetime Access",
+        name: "Long-term Access (3yrs)",
         price: "₹2,999",
         period: "one-time",
         features: [
@@ -130,7 +130,7 @@ const categories = [
         ],
       },
       {
-        name: "Lifetime Access",
+        name: "Long-term Access (3yrs)",
         price: "₹4,999",
         period: "one-time",
         features: [
@@ -264,7 +264,7 @@ const PricingSection = () => {
                   }`}
                   variant={isLifetime ? "default" : "outline"}
                 >
-                  {isLifetime ? "Get Lifetime" : "Subscribe Now"}
+                  {isLifetime ? "Get Long-term" : "Subscribe Now"}
                 </Button>
               </div>
             );
@@ -297,7 +297,7 @@ const PricingSection = () => {
                 <td className="py-3 px-4 text-center text-muted-foreground">₹1,999</td>
               </tr>
               <tr>
-                <td className="py-3 pr-4 font-medium text-foreground">Lifetime / Long-term</td>
+                <td className="py-3 pr-4 font-medium text-foreground">Long-term (3yrs)</td>
                 <td className="py-3 px-4 text-center text-muted-foreground">₹3,199</td>
                 <td className="py-3 px-4 text-center text-muted-foreground">₹2,999</td>
                 <td className="py-3 px-4 text-center text-muted-foreground">₹1,999</td>
