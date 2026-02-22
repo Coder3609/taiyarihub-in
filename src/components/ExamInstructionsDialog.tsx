@@ -1,3 +1,4 @@
+import { useState } from "react";
 import {
   Dialog,
   DialogContent,
@@ -7,6 +8,7 @@ import {
   DialogFooter,
 } from "@/components/ui/dialog";
 import { Button } from "@/components/ui/button";
+import { Checkbox } from "@/components/ui/checkbox";
 import { Shield, Clock, AlertTriangle, MonitorOff, CheckCircle2 } from "lucide-react";
 
 interface ExamInstructionsDialogProps {
@@ -26,6 +28,8 @@ const ExamInstructionsDialog = ({
   totalQuestions,
   durationMinutes,
 }: ExamInstructionsDialogProps) => {
+  const [accepted, setAccepted] = useState(false);
+
   const instructions = [
     {
       icon: Clock,
@@ -73,11 +77,27 @@ const ExamInstructionsDialog = ({
           ))}
         </div>
 
+        <div className="flex items-start gap-3 rounded-lg border border-border/60 bg-secondary/30 p-3">
+          <Checkbox
+            id="terms"
+            checked={accepted}
+            onCheckedChange={(checked) => setAccepted(checked === true)}
+            className="mt-0.5"
+          />
+          <label htmlFor="terms" className="text-xs text-muted-foreground leading-relaxed cursor-pointer select-none">
+            I have read and agree to the exam rules above. I understand that tab switches will be recorded and the exam will auto-submit when time runs out.
+          </label>
+        </div>
+
         <DialogFooter className="flex-col gap-2 sm:flex-row">
           <Button variant="outline" onClick={onCancel} className="w-full sm:w-auto">
             Cancel
           </Button>
-          <Button onClick={onStart} className="w-full sm:w-auto font-display font-semibold">
+          <Button
+            onClick={onStart}
+            disabled={!accepted}
+            className="w-full sm:w-auto font-display font-semibold"
+          >
             Start Exam
           </Button>
         </DialogFooter>
