@@ -102,6 +102,7 @@ const ExamDetail = () => {
                 key={section.id}
                 variants={item}
                 whileHover={{ y: -4, scale: 1.01 }}
+                onClick={() => navigate(`/exam/${examSlug}/${section.id}`)}
                 className={`rounded-2xl p-5 md:p-6 bg-gradient-to-br ${section.color} border ${section.borderColor} cursor-pointer transition-all hover:shadow-lg group`}
               >
                 <div className="flex items-start gap-4">
