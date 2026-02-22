@@ -178,39 +178,39 @@ const CentralExams = () => {
                   </div>
                 </div>
 
-                <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-3 gap-5 md:gap-6">
+                <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-3 xl:grid-cols-4 gap-3 md:gap-4">
                   {group.exams.map((exam) => (
                     <motion.div
                       key={exam.name}
-                      whileHover={{ y: -4, scale: 1.01 }}
-                      className={`rounded-2xl p-6 md:p-7 bg-gradient-to-br ${group.color} border ${group.borderColor} cursor-pointer transition-all hover:shadow-card group/card aspect-square flex flex-col justify-between`}
+                      whileHover={{ y: -3, scale: 1.01 }}
+                      className={`rounded-xl p-4 bg-gradient-to-br ${group.color} border ${group.borderColor} cursor-pointer transition-all hover:shadow-card group/card flex flex-col justify-between`}
                     >
                       <div>
-                        <h4 className="text-base md:text-lg font-bold text-foreground mb-4 leading-snug">
+                        <h4 className="text-sm font-bold text-foreground mb-3 leading-snug line-clamp-2">
                           {exam.name}
                         </h4>
-                        <div className="grid grid-cols-2 gap-3 text-sm text-muted-foreground">
-                          <span className="flex items-center gap-1.5">
-                            <BookOpen className="h-4 w-4 shrink-0" />
+                        <div className="grid grid-cols-2 gap-1.5 text-xs text-muted-foreground">
+                          <span className="flex items-center gap-1">
+                            <BookOpen className="h-3 w-3 shrink-0" />
                             {exam.questions} Qs
                           </span>
-                          <span className="flex items-center gap-1.5">
-                            <FileText className="h-4 w-4 shrink-0" />
+                          <span className="flex items-center gap-1">
+                            <FileText className="h-3 w-3 shrink-0" />
                             {exam.tests} Tests
                           </span>
-                          <span className="flex items-center gap-1.5 text-emerald-400">
-                            <CheckCircle className="h-4 w-4 shrink-0" />
-                            {exam.solutions} Solutions
+                          <span className="flex items-center gap-1 text-emerald-400">
+                            <CheckCircle className="h-3 w-3 shrink-0" />
+                            {exam.solutions}
                           </span>
-                          <span className={`text-xs font-semibold ${difficultyColor[exam.difficulty]} flex items-center`}>
+                          <span className={`text-[10px] font-semibold ${difficultyColor[exam.difficulty]}`}>
                             {exam.difficulty}
                           </span>
                         </div>
                       </div>
-                      <div className="flex items-center justify-end pt-4 border-t border-border/30 mt-4">
-                        <Button variant="ghost" size="sm" className="text-primary hover:bg-primary/10 gap-1.5 group-hover/card:translate-x-1 transition-transform">
-                          Visit Page <ArrowRight className="h-4 w-4" />
-                        </Button>
+                      <div className="flex items-center justify-end pt-2 border-t border-border/30 mt-3">
+                        <span className="text-xs text-primary flex items-center gap-1 group-hover/card:translate-x-1 transition-transform">
+                          Visit Page <ArrowRight className="h-3 w-3" />
+                        </span>
                       </div>
                     </motion.div>
                   ))}
