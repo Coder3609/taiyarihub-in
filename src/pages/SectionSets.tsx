@@ -1,9 +1,11 @@
 import { motion } from "framer-motion";
-import { ArrowLeft, ScrollText, ClipboardList, Building2, BookOpen, ChevronRight } from "lucide-react";
+import { ArrowLeft, ScrollText, ClipboardList, Building2, BookOpen, ChevronRight, Lock } from "lucide-react";
 import { Button } from "@/components/ui/button";
 import { useNavigate, useParams } from "react-router-dom";
 import Navbar from "@/components/Navbar";
 import Footer from "@/components/Footer";
+import { useAccessControl } from "@/hooks/useAccessControl";
+import { toast } from "sonner";
 
 const sectionMeta: Record<string, { title: string; icon: React.ElementType; color: string; borderColor: string; badgeColor: string }> = {
   pyqs: { title: "Previous Year Questions (PYQs)", icon: ScrollText, color: "from-blue-500/20 to-blue-600/5", borderColor: "border-blue-500/30", badgeColor: "bg-blue-500/10 text-blue-400" },
@@ -20,8 +22,17 @@ const SectionSets = () => {
   const meta = sectionMeta[sectionId || ""] || sectionMeta.pyqs;
   const Icon = meta.icon;
   const examName = decodeURIComponent(examSlug || "").replace(/-/g, " ");
+  const { canAccessSet, loading: accessLoading } = useAccessControl();
 
   const sets = Array.from({ length: TOTAL_SETS }, (_, i) => i + 1);
+
+  const handleSetClick = (num: number) => {
+    if (!canAccessSet(num)) {
+      toast.error("This set is locked. Upgrade to premium to unlock all sets.");
+      return;
+    }
+    navigate(`/exam/${examSlug}/${sectionId}/${num}`);
+  };
 
   return (
     <div className="min-h-screen bg-background">
@@ -57,25 +68,34 @@ const SectionSets = () => {
             variants={{ hidden: {}, show: { transition: { staggerChildren: 0.02 } } }}
             className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-3 gap-3"
           >
-            {sets.map((num) => (
-              <motion.div
-                key={num}
-                variants={{ hidden: { opacity: 0, y: 12 }, show: { opacity: 1, y: 0 } }}
-                whileHover={{ y: -2, scale: 1.01 }}
-                onClick={() => navigate(`/exam/${examSlug}/${sectionId}/${num}`)}
-                className={`rounded-xl p-3.5 bg-gradient-to-br ${meta.color} border ${meta.borderColor} cursor-pointer transition-all hover:shadow-md flex items-center justify-between group`}
-              >
-                <div className="flex items-center gap-3">
-                  <span className={`text-xs font-bold px-2 py-1 rounded-lg ${meta.badgeColor}`}>
-                    {String(num).padStart(2, "0")}
-                  </span>
-                  <span className="text-sm font-semibold text-foreground">
-                    {meta.title.split(" ")[0]} Set {num}
-                  </span>
-                </div>
-                <ChevronRight className="h-4 w-4 text-muted-foreground group-hover:text-primary group-hover:translate-x-1 transition-all" />
-              </motion.div>
-            ))}
+            {sets.map((num) => {
+              const locked = !accessLoading && !canAccessSet(num);
+              return (
+                <motion.div
+                  key={num}
+                  variants={{ hidden: { opacity: 0, y: 12 }, show: { opacity: 1, y: 0 } }}
+                  whileHover={locked ? {} : { y: -2, scale: 1.01 }}
+                  onClick={() => handleSetClick(num)}
+                  className={`rounded-xl p-3.5 bg-gradient-to-br ${meta.color} border ${meta.borderColor} cursor-pointer transition-all flex items-center justify-between group ${
+                    locked ? "opacity-60 grayscale" : "hover:shadow-md"
+                  }`}
+                >
+                  <div className="flex items-center gap-3">
+                    <span className={`text-xs font-bold px-2 py-1 rounded-lg ${meta.badgeColor}`}>
+                      {String(num).padStart(2, "0")}
+                    </span>
+                    <span className="text-sm font-semibold text-foreground">
+                      {meta.title.split(" ")[0]} Set {num}
+                    </span>
+                  </div>
+                  {locked ? (
+                    <Lock className="h-4 w-4 text-muted-foreground" />
+                  ) : (
+                    <ChevronRight className="h-4 w-4 text-muted-foreground group-hover:text-primary group-hover:translate-x-1 transition-all" />
+                  )}
+                </motion.div>
+              );
+            })}
           </motion.div>
         </div>
       </main>

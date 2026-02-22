@@ -3,9 +3,11 @@ import { useNavigate, useParams } from "react-router-dom";
 import { supabase } from "@/integrations/supabase/client";
 import { useAuth } from "@/contexts/AuthContext";
 import { useProctoring } from "@/hooks/useProctoring";
+import { useAccessControl } from "@/hooks/useAccessControl";
 import { Button } from "@/components/ui/button";
 import { motion, AnimatePresence } from "framer-motion";
 import { Clock, ChevronLeft, ChevronRight, Send, AlertTriangle, Maximize, Loader2, Eye } from "lucide-react";
+import ExamInstructionsDialog from "@/components/ExamInstructionsDialog";
 
 interface Question {
   id: string;
@@ -17,13 +19,15 @@ interface Question {
   option_d: string;
 }
 
-const EXAM_DURATION_SECONDS = 60 * 60; // 1 hour default
+const EXAM_DURATION_SECONDS = 60 * 60;
 
 const Quiz = () => {
   const navigate = useNavigate();
   const { examSlug, sectionId, setNumber } = useParams();
   const { user } = useAuth();
-  const { tabSwitches, isFullscreen, enterFullscreen, exitFullscreen } = useProctoring(true);
+  const { canAccessSet } = useAccessControl();
+  const [examStarted, setExamStarted] = useState(false);
+  const { tabSwitches, isFullscreen, enterFullscreen, exitFullscreen } = useProctoring(examStarted);
 
   const [questions, setQuestions] = useState<Question[]>([]);
   const [answers, setAnswers] = useState<Record<string, string>>({});
@@ -32,7 +36,19 @@ const Quiz = () => {
   const [loading, setLoading] = useState(true);
   const [submitting, setSubmitting] = useState(false);
   const [examId, setExamId] = useState<string | null>(null);
+  const [examName, setExamName] = useState("");
+  const [totalQuestions, setTotalQuestions] = useState(0);
+  const [durationMinutes, setDurationMinutes] = useState(60);
+  const [showInstructions, setShowInstructions] = useState(true);
   const startTimeRef = useRef(Date.now());
+
+  // Check access
+  useEffect(() => {
+    const setNum = parseInt(setNumber || "1");
+    if (!canAccessSet(setNum)) {
+      navigate(-1);
+    }
+  }, [canAccessSet, setNumber, navigate]);
 
   // Fetch questions
   useEffect(() => {
@@ -43,20 +59,21 @@ const Quiz = () => {
 
     const fetchQuestions = async () => {
       const slug = decodeURIComponent(examSlug || "");
-      // Find exam by slug
       const { data: exam } = await supabase
         .from("exams")
-        .select("id, duration_minutes")
+        .select("id, duration_minutes, name, total_questions")
         .eq("slug", slug)
         .maybeSingle();
 
       if (!exam) {
-        // No exam in DB yet — show empty state
         setLoading(false);
         return;
       }
 
       setExamId(exam.id);
+      setExamName(exam.name);
+      setTotalQuestions(exam.total_questions);
+      setDurationMinutes(exam.duration_minutes);
       if (exam.duration_minutes) {
         setTimeLeft(exam.duration_minutes * 60);
       }
@@ -75,9 +92,9 @@ const Quiz = () => {
     fetchQuestions();
   }, [user, examSlug, setNumber, navigate]);
 
-  // Timer
+  // Timer — only runs after exam starts
   useEffect(() => {
-    if (loading || questions.length === 0) return;
+    if (!examStarted || loading || questions.length === 0) return;
     const interval = setInterval(() => {
       setTimeLeft((prev) => {
         if (prev <= 1) {
@@ -89,7 +106,14 @@ const Quiz = () => {
       });
     }, 1000);
     return () => clearInterval(interval);
-  }, [loading, questions.length]);
+  }, [examStarted, loading, questions.length]);
+
+  const handleStartExam = () => {
+    setShowInstructions(false);
+    setExamStarted(true);
+    startTimeRef.current = Date.now();
+    enterFullscreen();
+  };
 
   const handleSubmit = useCallback(async () => {
     if (submitting || !examId || !user) return;
@@ -98,7 +122,6 @@ const Quiz = () => {
 
     const timeTaken = Math.floor((Date.now() - startTimeRef.current) / 1000);
 
-    // We need correct answers to score — fetch them
     const { data: fullQs } = await supabase
       .from("questions")
       .select("id, correct_answer")
@@ -111,13 +134,9 @@ const Quiz = () => {
 
     (fullQs || []).forEach((q) => {
       const userAnswer = answers[q.id];
-      if (!userAnswer) {
-        unanswered++;
-      } else if (userAnswer === q.correct_answer) {
-        correct++;
-      } else {
-        incorrect++;
-      }
+      if (!userAnswer) unanswered++;
+      else if (userAnswer === q.correct_answer) correct++;
+      else incorrect++;
     });
 
     const total = fullQs?.length || 0;
@@ -177,10 +196,24 @@ const Quiz = () => {
           <p className="text-muted-foreground text-sm max-w-md">
             Questions for this set haven't been added yet. They'll appear here once uploaded.
           </p>
-          <Button variant="outline" onClick={() => navigate(-1)}>
-            Go Back
-          </Button>
+          <Button variant="outline" onClick={() => navigate(-1)}>Go Back</Button>
         </div>
+      </div>
+    );
+  }
+
+  // Show instructions popup before exam starts
+  if (showInstructions && !examStarted) {
+    return (
+      <div className="min-h-screen bg-background flex items-center justify-center">
+        <ExamInstructionsDialog
+          open={true}
+          onStart={handleStartExam}
+          onCancel={() => navigate(-1)}
+          examName={examName}
+          totalQuestions={questions.length}
+          durationMinutes={durationMinutes}
+        />
       </div>
     );
   }
@@ -280,7 +313,6 @@ const Quiz = () => {
             <ChevronLeft className="h-4 w-4 mr-1" /> Prev
           </Button>
 
-          {/* Question pills */}
           <div className="hidden md:flex items-center gap-1 overflow-x-auto max-w-md">
             {questions.map((q, i) => (
               <button
