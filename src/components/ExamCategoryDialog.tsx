@@ -25,7 +25,7 @@ const categories = [
     description: "29 States & 8 Union Territories",
     color: "from-emerald-500/20 to-emerald-600/5",
     borderColor: "hover:border-emerald-500/50",
-    route: null, // coming soon
+    route: "/exams/state",
     free: true,
   },
   {
