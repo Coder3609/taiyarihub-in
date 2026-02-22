@@ -1,7 +1,9 @@
 import { useState } from "react";
+import { useNavigate } from "react-router-dom";
 import { motion, AnimatePresence } from "framer-motion";
-import { Menu, X, GraduationCap } from "lucide-react";
+import { Menu, X, GraduationCap, Trophy, LogOut, LogIn } from "lucide-react";
 import { Button } from "@/components/ui/button";
+import { useAuth } from "@/contexts/AuthContext";
 
 const navLinks = [
   { label: "Exams", href: "#exams" },
@@ -12,6 +14,8 @@ const navLinks = [
 
 const Navbar = () => {
   const [isOpen, setIsOpen] = useState(false);
+  const { user, signOut } = useAuth();
+  const navigate = useNavigate();
 
   return (
     <nav className="fixed top-0 left-0 right-0 z-50 glass">
@@ -35,9 +39,34 @@ const Navbar = () => {
                 {link.label}
               </a>
             ))}
-            <Button size="sm" className="font-display font-semibold">
-              Get Started
-            </Button>
+            {user ? (
+              <div className="flex items-center gap-3">
+                <Button
+                  variant="ghost"
+                  size="sm"
+                  onClick={() => navigate("/history")}
+                  className="gap-1.5 text-muted-foreground hover:text-foreground"
+                >
+                  <Trophy className="h-4 w-4" /> History
+                </Button>
+                <Button
+                  variant="ghost"
+                  size="sm"
+                  onClick={signOut}
+                  className="gap-1.5 text-muted-foreground hover:text-foreground"
+                >
+                  <LogOut className="h-4 w-4" /> Sign Out
+                </Button>
+              </div>
+            ) : (
+              <Button
+                size="sm"
+                className="font-display font-semibold"
+                onClick={() => navigate("/auth")}
+              >
+                <LogIn className="h-4 w-4 mr-1.5" /> Get Started
+              </Button>
+            )}
           </div>
 
           {/* Mobile toggle */}
@@ -70,9 +99,31 @@ const Navbar = () => {
                   {link.label}
                 </a>
               ))}
-              <Button className="font-display font-semibold w-full">
-                Get Started
-              </Button>
+              {user ? (
+                <>
+                  <Button
+                    variant="ghost"
+                    className="w-full justify-start gap-2"
+                    onClick={() => { navigate("/history"); setIsOpen(false); }}
+                  >
+                    <Trophy className="h-4 w-4" /> Score History
+                  </Button>
+                  <Button
+                    variant="outline"
+                    className="w-full"
+                    onClick={() => { signOut(); setIsOpen(false); }}
+                  >
+                    <LogOut className="h-4 w-4 mr-2" /> Sign Out
+                  </Button>
+                </>
+              ) : (
+                <Button
+                  className="font-display font-semibold w-full"
+                  onClick={() => { navigate("/auth"); setIsOpen(false); }}
+                >
+                  Get Started
+                </Button>
+              )}
             </div>
           </motion.div>
         )}

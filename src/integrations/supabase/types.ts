@@ -14,7 +14,178 @@ export type Database = {
   }
   public: {
     Tables: {
-      [_ in never]: never
+      exams: {
+        Row: {
+          category: string
+          created_at: string
+          description: string | null
+          duration_minutes: number
+          id: string
+          name: string
+          slug: string
+          total_questions: number
+        }
+        Insert: {
+          category?: string
+          created_at?: string
+          description?: string | null
+          duration_minutes?: number
+          id?: string
+          name: string
+          slug: string
+          total_questions?: number
+        }
+        Update: {
+          category?: string
+          created_at?: string
+          description?: string | null
+          duration_minutes?: number
+          id?: string
+          name?: string
+          slug?: string
+          total_questions?: number
+        }
+        Relationships: []
+      }
+      profiles: {
+        Row: {
+          avatar_url: string | null
+          created_at: string
+          email: string | null
+          id: string
+          updated_at: string
+          username: string | null
+        }
+        Insert: {
+          avatar_url?: string | null
+          created_at?: string
+          email?: string | null
+          id: string
+          updated_at?: string
+          username?: string | null
+        }
+        Update: {
+          avatar_url?: string | null
+          created_at?: string
+          email?: string | null
+          id?: string
+          updated_at?: string
+          username?: string | null
+        }
+        Relationships: []
+      }
+      questions: {
+        Row: {
+          correct_answer: string
+          created_at: string
+          exam_id: string
+          explanation: string | null
+          id: string
+          option_a: string
+          option_b: string
+          option_c: string
+          option_d: string
+          question_number: number
+          question_text: string
+          set_number: number
+        }
+        Insert: {
+          correct_answer: string
+          created_at?: string
+          exam_id: string
+          explanation?: string | null
+          id?: string
+          option_a: string
+          option_b: string
+          option_c: string
+          option_d: string
+          question_number?: number
+          question_text: string
+          set_number?: number
+        }
+        Update: {
+          correct_answer?: string
+          created_at?: string
+          exam_id?: string
+          explanation?: string | null
+          id?: string
+          option_a?: string
+          option_b?: string
+          option_c?: string
+          option_d?: string
+          question_number?: number
+          question_text?: string
+          set_number?: number
+        }
+        Relationships: [
+          {
+            foreignKeyName: "questions_exam_id_fkey"
+            columns: ["exam_id"]
+            isOneToOne: false
+            referencedRelation: "exams"
+            referencedColumns: ["id"]
+          },
+        ]
+      }
+      user_results: {
+        Row: {
+          answers: Json
+          correct_count: number
+          created_at: string
+          exam_id: string
+          id: string
+          incorrect_count: number
+          score: number
+          section_type: string
+          set_number: number
+          tab_switches: number
+          time_taken_seconds: number
+          total: number
+          unanswered_count: number
+          user_id: string
+        }
+        Insert: {
+          answers?: Json
+          correct_count?: number
+          created_at?: string
+          exam_id: string
+          id?: string
+          incorrect_count?: number
+          score?: number
+          section_type?: string
+          set_number?: number
+          tab_switches?: number
+          time_taken_seconds?: number
+          total?: number
+          unanswered_count?: number
+          user_id: string
+        }
+        Update: {
+          answers?: Json
+          correct_count?: number
+          created_at?: string
+          exam_id?: string
+          id?: string
+          incorrect_count?: number
+          score?: number
+          section_type?: string
+          set_number?: number
+          tab_switches?: number
+          time_taken_seconds?: number
+          total?: number
+          unanswered_count?: number
+          user_id?: string
+        }
+        Relationships: [
+          {
+            foreignKeyName: "user_results_exam_id_fkey"
+            columns: ["exam_id"]
+            isOneToOne: false
+            referencedRelation: "exams"
+            referencedColumns: ["id"]
+          },
+        ]
+      }
     }
     Views: {
       [_ in never]: never
