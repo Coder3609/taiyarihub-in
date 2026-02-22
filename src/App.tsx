@@ -8,6 +8,7 @@ import Index from "./pages/Index";
 import CentralExams from "./pages/CentralExams";
 import StateExams from "./pages/StateExams";
 import ExamDetail from "./pages/ExamDetail";
+import StateExamDetail from "./pages/StateExamDetail";
 import SectionSets from "./pages/SectionSets";
 import Quiz from "./pages/Quiz";
 import Results from "./pages/Results";
@@ -29,6 +30,7 @@ const App = () => (
             <Route path="/auth" element={<Auth />} />
             <Route path="/exams/central" element={<CentralExams />} />
             <Route path="/exams/state" element={<StateExams />} />
+            <Route path="/exams/state/:stateSlug" element={<StateExamDetail />} />
             <Route path="/exam/:examSlug" element={<ExamDetail />} />
             <Route path="/exam/:examSlug/:sectionId" element={<SectionSets />} />
             <Route path="/exam/:examSlug/:sectionId/:setNumber" element={<Quiz />} />
