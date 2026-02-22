@@ -9,20 +9,46 @@ const boards = ["CBSE", "ICSE"];
 
 const entranceExams = ["JEE Mains", "JEE Advanced", "NEET PG", "CUET"];
 
-const states = [
-  "Andhra Pradesh", "Arunachal Pradesh", "Assam", "Bihar", "Chhattisgarh",
-  "Goa", "Gujarat", "Haryana", "Himachal Pradesh", "Jharkhand",
-  "Karnataka", "Kerala", "Madhya Pradesh", "Maharashtra", "Manipur",
-  "Meghalaya", "Mizoram", "Nagaland", "Odisha", "Punjab",
-  "Rajasthan", "Sikkim", "Tamil Nadu", "Telangana", "Tripura",
-  "Uttar Pradesh", "Uttarakhand", "West Bengal",
+const statesWithExams: { name: string; exams: string[] }[] = [
+  { name: "Andhra Pradesh", exams: ["APPSC Group 1", "APPSC Group 2", "APPSC Group 3", "APPSC Group 4", "AP Police SI/Constable"] },
+  { name: "Arunachal Pradesh", exams: ["APPSC Combined Competitive Exam", "Arunachal Police Recruitment"] },
+  { name: "Assam", exams: ["APSC Combined Competitive Exam", "Assam Police SI/Constable", "Assam TET"] },
+  { name: "Bihar", exams: ["BPSC CCE", "BPSC Teacher", "Bihar Police SI/Constable", "Bihar SSC"] },
+  { name: "Chhattisgarh", exams: ["CGPSC SSE", "CG Police", "CG TET", "CG Vyapam Exams"] },
+  { name: "Goa", exams: ["Goa PSC Recruitment", "Goa Police Recruitment"] },
+  { name: "Gujarat", exams: ["GPSC Class 1 & 2", "Gujarat Police", "GSSSB Exams", "Gujarat TET"] },
+  { name: "Haryana", exams: ["HPSC HCS", "HSSC Exams", "Haryana Police", "HTET"] },
+  { name: "Himachal Pradesh", exams: ["HPPSC HAS", "HP Police", "HP TET", "HPSSC Exams"] },
+  { name: "Jharkhand", exams: ["JPSC CCE", "Jharkhand Police", "JTET", "JSSC Exams"] },
+  { name: "Karnataka", exams: ["KPSC KAS", "Karnataka Police", "KSET", "Karnataka TET"] },
+  { name: "Kerala", exams: ["Kerala PSC Exams", "Kerala Police", "KTET"] },
+  { name: "Madhya Pradesh", exams: ["MPPSC SSE", "MP Police", "MP TET", "MP Vyapam"] },
+  { name: "Maharashtra", exams: ["MPSC Rajyaseva", "MPSC Combined", "Maharashtra Police", "MAHA TET"] },
+  { name: "Manipur", exams: ["Manipur PSC CCE", "Manipur Police"] },
+  { name: "Meghalaya", exams: ["MPSC Meghalaya CCE", "Meghalaya Police"] },
+  { name: "Mizoram", exams: ["Mizoram PSC Exams", "Mizoram Police"] },
+  { name: "Nagaland", exams: ["Nagaland PSC CCE", "Nagaland Police"] },
+  { name: "Odisha", exams: ["OPSC OCS", "OSSC Exams", "Odisha Police", "OTET"] },
+  { name: "Punjab", exams: ["PPSC PCS", "Punjab Police", "PSTET", "PSSSB Exams"] },
+  { name: "Rajasthan", exams: ["RPSC RAS", "Rajasthan Police", "REET", "RSMSSB Exams"] },
+  { name: "Sikkim", exams: ["Sikkim PSC Combined Exams", "Sikkim Police"] },
+  { name: "Tamil Nadu", exams: ["TNPSC Group 1, 2, 4", "TNUSRB Police", "TNTET"] },
+  { name: "Telangana", exams: ["TSPSC Group 1, 2", "TS Police", "TSTET"] },
+  { name: "Tripura", exams: ["TPSC TCS", "Tripura Police", "Tripura TET"] },
+  { name: "Uttar Pradesh", exams: ["UPPSC PCS", "UP Police", "UPSSSC PET", "UPTET"] },
+  { name: "Uttarakhand", exams: ["UKPSC PCS", "UK Police", "UTET", "UKSSSC"] },
+  { name: "West Bengal", exams: ["WBPSC WBCS", "WB Police", "WBSSC", "WB TET"] },
 ];
 
-const unionTerritories = [
-  "Andaman and Nicobar Islands", "Chandigarh",
-  "Dadra and Nagar Haveli and Daman and Diu",
-  "Delhi (National Capital Territory of Delhi)",
-  "Jammu and Kashmir", "Ladakh", "Lakshadweep", "Puducherry",
+const unionTerritoriesWithExams: { name: string; exams: string[] }[] = [
+  { name: "Andaman and Nicobar Islands", exams: ["A&N Administration Recruitment"] },
+  { name: "Chandigarh", exams: ["Chandigarh Administration Exams", "Chandigarh Police"] },
+  { name: "Dadra and Nagar Haveli and Daman and Diu", exams: ["UT Administration Recruitment"] },
+  { name: "Delhi (National Capital Territory of Delhi)", exams: ["DSSSB Exams", "Delhi Police", "Delhi Judicial Services"] },
+  { name: "Jammu and Kashmir", exams: ["JKPSC KAS", "JK Police", "JKSSB Exams"] },
+  { name: "Ladakh", exams: ["Ladakh Administration Recruitment"] },
+  { name: "Lakshadweep", exams: ["Lakshadweep Administration Recruitment"] },
+  { name: "Puducherry", exams: ["Puducherry PSC Exams", "Puducherry Police"] },
 ];
 
 const container = {
@@ -156,7 +182,7 @@ const StateExams = () => {
                 <h2 className="font-display text-xl md:text-2xl font-bold text-foreground">
                   States of India
                 </h2>
-                <p className="text-sm text-muted-foreground">{states.length} States</p>
+                <p className="text-sm text-muted-foreground">{statesWithExams.length} States</p>
               </div>
             </div>
 
@@ -166,20 +192,27 @@ const StateExams = () => {
               animate="show"
               className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-3 gap-3"
             >
-              {states.map((state) => (
+              {statesWithExams.map((state) => (
                 <motion.div
-                  key={state}
+                  key={state.name}
                   variants={item}
                   whileHover={{ y: -2, scale: 1.01 }}
-                  className="rounded-xl p-4 bg-gradient-to-br from-emerald-500/20 to-emerald-600/5 border border-emerald-500/30 cursor-not-allowed opacity-70 transition-all flex items-center justify-between"
+                  className="rounded-xl p-4 bg-gradient-to-br from-emerald-500/20 to-emerald-600/5 border border-emerald-500/30 cursor-not-allowed opacity-70 transition-all"
                 >
-                  <div className="flex items-center gap-3">
+                  <div className="flex items-center gap-3 mb-2">
                     <MapPin className="h-4 w-4 text-emerald-400 shrink-0" />
-                    <span className="text-sm font-semibold text-foreground">{state}</span>
+                    <span className="text-sm font-semibold text-foreground">{state.name}</span>
+                    <span className="ml-auto px-2 py-0.5 rounded-full text-[10px] font-semibold bg-muted text-muted-foreground shrink-0">
+                      COMING SOON
+                    </span>
                   </div>
-                  <span className="px-2 py-0.5 rounded-full text-[10px] font-semibold bg-muted text-muted-foreground shrink-0">
-                    COMING SOON
-                  </span>
+                  <div className="flex flex-wrap gap-1.5 mt-2">
+                    {state.exams.map((exam) => (
+                      <span key={exam} className="px-2 py-0.5 rounded-full text-[10px] bg-emerald-500/10 text-emerald-300 border border-emerald-500/20">
+                        {exam}
+                      </span>
+                    ))}
+                  </div>
                 </motion.div>
               ))}
             </motion.div>
@@ -195,7 +228,7 @@ const StateExams = () => {
                 <h2 className="font-display text-xl md:text-2xl font-bold text-foreground">
                   Union Territories of India
                 </h2>
-                <p className="text-sm text-muted-foreground">{unionTerritories.length} Union Territories</p>
+                <p className="text-sm text-muted-foreground">{unionTerritoriesWithExams.length} Union Territories</p>
               </div>
             </div>
 
@@ -205,20 +238,27 @@ const StateExams = () => {
               animate="show"
               className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-3 gap-3"
             >
-              {unionTerritories.map((ut) => (
+              {unionTerritoriesWithExams.map((ut) => (
                 <motion.div
-                  key={ut}
+                  key={ut.name}
                   variants={item}
                   whileHover={{ y: -2, scale: 1.01 }}
-                  className="rounded-xl p-4 bg-gradient-to-br from-sky-500/20 to-sky-600/5 border border-sky-500/30 cursor-not-allowed opacity-70 transition-all flex items-center justify-between"
+                  className="rounded-xl p-4 bg-gradient-to-br from-sky-500/20 to-sky-600/5 border border-sky-500/30 cursor-not-allowed opacity-70 transition-all"
                 >
-                  <div className="flex items-center gap-3">
+                  <div className="flex items-center gap-3 mb-2">
                     <Building className="h-4 w-4 text-sky-400 shrink-0" />
-                    <span className="text-sm font-semibold text-foreground">{ut}</span>
+                    <span className="text-sm font-semibold text-foreground">{ut.name}</span>
+                    <span className="ml-auto px-2 py-0.5 rounded-full text-[10px] font-semibold bg-muted text-muted-foreground shrink-0">
+                      COMING SOON
+                    </span>
                   </div>
-                  <span className="px-2 py-0.5 rounded-full text-[10px] font-semibold bg-muted text-muted-foreground shrink-0">
-                    COMING SOON
-                  </span>
+                  <div className="flex flex-wrap gap-1.5 mt-2">
+                    {ut.exams.map((exam) => (
+                      <span key={exam} className="px-2 py-0.5 rounded-full text-[10px] bg-sky-500/10 text-sky-300 border border-sky-500/20">
+                        {exam}
+                      </span>
+                    ))}
+                  </div>
                 </motion.div>
               ))}
             </motion.div>
