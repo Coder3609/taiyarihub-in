@@ -2,12 +2,17 @@ import { motion } from "framer-motion";
 import { ArrowLeft, GraduationCap, FlaskConical, ArrowRight, BookOpen, FileText, CheckCircle } from "lucide-react";
 import { Button } from "@/components/ui/button";
 import { useNavigate } from "react-router-dom";
+import { toast } from "sonner";
 import Navbar from "@/components/Navbar";
 import Footer from "@/components/Footer";
 
 const boards = ["CBSE", "ICSE"];
 
 const entranceExams = ["JEE Mains", "JEE Advanced", "NEET PG", "CUET"];
+
+const AVAILABLE_SCHOOL_EXAMS = ["JEE Mains", "JEE Advanced", "NEET PG", "CUET"];
+
+const isAvailable = (name: string) => AVAILABLE_SCHOOL_EXAMS.includes(name);
 
 const container = {
   hidden: {},
@@ -24,40 +29,58 @@ const SchoolExams = () => {
 
   const toSlug = (name: string) => name.replace(/[^a-zA-Z0-9]+/g, "-").replace(/^-|-$/g, "");
 
-  const ExamCard = ({ exam, icon: Icon, color, borderColor, iconColor }: { exam: string; icon: any; color: string; borderColor: string; iconColor: string }) => (
-    <motion.div
-      variants={item}
-      whileHover={{ y: -3, scale: 1.01 }}
-      onClick={() => navigate(`/exam/${toSlug(exam)}`)}
-      className={`rounded-xl p-4 bg-gradient-to-br ${color} border ${borderColor} cursor-pointer transition-all hover:shadow-card group/card flex flex-col justify-between`}
-    >
-      <div>
-        <div className="flex items-center gap-3 mb-3">
-          <Icon className={`h-4 w-4 ${iconColor} shrink-0`} />
-          <h4 className="text-sm font-bold text-foreground leading-snug">{exam}</h4>
+  const handleClick = (exam: string) => {
+    if (isAvailable(exam)) {
+      navigate(`/exam/${toSlug(exam)}`);
+    } else {
+      toast.info("Coming Soon! 🚧", {
+        description: `${exam} is under development. Stay tuned!`,
+      });
+    }
+  };
+
+  const ExamCard = ({ exam, icon: Icon, color, borderColor, iconColor }: { exam: string; icon: any; color: string; borderColor: string; iconColor: string }) => {
+    const available = isAvailable(exam);
+    return (
+      <motion.div
+        variants={item}
+        whileHover={{ y: -3, scale: 1.01 }}
+        onClick={() => handleClick(exam)}
+        className={`rounded-xl p-4 bg-gradient-to-br ${color} border ${borderColor} cursor-pointer transition-all hover:shadow-card group/card flex flex-col justify-between ${!available ? "opacity-60" : ""}`}
+      >
+        <div>
+          <div className="flex items-center gap-3 mb-3">
+            <Icon className={`h-4 w-4 ${iconColor} shrink-0`} />
+            <h4 className="text-sm font-bold text-foreground leading-snug">{exam}</h4>
+            {!available && (
+              <span className="shrink-0 ml-auto px-1.5 py-0.5 rounded text-[9px] font-bold bg-muted text-muted-foreground">
+                SOON
+              </span>
+            )}
+          </div>
+          <div className="grid grid-cols-2 gap-1.5 text-xs text-muted-foreground">
+            <span className="flex items-center gap-1">
+              <BookOpen className="h-3 w-3 shrink-0" />
+              Questions
+            </span>
+            <span className="flex items-center gap-1">
+              <FileText className="h-3 w-3 shrink-0" />
+              Mock Tests
+            </span>
+            <span className="flex items-center gap-1 text-emerald-400">
+              <CheckCircle className="h-3 w-3 shrink-0" />
+              Solutions
+            </span>
+          </div>
         </div>
-        <div className="grid grid-cols-2 gap-1.5 text-xs text-muted-foreground">
-          <span className="flex items-center gap-1">
-            <BookOpen className="h-3 w-3 shrink-0" />
-            Questions
-          </span>
-          <span className="flex items-center gap-1">
-            <FileText className="h-3 w-3 shrink-0" />
-            Mock Tests
-          </span>
-          <span className="flex items-center gap-1 text-emerald-400">
-            <CheckCircle className="h-3 w-3 shrink-0" />
-            Solutions
+        <div className="flex items-center justify-end pt-2 border-t border-border/30 mt-3">
+          <span className="text-xs text-primary flex items-center gap-1 group-hover/card:translate-x-1 transition-transform">
+            {available ? "Visit Page" : "Coming Soon"} <ArrowRight className="h-3 w-3" />
           </span>
         </div>
-      </div>
-      <div className="flex items-center justify-end pt-2 border-t border-border/30 mt-3">
-        <span className="text-xs text-primary flex items-center gap-1 group-hover/card:translate-x-1 transition-transform">
-          Visit Page <ArrowRight className="h-3 w-3" />
-        </span>
-      </div>
-    </motion.div>
-  );
+      </motion.div>
+    );
+  };
 
   return (
     <div className="min-h-screen bg-background">
@@ -87,6 +110,9 @@ const SchoolExams = () => {
             <p className="text-muted-foreground max-w-2xl mx-auto">
               Board exams and national-level entrance tests for students.
             </p>
+            <div className="mt-4 inline-flex items-center gap-2 text-sm text-primary">
+              <span className="font-semibold">All School Exams: ₹999 for 3 Years</span>
+            </div>
           </motion.div>
 
           {/* Boards */}
