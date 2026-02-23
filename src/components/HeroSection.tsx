@@ -73,7 +73,7 @@ const HeroSection = () => {
               <ArrowRight className="ml-2 h-5 w-5" />
             </Button>
             <p className="text-sm text-muted-foreground bg-secondary/60 border border-border rounded-lg px-4 py-2 max-w-md">
-              🎓 First <span className="font-semibold text-primary">2 sets of every exam</span> are completely free to attempt — no signup needed!
+              🎓 Sign up for free and get access to the <span className="font-semibold text-primary">first 2 sets of every exam</span> — no payment required!
             </p>
           </motion.div>
 
