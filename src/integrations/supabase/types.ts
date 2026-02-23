@@ -87,6 +87,7 @@ export type Database = {
           option_d: string
           question_number: number
           question_text: string
+          question_type: string
           set_number: number
         }
         Insert: {
@@ -101,6 +102,7 @@ export type Database = {
           option_d: string
           question_number?: number
           question_text: string
+          question_type?: string
           set_number?: number
         }
         Update: {
@@ -115,6 +117,7 @@ export type Database = {
           option_d?: string
           question_number?: number
           question_text?: string
+          question_type?: string
           set_number?: number
         }
         Relationships: [
