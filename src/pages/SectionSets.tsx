@@ -27,10 +27,11 @@ const TOTAL_SETS = 45;
 
 const SectionSets = () => {
   const navigate = useNavigate();
-  const { examSlug, sectionId } = useParams();
+  const { examSlug, sectionId, streamId } = useParams();
   const meta = sectionMeta[sectionId || ""] || sectionMeta.pyqs;
   const Icon = meta.icon;
   const examName = decodeURIComponent(examSlug || "").replace(/-/g, " ");
+  const basePath = streamId ? `/exam/${examSlug}/stream/${streamId}` : `/exam/${examSlug}`;
   const { user } = useAuth();
   const { canAccessSet, loading: accessLoading } = useAccessControl();
   const [showPaywall, setShowPaywall] = useState(false);
@@ -47,7 +48,7 @@ const SectionSets = () => {
       setShowPaywall(true);
       return;
     }
-    navigate(`/exam/${examSlug}/${sectionId}/${num}`);
+    navigate(`${basePath}/${sectionId}/${num}`);
   };
 
   return (
