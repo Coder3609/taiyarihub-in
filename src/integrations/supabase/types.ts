@@ -14,6 +14,41 @@ export type Database = {
   }
   public: {
     Tables: {
+      exam_set_names: {
+        Row: {
+          created_at: string
+          display_name: string
+          exam_id: string
+          id: string
+          section_type: string
+          set_number: number
+        }
+        Insert: {
+          created_at?: string
+          display_name: string
+          exam_id: string
+          id?: string
+          section_type?: string
+          set_number?: number
+        }
+        Update: {
+          created_at?: string
+          display_name?: string
+          exam_id?: string
+          id?: string
+          section_type?: string
+          set_number?: number
+        }
+        Relationships: [
+          {
+            foreignKeyName: "exam_set_names_exam_id_fkey"
+            columns: ["exam_id"]
+            isOneToOne: false
+            referencedRelation: "exams"
+            referencedColumns: ["id"]
+          },
+        ]
+      }
       exams: {
         Row: {
           category: string
