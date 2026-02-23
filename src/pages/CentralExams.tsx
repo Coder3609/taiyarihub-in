@@ -2,6 +2,7 @@ import { motion } from "framer-motion";
 import { ArrowLeft, Shield, Award, FileText, Wrench, BookOpen, ArrowRight, CheckCircle } from "lucide-react";
 import { Button } from "@/components/ui/button";
 import { useNavigate } from "react-router-dom";
+import { toast } from "sonner";
 import Navbar from "@/components/Navbar";
 import Footer from "@/components/Footer";
 
@@ -19,6 +20,26 @@ const difficultyColor: Record<string, string> = {
   Hard: "text-orange-400",
   "Very Hard": "text-red-400",
 };
+
+// Only these exams are available right now
+const AVAILABLE_EXAMS = [
+  "GATE (Graduate Aptitude Test in Engineering)",
+  "BARC (Bhabha Atomic Research Centre)",
+  "ISRO (Indian Space Research Organisation)",
+  "CAT (Common Admission Test)",
+  "CA (Chartered Accountant – Foundation, Inter & Final)",
+  "SSC Combined Graduate Level (SSC CGL)",
+  "SSC Combined Higher Secondary Level (SSC CHSL)",
+  "SSC Multi-Tasking Staff (SSC MTS)",
+  "SSC Central Police Organization (SSC CPO)",
+  "SSC Junior Engineer (SSC JE)",
+  "SSC Stenographer Grade B",
+  "SSC Stenographer Grade C",
+  "SSC Selection Post",
+  "SSC Multi-Tasking Staff (MTS – some posts)",
+];
+
+const isExamAvailable = (name: string) => AVAILABLE_EXAMS.includes(name);
 
 const groups = [
   {
@@ -124,6 +145,16 @@ const item = {
 const CentralExams = () => {
   const navigate = useNavigate();
 
+  const handleExamClick = (exam: ExamInfo) => {
+    if (isExamAvailable(exam.name)) {
+      navigate(`/exam/${exam.name.replace(/[^a-zA-Z0-9]+/g, "-").replace(/^-|-$/g, "")}`);
+    } else {
+      toast.info("Coming Soon! 🚧", {
+        description: `${exam.name} is under development. Stay tuned!`,
+      });
+    }
+  };
+
   return (
     <div className="min-h-screen bg-background">
       <Navbar />
@@ -153,9 +184,7 @@ const CentralExams = () => {
               Explore all central government competitive exams organized by group level. Choose your target exam and start preparing today.
             </p>
             <div className="mt-4 inline-flex items-center gap-2 text-sm text-primary">
-              <span className="font-semibold">1-Year: ₹1,799</span>
-              <span className="text-muted-foreground">|</span>
-              <span className="font-semibold">Long-term (3yrs): ₹3,199</span>
+              <span className="font-semibold">All Exams: ₹599 for 1.3 Years</span>
               <span className="ml-2 px-2 py-0.5 rounded-full text-[10px] bg-emerald-500/10 text-emerald-400 border border-emerald-500/20">
                 FREE TIER AVAILABLE
               </span>
@@ -183,42 +212,52 @@ const CentralExams = () => {
                 </div>
 
                 <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-3 xl:grid-cols-4 gap-3 md:gap-4">
-                  {group.exams.map((exam) => (
-                    <motion.div
-                      key={exam.name}
-                      whileHover={{ y: -3, scale: 1.01 }}
-                      onClick={() => navigate(`/exam/${exam.name.replace(/[^a-zA-Z0-9]+/g, "-").replace(/^-|-$/g, "")}`)}
-                      className={`rounded-xl p-4 bg-gradient-to-br ${group.color} border ${group.borderColor} cursor-pointer transition-all hover:shadow-card group/card flex flex-col justify-between`}
-                    >
-                      <div>
-                        <h4 className="text-sm font-bold text-foreground mb-3 leading-snug line-clamp-2">
-                          {exam.name}
-                        </h4>
-                        <div className="grid grid-cols-2 gap-1.5 text-xs text-muted-foreground">
-                          <span className="flex items-center gap-1">
-                            <BookOpen className="h-3 w-3 shrink-0" />
-                            {exam.questions} Qs
-                          </span>
-                          <span className="flex items-center gap-1">
-                            <FileText className="h-3 w-3 shrink-0" />
-                            {exam.tests} Tests
-                          </span>
-                          <span className="flex items-center gap-1 text-emerald-400">
-                            <CheckCircle className="h-3 w-3 shrink-0" />
-                            {exam.solutions}
-                          </span>
-                          <span className={`text-[10px] font-semibold ${difficultyColor[exam.difficulty]}`}>
-                            {exam.difficulty}
+                  {group.exams.map((exam) => {
+                    const available = isExamAvailable(exam.name);
+                    return (
+                      <motion.div
+                        key={exam.name}
+                        whileHover={{ y: -3, scale: 1.01 }}
+                        onClick={() => handleExamClick(exam)}
+                        className={`rounded-xl p-4 bg-gradient-to-br ${group.color} border ${group.borderColor} cursor-pointer transition-all hover:shadow-card group/card flex flex-col justify-between ${!available ? "opacity-60" : ""}`}
+                      >
+                        <div>
+                          <div className="flex items-start justify-between gap-2 mb-3">
+                            <h4 className="text-sm font-bold text-foreground leading-snug line-clamp-2">
+                              {exam.name}
+                            </h4>
+                            {!available && (
+                              <span className="shrink-0 px-1.5 py-0.5 rounded text-[9px] font-bold bg-muted text-muted-foreground whitespace-nowrap">
+                                SOON
+                              </span>
+                            )}
+                          </div>
+                          <div className="grid grid-cols-2 gap-1.5 text-xs text-muted-foreground">
+                            <span className="flex items-center gap-1">
+                              <BookOpen className="h-3 w-3 shrink-0" />
+                              {exam.questions} Qs
+                            </span>
+                            <span className="flex items-center gap-1">
+                              <FileText className="h-3 w-3 shrink-0" />
+                              {exam.tests} Tests
+                            </span>
+                            <span className="flex items-center gap-1 text-emerald-400">
+                              <CheckCircle className="h-3 w-3 shrink-0" />
+                              {exam.solutions}
+                            </span>
+                            <span className={`text-[10px] font-semibold ${difficultyColor[exam.difficulty]}`}>
+                              {exam.difficulty}
+                            </span>
+                          </div>
+                        </div>
+                        <div className="flex items-center justify-end pt-2 border-t border-border/30 mt-3">
+                          <span className="text-xs text-primary flex items-center gap-1 group-hover/card:translate-x-1 transition-transform">
+                            {available ? "Visit Page" : "Coming Soon"} <ArrowRight className="h-3 w-3" />
                           </span>
                         </div>
-                      </div>
-                      <div className="flex items-center justify-end pt-2 border-t border-border/30 mt-3">
-                        <span className="text-xs text-primary flex items-center gap-1 group-hover/card:translate-x-1 transition-transform">
-                          Visit Page <ArrowRight className="h-3 w-3" />
-                        </span>
-                      </div>
-                    </motion.div>
-                  ))}
+                      </motion.div>
+                    );
+                  })}
                 </div>
               </motion.div>
             ))}
