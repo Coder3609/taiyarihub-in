@@ -1,5 +1,6 @@
 import { useNavigate } from "react-router-dom";
 import { motion } from "framer-motion";
+import { toast } from "sonner";
 import { Landmark, MapPin, GraduationCap, Globe } from "lucide-react";
 import {
   Dialog,
@@ -18,6 +19,7 @@ const categories = [
     borderColor: "hover:border-amber-500/50",
     route: "/exams/central",
     free: true,
+    available: true,
   },
   {
     icon: MapPin,
@@ -27,6 +29,7 @@ const categories = [
     borderColor: "hover:border-emerald-500/50",
     route: "/exams/state",
     free: true,
+    available: false,
   },
   {
     icon: GraduationCap,
@@ -36,6 +39,7 @@ const categories = [
     borderColor: "hover:border-blue-500/50",
     route: "/exams/school",
     free: false,
+    available: true,
   },
   {
     icon: Globe,
@@ -45,6 +49,7 @@ const categories = [
     borderColor: "hover:border-purple-500/50",
     route: "/exams/foreign",
     free: false,
+    available: false,
   },
 ];
 
@@ -56,10 +61,14 @@ interface ExamCategoryDialogProps {
 const ExamCategoryDialog = ({ open, onOpenChange }: ExamCategoryDialogProps) => {
   const navigate = useNavigate();
 
-  const handleSelect = (route: string | null) => {
-    if (route) {
+  const handleSelect = (cat: typeof categories[0]) => {
+    if (cat.available) {
       onOpenChange(false);
-      navigate(route);
+      navigate(cat.route);
+    } else {
+      toast.info("Coming Soon! 🚧", {
+        description: `${cat.title} is under development. Stay tuned!`,
+      });
     }
   };
 
@@ -78,8 +87,8 @@ const ExamCategoryDialog = ({ open, onOpenChange }: ExamCategoryDialogProps) => 
               key={cat.title}
               whileHover={{ y: -2, scale: 1.02 }}
               whileTap={{ scale: 0.98 }}
-              onClick={() => handleSelect(cat.route)}
-              className={`relative rounded-xl p-5 bg-gradient-to-br ${cat.color} border border-border/50 ${cat.borderColor} ${cat.route ? "cursor-pointer" : "cursor-not-allowed opacity-60"} transition-all group`}
+              onClick={() => handleSelect(cat)}
+              className={`relative rounded-xl p-5 bg-gradient-to-br ${cat.color} border border-border/50 ${cat.borderColor} cursor-pointer transition-all group ${!cat.available ? "opacity-60" : ""}`}
             >
               <cat.icon className="h-7 w-7 text-primary mb-3 group-hover:scale-110 transition-transform" />
               <h3 className="font-display font-bold text-foreground mb-1">{cat.title}</h3>
@@ -90,7 +99,7 @@ const ExamCategoryDialog = ({ open, onOpenChange }: ExamCategoryDialogProps) => 
                     FREE TIER
                   </span>
                 )}
-                {!cat.route && (
+                {!cat.available && (
                   <span className="px-2 py-0.5 rounded-full text-[10px] font-semibold bg-muted text-muted-foreground">
                     COMING SOON
                   </span>
