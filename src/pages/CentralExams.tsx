@@ -46,6 +46,8 @@ const groups = [
       { name: "Indian Coast Guard Assistant Commandant", questions: "1,200+", tests: "30+", solutions: "1,000+", difficulty: "Medium" },
       { name: "CAT (Common Admission Test)", questions: "3,500+", tests: "90+", solutions: "3,200+", difficulty: "Very Hard" },
       { name: "CA (Chartered Accountant – Foundation, Inter & Final)", questions: "4,000+", tests: "100+", solutions: "3,500+", difficulty: "Very Hard" },
+      { name: "BARC (Bhabha Atomic Research Centre)", questions: "3,000+", tests: "75+", solutions: "2,800+", difficulty: "Very Hard" },
+      { name: "ISRO (Indian Space Research Organisation)", questions: "2,500+", tests: "60+", solutions: "2,200+", difficulty: "Very Hard" },
     ] as ExamInfo[],
   },
   {
