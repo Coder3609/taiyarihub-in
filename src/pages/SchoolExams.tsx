@@ -10,7 +10,7 @@ const boards = ["CBSE", "ICSE"];
 
 const entranceExams = ["JEE Mains", "JEE Advanced", "NEET PG", "CUET"];
 
-const AVAILABLE_SCHOOL_EXAMS = ["JEE Mains", "JEE Advanced", "NEET PG", "CUET"];
+const AVAILABLE_SCHOOL_EXAMS = ["JEE Mains", "JEE Advanced", "NEET PG", "CUET", "CBSE", "ICSE"];
 
 const isAvailable = (name: string) => AVAILABLE_SCHOOL_EXAMS.includes(name);
 
