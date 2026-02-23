@@ -1,7 +1,7 @@
 import { useState } from "react";
 import { useNavigate } from "react-router-dom";
 import { motion, AnimatePresence } from "framer-motion";
-import { Menu, X, GraduationCap, Trophy, LogOut, LogIn } from "lucide-react";
+import { Menu, X, GraduationCap, Trophy, LogOut, LogIn, User } from "lucide-react";
 import { Button } from "@/components/ui/button";
 import { useAuth } from "@/contexts/AuthContext";
 
@@ -41,6 +41,14 @@ const Navbar = () => {
             ))}
             {user ? (
               <div className="flex items-center gap-3">
+                <Button
+                  variant="ghost"
+                  size="sm"
+                  onClick={() => navigate("/profile")}
+                  className="gap-1.5 text-muted-foreground hover:text-foreground"
+                >
+                  <User className="h-4 w-4" /> Profile
+                </Button>
                 <Button
                   variant="ghost"
                   size="sm"
@@ -101,6 +109,13 @@ const Navbar = () => {
               ))}
               {user ? (
                 <>
+                  <Button
+                    variant="ghost"
+                    className="w-full justify-start gap-2"
+                    onClick={() => { navigate("/profile"); setIsOpen(false); }}
+                  >
+                    <User className="h-4 w-4" /> Profile
+                  </Button>
                   <Button
                     variant="ghost"
                     className="w-full justify-start gap-2"

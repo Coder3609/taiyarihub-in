@@ -22,7 +22,22 @@ const Auth = () => {
   const { user } = useAuth();
 
   useEffect(() => {
-    if (user) navigate("/", { replace: true });
+    if (!user) return;
+    // Check if profile is completed
+    const checkProfile = async () => {
+      const { data } = await supabase
+        .from("profiles")
+        .select("profile_completed")
+        .eq("id", user.id)
+        .single();
+      
+      if (data?.profile_completed) {
+        navigate("/", { replace: true });
+      } else {
+        navigate("/complete-profile", { replace: true });
+      }
+    };
+    checkProfile();
   }, [user, navigate]);
 
   const handleEmailAuth = async (e: React.FormEvent) => {
