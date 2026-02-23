@@ -29,6 +29,7 @@ const AVAILABLE_EXAMS = [
   "CAT (Common Admission Test)",
   "CA (Chartered Accountant – Foundation, Inter & Final)",
   "SSC Combined Graduate Level (SSC CGL)",
+  "RBI Grade B Officer",
 ];
 
 const isExamAvailable = (name: string) => AVAILABLE_EXAMS.includes(name);
