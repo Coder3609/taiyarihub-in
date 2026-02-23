@@ -1,5 +1,6 @@
-import { useState } from "react";
+import { useState, useEffect } from "react";
 import { motion } from "framer-motion";
+import { supabase } from "@/integrations/supabase/client";
 import { ArrowLeft, ScrollText, ClipboardList, Building2, BookOpen, ChevronRight, Lock, Crown, LogIn } from "lucide-react";
 import { Button } from "@/components/ui/button";
 import { useNavigate, useParams } from "react-router-dom";
@@ -36,6 +37,33 @@ const SectionSets = () => {
   const { canAccessSet, loading: accessLoading } = useAccessControl();
   const [showPaywall, setShowPaywall] = useState(false);
   const [showLoginPrompt, setShowLoginPrompt] = useState(false);
+  const [setNames, setSetNames] = useState<Record<number, string>>({});
+
+  // Fetch custom set names
+  useEffect(() => {
+    const fetchSetNames = async () => {
+      const slug = decodeURIComponent(examSlug || "");
+      const { data: exam } = await supabase
+        .from("exams")
+        .select("id")
+        .eq("slug", slug)
+        .maybeSingle();
+      if (!exam) return;
+
+      const { data } = await supabase
+        .from("exam_set_names")
+        .select("set_number, display_name")
+        .eq("exam_id", exam.id)
+        .eq("section_type", sectionId || "pyqs");
+
+      if (data) {
+        const map: Record<number, string> = {};
+        data.forEach((row: any) => { map[row.set_number] = row.display_name; });
+        setSetNames(map);
+      }
+    };
+    fetchSetNames();
+  }, [examSlug, sectionId]);
 
   const sets = Array.from({ length: TOTAL_SETS }, (_, i) => i + 1);
 
@@ -102,7 +130,7 @@ const SectionSets = () => {
                       {String(num).padStart(2, "0")}
                     </span>
                     <span className="text-sm font-semibold text-foreground">
-                      {meta.title.split(" ")[0]} Set {num}
+                      {setNames[num] || `${meta.title.split(" ")[0]} Set ${num}`}
                     </span>
                   </div>
                   {locked ? (
