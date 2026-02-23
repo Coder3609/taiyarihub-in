@@ -124,6 +124,7 @@ export type Database = {
           question_text: string
           question_type: string
           set_number: number
+          source_label: string | null
         }
         Insert: {
           correct_answer: string
@@ -139,6 +140,7 @@ export type Database = {
           question_text: string
           question_type?: string
           set_number?: number
+          source_label?: string | null
         }
         Update: {
           correct_answer?: string
@@ -154,6 +156,7 @@ export type Database = {
           question_text?: string
           question_type?: string
           set_number?: number
+          source_label?: string | null
         }
         Relationships: [
           {

@@ -33,6 +33,7 @@ interface Question {
   option_c: string;
   option_d: string;
   question_type: "mcq" | "msq" | "integer";
+  source_label?: string | null;
 }
 
 type QuestionStatus = "not-visited" | "not-answered" | "answered" | "marked" | "answered-marked";
@@ -104,7 +105,7 @@ const Quiz = () => {
 
       const { data: qs } = await supabase
         .from("questions")
-        .select("id, question_number, question_text, option_a, option_b, option_c, option_d, question_type")
+        .select("id, question_number, question_text, option_a, option_b, option_c, option_d, question_type, source_label")
         .eq("exam_id", exam.id)
         .eq("set_number", parseInt(setNumber || "1"))
         .order("question_number", { ascending: true });
@@ -404,6 +405,11 @@ const Quiz = () => {
                 exit={{ opacity: 0, x: -20 }}
                 transition={{ duration: 0.15 }}
               >
+                {currentQ.source_label && (
+                  <div className="inline-block mb-3 px-2.5 py-1 rounded-md bg-primary/10 border border-primary/20 text-[11px] font-semibold text-primary">
+                    {currentQ.source_label}
+                  </div>
+                )}
                 <p className="text-sm md:text-base text-foreground leading-relaxed mb-8">
                   <span className="text-muted-foreground font-medium">Q{sectionIndex + 1}.</span>{" "}
                   {currentQ.question_text}
