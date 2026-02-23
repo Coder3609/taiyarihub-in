@@ -29,14 +29,6 @@ const AVAILABLE_EXAMS = [
   "CAT (Common Admission Test)",
   "CA (Chartered Accountant – Foundation, Inter & Final)",
   "SSC Combined Graduate Level (SSC CGL)",
-  "SSC Combined Higher Secondary Level (SSC CHSL)",
-  "SSC Multi-Tasking Staff (SSC MTS)",
-  "SSC Central Police Organization (SSC CPO)",
-  "SSC Junior Engineer (SSC JE)",
-  "SSC Stenographer Grade B",
-  "SSC Stenographer Grade C",
-  "SSC Selection Post",
-  "SSC Multi-Tasking Staff (MTS – some posts)",
 ];
 
 const isExamAvailable = (name: string) => AVAILABLE_EXAMS.includes(name);
