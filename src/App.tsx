@@ -17,6 +17,8 @@ import Results from "./pages/Results";
 import DetailedAnswers from "./pages/DetailedAnswers";
 import ScoreHistory from "./pages/ScoreHistory";
 import Auth from "./pages/Auth";
+import CompleteProfile from "./pages/CompleteProfile";
+import Profile from "./pages/Profile";
 import NotFound from "./pages/NotFound";
 
 const queryClient = new QueryClient();
@@ -31,6 +33,8 @@ const App = () => (
           <Routes>
             <Route path="/" element={<Index />} />
             <Route path="/auth" element={<Auth />} />
+            <Route path="/complete-profile" element={<CompleteProfile />} />
+            <Route path="/profile" element={<Profile />} />
             <Route path="/exams/central" element={<CentralExams />} />
             <Route path="/exams/school" element={<SchoolExams />} />
             <Route path="/exams/foreign" element={<ForeignExams />} />

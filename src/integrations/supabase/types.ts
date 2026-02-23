@@ -87,7 +87,11 @@ export type Database = {
           avatar_url: string | null
           created_at: string
           email: string | null
+          full_name: string | null
+          gender: string | null
           id: string
+          preparing_for: string[] | null
+          profile_completed: boolean
           updated_at: string
           username: string | null
         }
@@ -95,7 +99,11 @@ export type Database = {
           avatar_url?: string | null
           created_at?: string
           email?: string | null
+          full_name?: string | null
+          gender?: string | null
           id: string
+          preparing_for?: string[] | null
+          profile_completed?: boolean
           updated_at?: string
           username?: string | null
         }
@@ -103,7 +111,11 @@ export type Database = {
           avatar_url?: string | null
           created_at?: string
           email?: string | null
+          full_name?: string | null
+          gender?: string | null
           id?: string
+          preparing_for?: string[] | null
+          profile_completed?: boolean
           updated_at?: string
           username?: string | null
         }
