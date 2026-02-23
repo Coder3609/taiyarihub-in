@@ -10,32 +10,87 @@ import { useToast } from "@/hooks/use-toast";
 import { motion } from "framer-motion";
 import { GraduationCap, Loader2, User, Sparkles } from "lucide-react";
 
-const EXAM_OPTIONS = [
-  "UPSC Civil Services (IAS/IPS)",
-  "UPSC ESE/IES",
-  "UPSC CDS",
-  "UPSC NDA",
-  "GATE",
-  "BARC",
-  "ISRO",
-  "RBI Grade B",
-  "CAT",
-  "CA (Foundation/Inter/Final)",
-  "SSC CGL",
-  "SSC CHSL",
-  "SSC CPO",
-  "SSC JE",
-  "SSC MTS",
-  "IBPS PO",
-  "IBPS Clerk",
-  "SBI PO",
-  "SBI Clerk",
-  "RBI Assistant",
-  "RRB NTPC",
-  "RRB Group D",
-  "RRB ALP",
-  "NABARD Grade A/B",
-  "AFCAT",
+const EXAM_CATEGORIES: { category: string; exams: string[] }[] = [
+  {
+    category: "Central Govt — Group A (Officer Level)",
+    exams: [
+      "UPSC Civil Services (IAS/IPS/IFS/IRS)",
+      "UPSC ESE/IES",
+      "UPSC CDS",
+      "UPSC NDA",
+      "UPSC IFoS",
+      "UPSC CAPF (Asst. Commandant)",
+      "UPSC Indian Economic Service",
+      "UPSC Indian Statistical Service",
+      "UPSC CMS",
+      "UPSC Geo-Scientist",
+      "GATE",
+      "RBI Grade B",
+      "NABARD Grade A",
+      "AFCAT",
+      "Indian Coast Guard (Asst. Commandant)",
+      "CAT",
+      "CA (Foundation/Inter/Final)",
+      "BARC",
+      "ISRO",
+    ],
+  },
+  {
+    category: "Central Govt — Group B (Gazetted/Inspector)",
+    exams: [
+      "SSC CGL",
+      "SSC CPO",
+      "SSC JE",
+      "SSC Stenographer Grade B",
+      "IBPS PO",
+      "SBI PO",
+      "IBPS SO",
+      "RBI Assistant Manager",
+      "NABARD Grade B",
+    ],
+  },
+  {
+    category: "Central Govt — Group C (Clerical/Technical)",
+    exams: [
+      "SSC CHSL",
+      "SSC MTS",
+      "SSC Stenographer Grade C",
+      "SSC Selection Post",
+      "IBPS Clerk",
+      "SBI Clerk",
+      "RBI Assistant",
+      "NABARD Assistant",
+      "RRB NTPC",
+      "RRB ALP",
+      "RRB Technician",
+      "India Post GDS",
+      "Postal Assistant",
+      "Sorting Assistant",
+    ],
+  },
+  {
+    category: "Central Govt — Group D (Entry Level)",
+    exams: [
+      "RRB Group D",
+      "SSC MTS (Group D posts)",
+    ],
+  },
+  {
+    category: "School — Board Exams",
+    exams: ["CBSE", "ICSE"],
+  },
+  {
+    category: "School — Entrance Exams",
+    exams: ["JEE Mains", "JEE Advanced", "NEET PG", "CUET"],
+  },
+  {
+    category: "State Exams",
+    exams: ["State PSC", "State Police", "State SSC", "Other State Exams"],
+  },
+  {
+    category: "Foreign Exams",
+    exams: ["GRE", "GMAT", "TOEFL", "IELTS", "SAT"],
+  },
 ];
 
 const CompleteProfile = () => {
@@ -177,22 +232,31 @@ const CompleteProfile = () => {
             <Label className="text-xs text-muted-foreground">
               Which exams are you preparing for? <span className="text-primary">*</span>
             </Label>
-            <div className="max-h-52 overflow-y-auto rounded-xl border border-border/50 bg-secondary/20 p-3 space-y-1.5">
-              {EXAM_OPTIONS.map((exam) => (
-                <label
-                  key={exam}
-                  className={`flex items-center gap-2.5 px-3 py-2 rounded-lg cursor-pointer transition-all text-sm ${
-                    selectedExams.includes(exam)
-                      ? "bg-primary/10 text-foreground"
-                      : "hover:bg-secondary/40 text-muted-foreground"
-                  }`}
-                >
-                  <Checkbox
-                    checked={selectedExams.includes(exam)}
-                    onCheckedChange={() => toggleExam(exam)}
-                  />
-                  {exam}
-                </label>
+            <div className="max-h-64 overflow-y-auto rounded-xl border border-border/50 bg-secondary/20 p-3 space-y-4">
+              {EXAM_CATEGORIES.map((cat) => (
+                <div key={cat.category}>
+                  <p className="text-[10px] uppercase tracking-wider font-semibold text-primary mb-2 sticky top-0 bg-secondary/80 backdrop-blur-sm py-1 px-1 rounded">
+                    {cat.category}
+                  </p>
+                  <div className="space-y-1">
+                    {cat.exams.map((exam) => (
+                      <label
+                        key={exam}
+                        className={`flex items-center gap-2.5 px-3 py-2 rounded-lg cursor-pointer transition-all text-sm ${
+                          selectedExams.includes(exam)
+                            ? "bg-primary/10 text-foreground"
+                            : "hover:bg-secondary/40 text-muted-foreground"
+                        }`}
+                      >
+                        <Checkbox
+                          checked={selectedExams.includes(exam)}
+                          onCheckedChange={() => toggleExam(exam)}
+                        />
+                        {exam}
+                      </label>
+                    ))}
+                  </div>
+                </div>
               ))}
             </div>
             {selectedExams.length > 0 && (
