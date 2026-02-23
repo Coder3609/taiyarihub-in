@@ -105,7 +105,7 @@ const ExamInstructionsPage = ({
         >
           <div className="bg-gradient-to-r from-primary/90 to-primary p-6 md:p-8">
             <h1 className="font-display text-2xl md:text-3xl font-bold text-primary-foreground">{examName}</h1>
-            <p className="text-primary-foreground/70 text-sm mt-1">GATE Examination</p>
+            <p className="text-primary-foreground/70 text-sm mt-1">Online Examination</p>
           </div>
 
           {/* Info cards */}
