@@ -62,24 +62,19 @@ const HeroSection = () => {
             initial={{ opacity: 0, y: 30 }}
             animate={{ opacity: 1, y: 0 }}
             transition={{ duration: 0.6, delay: 0.3 }}
-            className="flex flex-col sm:flex-row gap-4 justify-center mb-16"
+            className="flex flex-col items-center gap-4 mb-16"
           >
             <Button
               size="lg"
               className="font-display font-semibold text-base px-8 shadow-glow animate-pulse-glow"
               onClick={() => setDialogOpen(true)}
             >
-              Start Free Practice
+              Explore Exams
               <ArrowRight className="ml-2 h-5 w-5" />
             </Button>
-            <Button
-              size="lg"
-              variant="outline"
-              className="font-display font-semibold text-base px-8 border-border hover:bg-secondary"
-              onClick={() => setDialogOpen(true)}
-            >
-              Explore Exams
-            </Button>
+            <p className="text-sm text-muted-foreground bg-secondary/60 border border-border rounded-lg px-4 py-2 max-w-md">
+              🎓 First <span className="font-semibold text-primary">2 sets of every exam</span> are completely free to attempt — no signup needed!
+            </p>
           </motion.div>
 
           {/* Stats */}
