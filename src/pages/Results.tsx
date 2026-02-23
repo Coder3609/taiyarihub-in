@@ -4,7 +4,7 @@ import { supabase } from "@/integrations/supabase/client";
 import { useAuth } from "@/contexts/AuthContext";
 import { Button } from "@/components/ui/button";
 import { motion } from "framer-motion";
-import { Home, Loader2, Share2, RotateCcw } from "lucide-react";
+import { Home, Loader2, Share2, RotateCcw, FileText, ChevronRight } from "lucide-react";
 import Navbar from "@/components/Navbar";
 import Footer from "@/components/Footer";
 import ScoreOverview from "@/components/results/ScoreOverview";
@@ -142,6 +142,32 @@ const Results = () => {
               total={result.total}
             />
           </div>
+
+          {/* Detailed Answers Bar */}
+          <motion.div
+            initial={{ opacity: 0, y: 10 }}
+            animate={{ opacity: 1, y: 0 }}
+            transition={{ delay: 0.3 }}
+            className="mt-6"
+          >
+            <button
+              onClick={() => navigate(`/results/${resultId}/answers`)}
+              className="w-full flex items-center justify-between rounded-2xl border border-primary/20 bg-primary/5 hover:bg-primary/10 transition-all p-5 group"
+            >
+              <div className="flex items-center gap-3">
+                <div className="w-10 h-10 rounded-xl bg-primary/10 flex items-center justify-center">
+                  <FileText className="h-5 w-5 text-primary" />
+                </div>
+                <div className="text-left">
+                  <p className="font-display font-semibold text-foreground">Detailed Answers & Solutions</p>
+                  <p className="text-xs text-muted-foreground mt-0.5">
+                    View all {questions.length} questions with explanations & video solutions
+                  </p>
+                </div>
+              </div>
+              <ChevronRight className="h-5 w-5 text-primary group-hover:translate-x-1 transition-transform" />
+            </button>
+          </motion.div>
 
           {/* Question Review */}
           <div className="mt-6">

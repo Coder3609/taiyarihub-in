@@ -14,6 +14,7 @@ import StateExamDetail from "./pages/StateExamDetail";
 import SectionSets from "./pages/SectionSets";
 import Quiz from "./pages/Quiz";
 import Results from "./pages/Results";
+import DetailedAnswers from "./pages/DetailedAnswers";
 import ScoreHistory from "./pages/ScoreHistory";
 import Auth from "./pages/Auth";
 import NotFound from "./pages/NotFound";
@@ -42,6 +43,7 @@ const App = () => (
             <Route path="/exam/:examSlug/:sectionId" element={<SectionSets />} />
             <Route path="/exam/:examSlug/:sectionId/:setNumber" element={<Quiz />} />
             <Route path="/results/:resultId" element={<Results />} />
+            <Route path="/results/:resultId/answers" element={<DetailedAnswers />} />
             <Route path="/history" element={<ScoreHistory />} />
             {/* ADD ALL CUSTOM ROUTES ABOVE THE CATCH-ALL "*" ROUTE */}
             <Route path="*" element={<NotFound />} />
