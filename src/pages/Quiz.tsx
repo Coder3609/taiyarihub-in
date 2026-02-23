@@ -6,8 +6,9 @@ import { useProctoring } from "@/hooks/useProctoring";
 import { useAccessControl } from "@/hooks/useAccessControl";
 import { Button } from "@/components/ui/button";
 import { motion, AnimatePresence } from "framer-motion";
-import { Clock, ChevronLeft, ChevronRight, Send, AlertTriangle, Maximize, Loader2, Eye } from "lucide-react";
+import { Clock, ChevronLeft, ChevronRight, Send, AlertTriangle, Maximize, Loader2, Eye, CheckSquare } from "lucide-react";
 import ExamInstructionsDialog from "@/components/ExamInstructionsDialog";
+import { Input } from "@/components/ui/input";
 
 interface Question {
   id: string;
@@ -17,6 +18,7 @@ interface Question {
   option_b: string;
   option_c: string;
   option_d: string;
+  question_type: "mcq" | "msq" | "integer";
 }
 
 const EXAM_DURATION_SECONDS = 60 * 60;
@@ -80,12 +82,12 @@ const Quiz = () => {
 
       const { data: qs } = await supabase
         .from("questions")
-        .select("id, question_number, question_text, option_a, option_b, option_c, option_d")
+        .select("id, question_number, question_text, option_a, option_b, option_c, option_d, question_type")
         .eq("exam_id", exam.id)
         .eq("set_number", parseInt(setNumber || "1"))
         .order("question_number", { ascending: true });
 
-      setQuestions(qs || []);
+      setQuestions((qs as Question[]) || []);
       setLoading(false);
     };
 
@@ -124,7 +126,7 @@ const Quiz = () => {
 
     const { data: fullQs } = await supabase
       .from("questions")
-      .select("id, correct_answer")
+      .select("id, correct_answer, question_type")
       .eq("exam_id", examId)
       .eq("set_number", parseInt(setNumber || "1"));
 
@@ -134,9 +136,23 @@ const Quiz = () => {
 
     (fullQs || []).forEach((q) => {
       const userAnswer = answers[q.id];
-      if (!userAnswer) unanswered++;
-      else if (userAnswer === q.correct_answer) correct++;
-      else incorrect++;
+      if (!userAnswer) {
+        unanswered++;
+      } else if (q.question_type === "msq") {
+        // MSQ: compare sorted comma-separated values
+        const userSorted = userAnswer.split(",").sort().join(",");
+        const correctSorted = q.correct_answer.split(",").sort().join(",");
+        if (userSorted === correctSorted) correct++;
+        else incorrect++;
+      } else if (q.question_type === "integer") {
+        // Integer: compare trimmed values
+        if (userAnswer.trim() === q.correct_answer.trim()) correct++;
+        else incorrect++;
+      } else {
+        // MCQ
+        if (userAnswer === q.correct_answer) correct++;
+        else incorrect++;
+      }
     });
 
     const total = fullQs?.length || 0;
@@ -271,33 +287,92 @@ const Quiz = () => {
             exit={{ opacity: 0, x: -20 }}
             transition={{ duration: 0.2 }}
           >
+            {/* Question type badge */}
+            <span className={`inline-block mb-4 text-[10px] font-bold uppercase tracking-wider px-2 py-1 rounded-md ${
+              currentQ.question_type === "msq" ? "bg-amber-500/10 text-amber-400" :
+              currentQ.question_type === "integer" ? "bg-emerald-500/10 text-emerald-400" :
+              "bg-blue-500/10 text-blue-400"
+            }`}>
+              {currentQ.question_type === "msq" ? "Multiple Select" : currentQ.question_type === "integer" ? "Numerical Answer" : "Single Correct"}
+            </span>
+
             <h2 className="font-display text-lg md:text-xl font-bold text-foreground mb-6 leading-relaxed">
               {currentQ.question_text}
             </h2>
 
-            <div className="space-y-3">
-              {options.map((opt) => {
-                const selected = answers[currentQ.id] === opt.key;
-                return (
-                  <button
-                    key={opt.key}
-                    onClick={() => setAnswers((prev) => ({ ...prev, [currentQ.id]: opt.key }))}
-                    className={`w-full text-left p-4 rounded-xl border transition-all flex items-start gap-3 ${
-                      selected
-                        ? "border-primary bg-primary/10 ring-1 ring-primary/30"
-                        : "border-border/50 bg-card hover:border-border hover:bg-secondary/50"
-                    }`}
-                  >
-                    <span className={`shrink-0 w-8 h-8 rounded-lg flex items-center justify-center text-sm font-bold ${
-                      selected ? "bg-primary text-primary-foreground" : "bg-secondary text-muted-foreground"
-                    }`}>
-                      {opt.key}
-                    </span>
-                    <span className="text-sm text-foreground pt-1">{opt.text}</span>
-                  </button>
-                );
-              })}
-            </div>
+            {currentQ.question_type === "integer" ? (
+              /* Integer type: text input */
+              <div className="space-y-3">
+                <label className="text-sm text-muted-foreground">Enter your numerical answer:</label>
+                <Input
+                  type="number"
+                  placeholder="Type your answer..."
+                  value={answers[currentQ.id] || ""}
+                  onChange={(e) => setAnswers((prev) => ({ ...prev, [currentQ.id]: e.target.value }))}
+                  className="max-w-xs text-lg font-mono"
+                />
+              </div>
+            ) : currentQ.question_type === "msq" ? (
+              /* MSQ type: multi-select */
+              <div className="space-y-3">
+                <p className="text-xs text-muted-foreground mb-2">Select all correct options</p>
+                {options.map((opt) => {
+                  const selectedKeys = (answers[currentQ.id] || "").split(",").filter(Boolean);
+                  const isSelected = selectedKeys.includes(opt.key);
+                  return (
+                    <button
+                      key={opt.key}
+                      onClick={() => {
+                        setAnswers((prev) => {
+                          const current = (prev[currentQ.id] || "").split(",").filter(Boolean);
+                          const updated = isSelected
+                            ? current.filter((k) => k !== opt.key)
+                            : [...current, opt.key];
+                          return { ...prev, [currentQ.id]: updated.sort().join(",") };
+                        });
+                      }}
+                      className={`w-full text-left p-4 rounded-xl border transition-all flex items-start gap-3 ${
+                        isSelected
+                          ? "border-primary bg-primary/10 ring-1 ring-primary/30"
+                          : "border-border/50 bg-card hover:border-border hover:bg-secondary/50"
+                      }`}
+                    >
+                      <span className={`shrink-0 w-8 h-8 rounded-lg flex items-center justify-center text-sm font-bold ${
+                        isSelected ? "bg-primary text-primary-foreground" : "bg-secondary text-muted-foreground"
+                      }`}>
+                        {isSelected ? <CheckSquare className="h-4 w-4" /> : opt.key}
+                      </span>
+                      <span className="text-sm text-foreground pt-1">{opt.text}</span>
+                    </button>
+                  );
+                })}
+              </div>
+            ) : (
+              /* MCQ type: single select */
+              <div className="space-y-3">
+                {options.map((opt) => {
+                  const selected = answers[currentQ.id] === opt.key;
+                  return (
+                    <button
+                      key={opt.key}
+                      onClick={() => setAnswers((prev) => ({ ...prev, [currentQ.id]: opt.key }))}
+                      className={`w-full text-left p-4 rounded-xl border transition-all flex items-start gap-3 ${
+                        selected
+                          ? "border-primary bg-primary/10 ring-1 ring-primary/30"
+                          : "border-border/50 bg-card hover:border-border hover:bg-secondary/50"
+                      }`}
+                    >
+                      <span className={`shrink-0 w-8 h-8 rounded-lg flex items-center justify-center text-sm font-bold ${
+                        selected ? "bg-primary text-primary-foreground" : "bg-secondary text-muted-foreground"
+                      }`}>
+                        {opt.key}
+                      </span>
+                      <span className="text-sm text-foreground pt-1">{opt.text}</span>
+                    </button>
+                  );
+                })}
+              </div>
+            )}
           </motion.div>
         </AnimatePresence>
       </div>
