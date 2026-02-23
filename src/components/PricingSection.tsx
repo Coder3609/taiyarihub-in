@@ -127,7 +127,7 @@ const PricingSection = () => {
                   }`}
                   variant={isSchool ? "default" : "outline"}
                 >
-                  Coming Soon
+                  {isSchool ? "Get Started" : "Subscribe Now"}
                 </Button>
               </div>
             );
