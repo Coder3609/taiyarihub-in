@@ -190,7 +190,7 @@ const SectionSets = () => {
             initial="hidden"
             animate="show"
             variants={{ hidden: {}, show: { transition: { staggerChildren: 0.02 } } }}
-            className="grid grid-cols-2 sm:grid-cols-3 lg:grid-cols-4 xl:grid-cols-5 gap-3"
+            className="grid grid-cols-3 sm:grid-cols-4 lg:grid-cols-5 xl:grid-cols-6 gap-2.5"
           >
             {sets.map((num) => {
               const locked = !user || (!accessLoading && !canAccessSet(num));
@@ -201,7 +201,7 @@ const SectionSets = () => {
                   variants={{ hidden: { opacity: 0, y: 12 }, show: { opacity: 1, y: 0 } }}
                   whileHover={locked ? {} : { y: -4, scale: 1.02 }}
                   onClick={() => handleSetClick(num)}
-                  className={`rounded-xl p-4 aspect-square bg-gradient-to-br ${meta.color} border ${meta.borderColor} cursor-pointer transition-all flex flex-col group ${
+                  className={`rounded-xl p-3 aspect-square bg-gradient-to-br ${meta.color} border ${meta.borderColor} cursor-pointer transition-all flex flex-col group ${
                     locked ? "opacity-60 grayscale" : "hover:shadow-lg hover:shadow-primary/5"
                   }`}
                 >
