@@ -1,7 +1,7 @@
 import { useState, useEffect } from "react";
 import { motion } from "framer-motion";
 import { supabase } from "@/integrations/supabase/client";
-import { ArrowLeft, ScrollText, ClipboardList, Building2, BookOpen, ChevronRight, Lock, Crown, LogIn } from "lucide-react";
+import { ArrowLeft, ScrollText, ClipboardList, Building2, BookOpen, ChevronRight, Lock, Crown, LogIn, Clock, HelpCircle } from "lucide-react";
 import { Button } from "@/components/ui/button";
 import { useNavigate, useParams } from "react-router-dom";
 import Navbar from "@/components/Navbar";
@@ -26,6 +26,56 @@ const sectionMeta: Record<string, { title: string; icon: React.ElementType; colo
 
 const TOTAL_SETS = 45;
 
+const QUOTES = [
+  "Believe you can and you're halfway there.",
+  "Success is the sum of small efforts.",
+  "Dream big. Start small. Act now.",
+  "Discipline is the bridge to goals.",
+  "Your only limit is your mind.",
+  "Push yourself — no one else will.",
+  "Progress, not perfection.",
+  "Stay hungry, stay foolish.",
+  "Hard work beats talent.",
+  "Focus. Hustle. Repeat.",
+  "One step at a time wins the race.",
+  "Doubt kills more dreams than failure.",
+  "Be so good they can't ignore you.",
+  "Today's pain is tomorrow's power.",
+  "Champions keep playing until they win.",
+  "You didn't come this far to stop.",
+  "Consistency is the key to mastery.",
+  "Fall seven times, stand up eight.",
+  "The expert was once a beginner.",
+  "Make yourself proud.",
+  "Winners never quit.",
+  "Knowledge is power.",
+  "Strive for greatness.",
+  "Every question is a chance to learn.",
+  "Practice makes permanent.",
+  "Aim higher than yesterday.",
+  "Persistence guarantees success.",
+  "Small progress is still progress.",
+  "Believe in the process.",
+  "Your future self will thank you.",
+  "Stay focused and never give up.",
+  "Work hard in silence, let success roar.",
+  "Turn obstacles into opportunities.",
+  "Embrace the grind.",
+  "Great things take time.",
+  "Own your journey.",
+  "Rise by lifting others.",
+  "Be the change you seek.",
+  "Effort today, results tomorrow.",
+  "Learn. Grow. Conquer.",
+  "Nothing worth having comes easy.",
+  "Keep going — you're closer than you think.",
+  "Excellence is a habit, not an act.",
+  "The pain of discipline or the pain of regret.",
+  "You are capable of amazing things.",
+];
+
+const getQuote = (num: number) => QUOTES[num % QUOTES.length];
+
 interface SetStats {
   total: number;
   mcq: number;
@@ -46,17 +96,19 @@ const SectionSets = () => {
   const [showLoginPrompt, setShowLoginPrompt] = useState(false);
   const [setNames, setSetNames] = useState<Record<number, string>>({});
   const [setStats, setSetStats] = useState<Record<number, SetStats>>({});
+  const [examDuration, setExamDuration] = useState<number>(0);
 
-  // Fetch custom set names and question stats
   useEffect(() => {
     const fetchData = async () => {
       const slug = decodeURIComponent(examSlug || "");
       const { data: exam } = await supabase
         .from("exams")
-        .select("id")
+        .select("id, duration_minutes")
         .eq("slug", slug)
         .maybeSingle();
       if (!exam) return;
+
+      setExamDuration(exam.duration_minutes || 0);
 
       // Fetch set names
       const { data: names } = await supabase
@@ -71,15 +123,7 @@ const SectionSets = () => {
         setSetNames(map);
       }
 
-      // Fetch question counts per set
-      const { data: questions } = await supabase
-        .from("questions")
-        .select("set_number, question_type")
-        .eq("exam_id", exam.id)
-        .eq("question_type", sectionId === "mocks" ? "mcq" : "mcq") // get all types
-        .limit(1000);
-
-      // Actually fetch all questions for this exam to count by set
+      // Fetch all questions for this exam to count by set
       const { data: allQ } = await supabase
         .from("questions")
         .select("set_number, question_type")
@@ -157,7 +201,7 @@ const SectionSets = () => {
                   variants={{ hidden: { opacity: 0, y: 12 }, show: { opacity: 1, y: 0 } }}
                   whileHover={locked ? {} : { y: -4, scale: 1.02 }}
                   onClick={() => handleSetClick(num)}
-                  className={`rounded-xl p-4 aspect-square bg-gradient-to-br ${meta.color} border ${meta.borderColor} cursor-pointer transition-all flex flex-col justify-between group ${
+                  className={`rounded-xl p-4 aspect-square bg-gradient-to-br ${meta.color} border ${meta.borderColor} cursor-pointer transition-all flex flex-col group ${
                     locked ? "opacity-60 grayscale" : "hover:shadow-lg hover:shadow-primary/5"
                   }`}
                 >
@@ -172,24 +216,29 @@ const SectionSets = () => {
                     )}
                   </div>
 
-                  <div className="mt-2">
+                  <div className="mt-2 flex-1">
                     <p className="text-sm font-semibold text-foreground leading-tight line-clamp-2">
                       {setNames[num] || `Set ${num}`}
                     </p>
+                    <p className="text-[10px] italic text-muted-foreground mt-1.5 line-clamp-2 leading-relaxed">
+                      "{getQuote(num)}"
+                    </p>
                   </div>
 
-                  <div className="mt-auto pt-2 space-y-1">
-                    {stats ? (
-                      <>
-                        <p className="text-xs font-medium text-foreground">{stats.total} Questions</p>
-                        <div className="flex flex-wrap gap-1">
-                          {stats.mcq > 0 && <span className="text-[10px] px-1.5 py-0.5 rounded bg-muted text-muted-foreground">MCQ {stats.mcq}</span>}
-                          {stats.msq > 0 && <span className="text-[10px] px-1.5 py-0.5 rounded bg-muted text-muted-foreground">MSQ {stats.msq}</span>}
-                          {stats.integer > 0 && <span className="text-[10px] px-1.5 py-0.5 rounded bg-muted text-muted-foreground">NAT {stats.integer}</span>}
-                        </div>
-                      </>
-                    ) : (
-                      <p className="text-[10px] text-muted-foreground">No questions yet</p>
+                  <div className="mt-auto pt-2 space-y-1.5">
+                    <div className="flex items-center gap-1.5 text-muted-foreground">
+                      <HelpCircle className="h-3 w-3 shrink-0" />
+                      <span className="text-[11px] font-medium">{stats ? `${stats.total} Qs` : "—"}</span>
+                      <span className="text-muted-foreground/40 mx-0.5">•</span>
+                      <Clock className="h-3 w-3 shrink-0" />
+                      <span className="text-[11px] font-medium">{examDuration ? `${examDuration} min` : "—"}</span>
+                    </div>
+                    {stats && (
+                      <div className="flex flex-wrap gap-1">
+                        {stats.mcq > 0 && <span className="text-[9px] px-1.5 py-0.5 rounded bg-muted text-muted-foreground">MCQ {stats.mcq}</span>}
+                        {stats.msq > 0 && <span className="text-[9px] px-1.5 py-0.5 rounded bg-muted text-muted-foreground">MSQ {stats.msq}</span>}
+                        {stats.integer > 0 && <span className="text-[9px] px-1.5 py-0.5 rounded bg-muted text-muted-foreground">NAT {stats.integer}</span>}
+                      </div>
                     )}
                   </div>
                 </motion.div>
