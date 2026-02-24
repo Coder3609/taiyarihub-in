@@ -26,6 +26,13 @@ const sectionMeta: Record<string, { title: string; icon: React.ElementType; colo
 
 const TOTAL_SETS = 45;
 
+interface SetStats {
+  total: number;
+  mcq: number;
+  msq: number;
+  integer: number;
+}
+
 const SectionSets = () => {
   const navigate = useNavigate();
   const { examSlug, sectionId, streamId } = useParams();
@@ -38,10 +45,11 @@ const SectionSets = () => {
   const [showPaywall, setShowPaywall] = useState(false);
   const [showLoginPrompt, setShowLoginPrompt] = useState(false);
   const [setNames, setSetNames] = useState<Record<number, string>>({});
+  const [setStats, setSetStats] = useState<Record<number, SetStats>>({});
 
-  // Fetch custom set names
+  // Fetch custom set names and question stats
   useEffect(() => {
-    const fetchSetNames = async () => {
+    const fetchData = async () => {
       const slug = decodeURIComponent(examSlug || "");
       const { data: exam } = await supabase
         .from("exams")
@@ -50,19 +58,46 @@ const SectionSets = () => {
         .maybeSingle();
       if (!exam) return;
 
-      const { data } = await supabase
+      // Fetch set names
+      const { data: names } = await supabase
         .from("exam_set_names")
         .select("set_number, display_name")
         .eq("exam_id", exam.id)
         .eq("section_type", sectionId || "pyqs");
 
-      if (data) {
+      if (names) {
         const map: Record<number, string> = {};
-        data.forEach((row: any) => { map[row.set_number] = row.display_name; });
+        names.forEach((row: any) => { map[row.set_number] = row.display_name; });
         setSetNames(map);
       }
+
+      // Fetch question counts per set
+      const { data: questions } = await supabase
+        .from("questions")
+        .select("set_number, question_type")
+        .eq("exam_id", exam.id)
+        .eq("question_type", sectionId === "mocks" ? "mcq" : "mcq") // get all types
+        .limit(1000);
+
+      // Actually fetch all questions for this exam to count by set
+      const { data: allQ } = await supabase
+        .from("questions")
+        .select("set_number, question_type")
+        .eq("exam_id", exam.id);
+
+      if (allQ) {
+        const stats: Record<number, SetStats> = {};
+        allQ.forEach((q: any) => {
+          if (!stats[q.set_number]) stats[q.set_number] = { total: 0, mcq: 0, msq: 0, integer: 0 };
+          stats[q.set_number].total++;
+          if (q.question_type === "mcq") stats[q.set_number].mcq++;
+          else if (q.question_type === "msq") stats[q.set_number].msq++;
+          else if (q.question_type === "integer") stats[q.set_number].integer++;
+        });
+        setSetStats(stats);
+      }
     };
-    fetchSetNames();
+    fetchData();
   }, [examSlug, sectionId]);
 
   const sets = Array.from({ length: TOTAL_SETS }, (_, i) => i + 1);
@@ -111,33 +146,52 @@ const SectionSets = () => {
             initial="hidden"
             animate="show"
             variants={{ hidden: {}, show: { transition: { staggerChildren: 0.02 } } }}
-            className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-3 gap-3"
+            className="grid grid-cols-2 sm:grid-cols-3 lg:grid-cols-4 xl:grid-cols-5 gap-3"
           >
             {sets.map((num) => {
               const locked = !user || (!accessLoading && !canAccessSet(num));
+              const stats = setStats[num];
               return (
                 <motion.div
                   key={num}
                   variants={{ hidden: { opacity: 0, y: 12 }, show: { opacity: 1, y: 0 } }}
-                  whileHover={locked ? {} : { y: -2, scale: 1.01 }}
+                  whileHover={locked ? {} : { y: -4, scale: 1.02 }}
                   onClick={() => handleSetClick(num)}
-                  className={`rounded-xl p-3.5 bg-gradient-to-br ${meta.color} border ${meta.borderColor} cursor-pointer transition-all flex items-center justify-between group ${
-                    locked ? "opacity-60 grayscale" : "hover:shadow-md"
+                  className={`rounded-xl p-4 aspect-square bg-gradient-to-br ${meta.color} border ${meta.borderColor} cursor-pointer transition-all flex flex-col justify-between group ${
+                    locked ? "opacity-60 grayscale" : "hover:shadow-lg hover:shadow-primary/5"
                   }`}
                 >
-                  <div className="flex items-center gap-3">
+                  <div className="flex items-start justify-between">
                     <span className={`text-xs font-bold px-2 py-1 rounded-lg ${meta.badgeColor}`}>
                       {String(num).padStart(2, "0")}
                     </span>
-                    <span className="text-sm font-semibold text-foreground">
-                      {setNames[num] || `${meta.title.split(" ")[0]} Set ${num}`}
-                    </span>
+                    {locked ? (
+                      <Lock className="h-4 w-4 text-muted-foreground" />
+                    ) : (
+                      <ChevronRight className="h-4 w-4 text-muted-foreground group-hover:text-primary group-hover:translate-x-1 transition-all" />
+                    )}
                   </div>
-                  {locked ? (
-                    <Lock className="h-4 w-4 text-muted-foreground" />
-                  ) : (
-                    <ChevronRight className="h-4 w-4 text-muted-foreground group-hover:text-primary group-hover:translate-x-1 transition-all" />
-                  )}
+
+                  <div className="mt-2">
+                    <p className="text-sm font-semibold text-foreground leading-tight line-clamp-2">
+                      {setNames[num] || `Set ${num}`}
+                    </p>
+                  </div>
+
+                  <div className="mt-auto pt-2 space-y-1">
+                    {stats ? (
+                      <>
+                        <p className="text-xs font-medium text-foreground">{stats.total} Questions</p>
+                        <div className="flex flex-wrap gap-1">
+                          {stats.mcq > 0 && <span className="text-[10px] px-1.5 py-0.5 rounded bg-muted text-muted-foreground">MCQ {stats.mcq}</span>}
+                          {stats.msq > 0 && <span className="text-[10px] px-1.5 py-0.5 rounded bg-muted text-muted-foreground">MSQ {stats.msq}</span>}
+                          {stats.integer > 0 && <span className="text-[10px] px-1.5 py-0.5 rounded bg-muted text-muted-foreground">NAT {stats.integer}</span>}
+                        </div>
+                      </>
+                    ) : (
+                      <p className="text-[10px] text-muted-foreground">No questions yet</p>
+                    )}
+                  </div>
                 </motion.div>
               );
             })}
