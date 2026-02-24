@@ -1,6 +1,6 @@
 import { useState } from "react";
 import { motion } from "framer-motion";
-import { ArrowLeft, ScrollText, ClipboardList, Building2, BookOpen, Cpu, Radio, Zap, Cog, FlaskConical, Atom, Ruler, Hammer, Droplets, Leaf, LayoutGrid } from "lucide-react";
+import { ArrowLeft, ScrollText, ClipboardList, Building2, BookOpen, ChevronRight, Cpu, Radio, Zap, Cog, FlaskConical, Atom, Ruler, Hammer, Droplets, Leaf, LayoutGrid } from "lucide-react";
 import { Button } from "@/components/ui/button";
 import { useNavigate, useParams } from "react-router-dom";
 import Navbar from "@/components/Navbar";
@@ -23,49 +23,55 @@ const examStreams: Record<string, { id: string; title: string; shortName: string
   ],
 };
 
+const sectionQuotes: Record<string, string> = {
+  pyqs: "Learn from the past, ace the future.",
+  mocks: "Practice under pressure, perform with ease.",
+  institute: "Quality questions from the best minds.",
+  books: "Master the classics, conquer the exam.",
+};
+
 const sections = [
   {
     id: "pyqs",
-    title: "Previous Year Questions (PYQs)",
-    description: "Practice with actual questions from past exams. Understand patterns, difficulty levels, and frequently tested topics.",
+    title: "Previous Year Questions",
+    shortTitle: "PYQs",
     icon: ScrollText,
     color: "from-blue-500/20 to-blue-600/5",
     borderColor: "border-blue-500/30",
     badgeColor: "bg-blue-500/10 text-blue-400",
-    stats: ["Year-wise sorted", "Topic-wise tagged", "With solutions"],
+    stats: ["Year-wise sorted", "With solutions"],
   },
   {
     id: "mocks",
     title: "Mock Tests",
-    description: "Full-length and sectional mock tests simulating the real exam environment with timer and scoring.",
+    shortTitle: "Mocks",
     icon: ClipboardList,
     color: "from-purple-500/20 to-purple-600/5",
     borderColor: "border-purple-500/30",
     badgeColor: "bg-purple-500/10 text-purple-400",
-    stats: ["Timed tests", "Instant results", "Performance analytics"],
+    stats: ["Timed tests", "Instant results"],
   },
   {
     id: "institute",
     title: "Institute Questions",
-    description: "Curated questions from top coaching institutes and academies across the country.",
+    shortTitle: "Institute",
     icon: Building2,
     color: "from-amber-500/20 to-amber-600/5",
     borderColor: "border-amber-500/30",
     badgeColor: "bg-amber-500/10 text-amber-400",
-    stats: ["Top institutes", "Expert curated", "Difficulty graded"],
+    stats: ["Top institutes", "Expert curated"],
   },
   {
     id: "books",
-    title: "Popular Books Questions",
-    description: "Important questions from the most recommended and popular books for this exam.",
+    title: "Popular Books",
+    shortTitle: "Books",
     icon: BookOpen,
     color: "from-emerald-500/20 to-emerald-600/5",
     borderColor: "border-emerald-500/30",
     badgeColor: "bg-emerald-500/10 text-emerald-400",
-    stats: ["Best sellers", "Chapter-wise", "Detailed solutions"],
+    stats: ["Best sellers", "Chapter-wise"],
   },
 ];
-
 const container = {
   hidden: {},
   show: { transition: { staggerChildren: 0.1 } },
@@ -118,26 +124,28 @@ const ExamDetail = () => {
               variants={container}
               initial="hidden"
               animate="show"
-              className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-3 gap-3 md:gap-4"
+              className="grid grid-cols-3 sm:grid-cols-4 lg:grid-cols-5 xl:grid-cols-6 gap-2.5"
             >
               {streams.map((stream) => (
                 <motion.div
                   key={stream.id}
                   variants={item}
-                  whileHover={{ y: -3, scale: 1.02 }}
+                  whileHover={{ y: -4, scale: 1.02 }}
                   whileTap={{ scale: 0.98 }}
                   onClick={() => navigate(`/exam/${examSlug}/stream/${stream.id}`)}
-                  className={`relative rounded-xl p-5 bg-gradient-to-br ${stream.color} border border-border/50 ${stream.borderColor} cursor-pointer transition-all group`}
+                  className={`relative rounded-xl p-3 aspect-square bg-gradient-to-br ${stream.color} border border-border/50 ${stream.borderColor} cursor-pointer transition-all flex flex-col justify-between group`}
                 >
-                  <div className="flex items-center gap-3 mb-2">
-                    <stream.icon className="h-6 w-6 text-primary group-hover:scale-110 transition-transform" />
+                  <div className="flex items-start justify-between">
                     <span className="text-xs font-bold px-2 py-0.5 rounded-md bg-primary/10 text-primary">
                       {stream.shortName}
                     </span>
+                    <stream.icon className="h-4 w-4 text-primary group-hover:scale-110 transition-transform" />
                   </div>
-                  <h3 className="font-display font-bold text-foreground text-sm">
-                    {stream.title}
-                  </h3>
+                  <div className="mt-auto">
+                    <h3 className="font-display font-bold text-foreground text-xs leading-tight line-clamp-2">
+                      {stream.title}
+                    </h3>
+                  </div>
                 </motion.div>
               ))}
             </motion.div>
@@ -183,37 +191,42 @@ const ExamDetail = () => {
             variants={container}
             initial="hidden"
             animate="show"
-            className="grid grid-cols-1 md:grid-cols-2 gap-4 md:gap-5"
+            className="grid grid-cols-2 sm:grid-cols-4 gap-2.5"
           >
             {sections.map((section) => (
               <motion.div
                 key={section.id}
                 variants={item}
-                whileHover={{ y: -4, scale: 1.01 }}
+                whileHover={{ y: -4, scale: 1.02 }}
                 onClick={() => navigate(`${basePath}/${section.id}`)}
-                className={`rounded-2xl p-5 md:p-6 bg-gradient-to-br ${section.color} border ${section.borderColor} cursor-pointer transition-all hover:shadow-lg group`}
+                className={`rounded-xl p-3 aspect-square bg-gradient-to-br ${section.color} border ${section.borderColor} cursor-pointer transition-all hover:shadow-lg flex flex-col group`}
               >
-                <div className="flex items-start gap-4">
-                  <div className={`p-3 rounded-xl ${section.badgeColor} shrink-0`}>
-                    <section.icon className="h-6 w-6" />
+                <div className="flex items-start justify-between">
+                  <div className={`p-2 rounded-lg ${section.badgeColor}`}>
+                    <section.icon className="h-4 w-4" />
                   </div>
-                  <div className="flex-1 min-w-0">
-                    <h3 className="text-base md:text-lg font-bold text-foreground mb-1.5">
-                      {section.title}
-                    </h3>
-                    <p className="text-xs md:text-sm text-muted-foreground leading-relaxed mb-3">
-                      {section.description}
-                    </p>
-                    <div className="flex flex-wrap gap-2">
-                      {section.stats.map((stat) => (
-                        <span
-                          key={stat}
-                          className="text-[10px] md:text-xs px-2 py-0.5 rounded-full bg-background/50 text-muted-foreground border border-border/40"
-                        >
-                          {stat}
-                        </span>
-                      ))}
-                    </div>
+                  <ChevronRight className="h-4 w-4 text-muted-foreground group-hover:text-primary group-hover:translate-x-1 transition-all" />
+                </div>
+
+                <div className="mt-2 flex-1">
+                  <h3 className="text-sm font-bold text-foreground leading-tight">
+                    {section.shortTitle}
+                  </h3>
+                  <p className="text-[10px] italic text-muted-foreground mt-1.5 line-clamp-2 leading-relaxed">
+                    "{sectionQuotes[section.id]}"
+                  </p>
+                </div>
+
+                <div className="mt-auto pt-2">
+                  <div className="flex flex-wrap gap-1">
+                    {section.stats.map((stat) => (
+                      <span
+                        key={stat}
+                        className="text-[9px] px-1.5 py-0.5 rounded bg-muted text-muted-foreground"
+                      >
+                        {stat}
+                      </span>
+                    ))}
                   </div>
                 </div>
               </motion.div>
