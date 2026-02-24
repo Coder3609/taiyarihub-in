@@ -100,7 +100,7 @@ const ExamDetail = () => {
           <div className="container mx-auto px-4 md:px-6 max-w-5xl">
             <Button
               variant="ghost"
-              onClick={() => navigate(-1)}
+              onClick={() => navigate("/")}
               className="mb-6 text-muted-foreground hover:text-foreground"
             >
               <ArrowLeft className="mr-2 h-4 w-4" />
@@ -167,7 +167,7 @@ const ExamDetail = () => {
         <div className="container mx-auto px-4 md:px-6 max-w-5xl">
           <Button
             variant="ghost"
-            onClick={() => navigate(-1)}
+            onClick={() => streamId ? navigate(`/exam/${examSlug}`) : navigate("/")}
             className="mb-6 text-muted-foreground hover:text-foreground"
           >
             <ArrowLeft className="mr-2 h-4 w-4" />
