@@ -14,6 +14,36 @@ export type Database = {
   }
   public: {
     Tables: {
+      announcements: {
+        Row: {
+          content: string
+          created_at: string
+          exam_category: string | null
+          id: string
+          is_active: boolean
+          published_at: string
+          title: string
+        }
+        Insert: {
+          content: string
+          created_at?: string
+          exam_category?: string | null
+          id?: string
+          is_active?: boolean
+          published_at?: string
+          title: string
+        }
+        Update: {
+          content?: string
+          created_at?: string
+          exam_category?: string | null
+          id?: string
+          is_active?: boolean
+          published_at?: string
+          title?: string
+        }
+        Relationships: []
+      }
       exam_set_names: {
         Row: {
           created_at: string
