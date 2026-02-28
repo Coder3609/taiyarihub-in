@@ -193,12 +193,17 @@ const ExamDetail = () => {
             animate="show"
             className="grid grid-cols-2 sm:grid-cols-4 gap-2.5"
           >
-            {sections.map((section) => (
+            {sections.map((section) => {
+              // Institute and Books go to intermediate source selection page
+              const sectionPath = (section.id === "institute" || section.id === "books")
+                ? `${basePath}/sources/${section.id}`
+                : `${basePath}/${section.id}`;
+              return (
               <motion.div
                 key={section.id}
                 variants={item}
                 whileHover={{ y: -4, scale: 1.02 }}
-                onClick={() => navigate(`${basePath}/${section.id}`)}
+                onClick={() => navigate(sectionPath)}
                 className={`rounded-xl p-3 aspect-square bg-gradient-to-br ${section.color} border ${section.borderColor} cursor-pointer transition-all hover:shadow-lg flex flex-col group`}
               >
                 <div className="flex items-start justify-between">
@@ -230,7 +235,9 @@ const ExamDetail = () => {
                   </div>
                 </div>
               </motion.div>
-            ))}
+              );
+            })}
+
           </motion.div>
         </div>
       </main>
