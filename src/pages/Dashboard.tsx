@@ -16,6 +16,9 @@ import {
   Globe,
   MapPin,
   Play,
+  Crown,
+  Check,
+  Sparkles,
 } from "lucide-react";
 import { Card, CardContent, CardHeader, CardTitle } from "@/components/ui/card";
 import { Button } from "@/components/ui/button";
@@ -438,6 +441,73 @@ const Dashboard = () => {
                   </Card>
                 </motion.div>
               ))}
+            </div>
+          </motion.div>
+
+          {/* Row 4: Subscription Plans */}
+          <Separator className="my-2" />
+          <motion.div custom={10} variants={fadeUp} initial="hidden" animate="visible">
+            <h2 className="font-display text-xl md:text-2xl font-bold text-foreground mb-1">
+              Subscription Plans
+            </h2>
+            <p className="text-sm text-muted-foreground mb-6">
+              First 2 sets of every exam are free. Unlock unlimited access with a plan.
+            </p>
+            <div className="grid grid-cols-1 md:grid-cols-2 gap-6">
+              {/* Central Bundle */}
+              <Card className="bg-gradient-card border-primary/30 relative overflow-hidden">
+                <div className="absolute top-0 right-0 px-3 py-1 bg-primary text-primary-foreground text-xs font-display font-semibold rounded-bl-lg">
+                  Popular
+                </div>
+                <CardHeader className="pb-2">
+                  <CardTitle className="font-display text-lg flex items-center gap-2">
+                    <Crown className="h-5 w-5 text-primary" /> Central Bundle
+                  </CardTitle>
+                </CardHeader>
+                <CardContent>
+                  <div className="flex items-baseline gap-1 mb-4">
+                    <span className="text-3xl font-display font-bold text-foreground">₹599</span>
+                    <span className="text-sm text-muted-foreground">/ 1.3 years</span>
+                  </div>
+                  <div className="space-y-2 mb-5">
+                    {["GATE", "BARC", "ISRO", "CAT", "CA", "SSC CGL", "RBI Grade B"].map((exam) => (
+                      <div key={exam} className="flex items-center gap-2 text-sm text-foreground">
+                        <Check className="h-4 w-4 text-primary shrink-0" />
+                        {exam}
+                      </div>
+                    ))}
+                  </div>
+                  <Button className="w-full font-display font-semibold" onClick={() => navigate("/pricing")}>
+                    <Sparkles className="h-4 w-4 mr-1.5" /> Get Central Bundle
+                  </Button>
+                </CardContent>
+              </Card>
+
+              {/* School & Entrance */}
+              <Card className="bg-gradient-card border-border/50 relative overflow-hidden">
+                <CardHeader className="pb-2">
+                  <CardTitle className="font-display text-lg flex items-center gap-2">
+                    <GraduationCap className="h-5 w-5 text-primary" /> School & Entrance
+                  </CardTitle>
+                </CardHeader>
+                <CardContent>
+                  <div className="flex items-baseline gap-1 mb-4">
+                    <span className="text-3xl font-display font-bold text-foreground">₹999</span>
+                    <span className="text-sm text-muted-foreground">/ 3 years</span>
+                  </div>
+                  <div className="space-y-2 mb-5">
+                    {["JEE Mains & Advanced", "NEET", "CUET", "CBSE", "ICSE"].map((exam) => (
+                      <div key={exam} className="flex items-center gap-2 text-sm text-foreground">
+                        <Check className="h-4 w-4 text-primary shrink-0" />
+                        {exam}
+                      </div>
+                    ))}
+                  </div>
+                  <Button variant="outline" className="w-full font-display font-semibold" onClick={() => navigate("/pricing")}>
+                    <Sparkles className="h-4 w-4 mr-1.5" /> Get School & Entrance
+                  </Button>
+                </CardContent>
+              </Card>
             </div>
           </motion.div>
         </div>
