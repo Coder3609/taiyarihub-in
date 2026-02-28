@@ -85,11 +85,12 @@ interface SetStats {
 
 const SectionSets = () => {
   const navigate = useNavigate();
-  const { examSlug, sectionId, streamId } = useParams();
+  const { examSlug, sectionId, streamId, sourceId } = useParams();
   const meta = sectionMeta[sectionId || ""] || sectionMeta.pyqs;
   const Icon = meta.icon;
   const examName = decodeURIComponent(examSlug || "").replace(/-/g, " ");
   const basePath = streamId ? `/exam/${examSlug}/stream/${streamId}` : `/exam/${examSlug}`;
+  const backPath = (sectionId === "institute" || sectionId === "books") ? `${basePath}/sources/${sectionId}` : basePath;
   const { user } = useAuth();
   const { canAccessSet, loading: accessLoading } = useAccessControl();
   const [showPaywall, setShowPaywall] = useState(false);
@@ -155,7 +156,10 @@ const SectionSets = () => {
       setShowPaywall(true);
       return;
     }
-    navigate(`${basePath}/${sectionId}/${num}`);
+    const setPath = sourceId
+      ? `${basePath}/${sectionId}/${sourceId}/${num}`
+      : `${basePath}/${sectionId}/${num}`;
+    navigate(setPath);
   };
 
   return (
@@ -165,7 +169,7 @@ const SectionSets = () => {
         <div className="container mx-auto px-4 md:px-6 max-w-5xl">
           <Button
             variant="ghost"
-            onClick={() => navigate(basePath)}
+            onClick={() => navigate(backPath)}
             className="mb-6 text-muted-foreground hover:text-foreground"
           >
             <ArrowLeft className="mr-2 h-4 w-4" />
@@ -181,7 +185,9 @@ const SectionSets = () => {
                 <h1 className="font-display text-xl md:text-3xl font-bold text-foreground">
                   {meta.title}
                 </h1>
-                <p className="text-xs md:text-sm text-muted-foreground capitalize">{examName}</p>
+                <p className="text-xs md:text-sm text-muted-foreground capitalize">
+                  {sourceId ? `${sourceId.replace(/-/g, " ")} · ` : ""}{examName}
+                </p>
               </div>
             </div>
           </motion.div>
