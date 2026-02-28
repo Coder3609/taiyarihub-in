@@ -67,6 +67,7 @@ const examCategories = [
     path: "/exams/central",
     color: "from-primary/20 to-primary/5",
     iconColor: "text-primary",
+    comingSoon: false,
   },
   {
     title: "State Exams",
@@ -75,6 +76,7 @@ const examCategories = [
     path: "/exams/state",
     color: "from-blue-500/20 to-blue-500/5",
     iconColor: "text-blue-400",
+    comingSoon: true,
   },
   {
     title: "School Exams",
@@ -83,6 +85,7 @@ const examCategories = [
     path: "/exams/school",
     color: "from-emerald-500/20 to-emerald-500/5",
     iconColor: "text-emerald-400",
+    comingSoon: false,
   },
   {
     title: "Foreign Exams",
@@ -91,6 +94,7 @@ const examCategories = [
     path: "/exams/foreign",
     color: "from-purple-500/20 to-purple-500/5",
     iconColor: "text-purple-400",
+    comingSoon: true,
   },
 ];
 
@@ -419,10 +423,20 @@ const Dashboard = () => {
                   animate="visible"
                 >
                   <Card
-                    className="bg-gradient-card border-border/50 hover:border-primary/30 transition-all duration-300 cursor-pointer group hover:shadow-glow"
-                    onClick={() => navigate(cat.path)}
+                    className={`bg-gradient-card border-border/50 transition-all duration-300 group ${cat.comingSoon ? "opacity-60 cursor-not-allowed" : "hover:border-primary/30 cursor-pointer hover:shadow-glow"}`}
+                    onClick={() => {
+                      if (cat.comingSoon) {
+                        return;
+                      }
+                      navigate(cat.path);
+                    }}
                   >
-                    <CardContent className="pt-6 pb-5">
+                    <CardContent className="pt-6 pb-5 relative">
+                      {cat.comingSoon && (
+                        <span className="absolute top-3 right-3 px-2 py-0.5 rounded-full text-[10px] font-semibold bg-muted text-muted-foreground border border-border">
+                          COMING SOON
+                        </span>
+                      )}
                       <div
                         className={`w-12 h-12 rounded-xl bg-gradient-to-br ${cat.color} flex items-center justify-center mb-4`}
                       >
@@ -434,9 +448,11 @@ const Dashboard = () => {
                       <p className="text-xs text-muted-foreground leading-relaxed">
                         {cat.description}
                       </p>
-                      <div className="mt-3 flex items-center gap-1 text-xs text-primary opacity-0 group-hover:opacity-100 transition-opacity">
-                        Browse exams <ArrowRight className="h-3 w-3" />
-                      </div>
+                      {!cat.comingSoon && (
+                        <div className="mt-3 flex items-center gap-1 text-xs text-primary opacity-0 group-hover:opacity-100 transition-opacity">
+                          Browse exams <ArrowRight className="h-3 w-3" />
+                        </div>
+                      )}
                     </CardContent>
                   </Card>
                 </motion.div>
