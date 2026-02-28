@@ -33,6 +33,7 @@ interface Question {
   option_c: string;
   option_d: string;
   question_type: "mcq" | "msq" | "integer";
+  question_category: string;
   source_label?: string | null;
 }
 
@@ -59,14 +60,24 @@ const Quiz = () => {
   const [totalQuestions, setTotalQuestions] = useState(0);
   const [durationMinutes, setDurationMinutes] = useState(60);
   const [showInstructions, setShowInstructions] = useState(true);
-  const [activeSection, setActiveSection] = useState<"mcq" | "integer">("mcq");
+  const [activeSection, setActiveSection] = useState<string>("core");
   const startTimeRef = useRef(Date.now());
 
-  // Split questions into sections
-  const mcqQuestions = useMemo(() => questions.filter((q) => q.question_type !== "integer"), [questions]);
-  const integerQuestions = useMemo(() => questions.filter((q) => q.question_type === "integer"), [questions]);
+  // Split questions into sections by category
+  const coreQuestions = useMemo(() => questions.filter((q) => q.question_category !== "reasoning"), [questions]);
+  const reasoningQuestions = useMemo(() => questions.filter((q) => q.question_category === "reasoning"), [questions]);
 
-  const currentSectionQuestions = activeSection === "mcq" ? mcqQuestions : integerQuestions;
+  // Determine available sections dynamically
+  const availableSections = useMemo(() => {
+    const sections: { id: string; label: string }[] = [];
+    if (coreQuestions.length > 0) sections.push({ id: "core", label: "Core CS" });
+    if (reasoningQuestions.length > 0) sections.push({ id: "reasoning", label: "Reasoning & Aptitude" });
+    // Fallback: if no reasoning questions, show all as single section
+    if (sections.length === 0) sections.push({ id: "core", label: "All Questions" });
+    return sections;
+  }, [coreQuestions, reasoningQuestions]);
+
+  const currentSectionQuestions = activeSection === "reasoning" ? reasoningQuestions : coreQuestions;
   const sectionIndex = Math.min(currentIndex, currentSectionQuestions.length - 1);
   const currentQ = currentSectionQuestions[sectionIndex];
 
@@ -105,7 +116,7 @@ const Quiz = () => {
 
       const { data: qs } = await supabase
         .from("questions")
-        .select("id, question_number, question_text, option_a, option_b, option_c, option_d, question_type, source_label")
+        .select("id, question_number, question_text, option_a, option_b, option_c, option_d, question_type, question_category, source_label")
         .eq("exam_id", exam.id)
         .eq("set_number", parseInt(setNumber || "1"))
         .order("question_number", { ascending: true });
@@ -230,7 +241,7 @@ const Quiz = () => {
     if (sectionIndex < currentSectionQuestions.length - 1) setCurrentIndex(sectionIndex + 1);
   };
 
-  const switchSection = (section: "mcq" | "integer") => {
+  const switchSection = (section: string) => {
     setActiveSection(section);
     setCurrentIndex(0);
   };
@@ -329,34 +340,26 @@ const Quiz = () => {
         {/* Row 2: Section Tabs */}
         <div className="flex items-center px-4 gap-1">
           <span className="text-xs text-muted-foreground mr-2 font-medium">SECTIONS</span>
-          <button
-            onClick={() => switchSection("mcq")}
-            className={`px-4 py-2.5 text-sm font-medium border-b-2 transition-colors ${
-              activeSection === "mcq"
-                ? "border-primary text-primary"
-                : "border-transparent text-muted-foreground hover:text-foreground"
-            }`}
-          >
-            MCQ / MSQ{" "}
-            <span className="text-xs ml-1 opacity-70">
-              {Object.values(answers).filter((_, i) => mcqQuestions.some((q) => answers[q.id])).length > 0
-                ? `${mcqQuestions.filter((q) => answers[q.id]).length}/${mcqQuestions.length}`
-                : `0/${mcqQuestions.length}`}
-            </span>
-          </button>
-          <button
-            onClick={() => switchSection("integer")}
-            className={`px-4 py-2.5 text-sm font-medium border-b-2 transition-colors ${
-              activeSection === "integer"
-                ? "border-primary text-primary"
-                : "border-transparent text-muted-foreground hover:text-foreground"
-            }`}
-          >
-            Numerical (NAT){" "}
-            <span className="text-xs ml-1 opacity-70">
-              {integerQuestions.filter((q) => answers[q.id]).length}/{integerQuestions.length}
-            </span>
-          </button>
+          {availableSections.map((sec) => {
+            const secQuestions = sec.id === "reasoning" ? reasoningQuestions : coreQuestions;
+            const answeredCount = secQuestions.filter((q) => answers[q.id]).length;
+            return (
+              <button
+                key={sec.id}
+                onClick={() => switchSection(sec.id)}
+                className={`px-4 py-2.5 text-sm font-medium border-b-2 transition-colors ${
+                  activeSection === sec.id
+                    ? "border-primary text-primary"
+                    : "border-transparent text-muted-foreground hover:text-foreground"
+                }`}
+              >
+                {sec.label}{" "}
+                <span className="text-xs ml-1 opacity-70">
+                  {answeredCount}/{secQuestions.length}
+                </span>
+              </button>
+            );
+          })}
         </div>
 
         {/* Row 3: Question number bar */}
