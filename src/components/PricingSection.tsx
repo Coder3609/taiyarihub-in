@@ -1,6 +1,11 @@
 import { motion } from "framer-motion";
-import { Check, Crown, Zap, Landmark, GraduationCap } from "lucide-react";
+import { Check, Crown, Zap, Landmark, GraduationCap, Flame } from "lucide-react";
 import { Button } from "@/components/ui/button";
+import { useEffect, useState } from "react";
+import { supabase } from "@/integrations/supabase/client";
+
+const OFFER_LIMIT = 500;
+const OFFER_HARD_EXPIRY = 550;
 
 const plans = [
   {
@@ -9,6 +14,7 @@ const plans = [
     name: "Central Exams Bundle",
     description: "GATE, BARC, ISRO, CAT, CA, SSC — all in one plan",
     price: "₹599",
+    offerPrice: "₹299",
     period: "for 1.3 Years",
     free: true,
     features: [
@@ -26,6 +32,7 @@ const plans = [
     name: "School & Entrance Bundle",
     description: "JEE Mains/Advanced, NEET, CUET & Board exams",
     price: "₹999",
+    offerPrice: "₹599",
     period: "for 3 Years",
     free: false,
     features: [
@@ -40,6 +47,24 @@ const plans = [
 ];
 
 const PricingSection = () => {
+  const [subCount, setSubCount] = useState(0);
+  const [loaded, setLoaded] = useState(false);
+
+  useEffect(() => {
+    const fetchCount = async () => {
+      const { count } = await supabase
+        .from("user_subscriptions")
+        .select("*", { count: "exact", head: true })
+        .eq("is_active", true);
+      setSubCount(count ?? 0);
+      setLoaded(true);
+    };
+    fetchCount();
+  }, []);
+
+  const offerActive = subCount < OFFER_HARD_EXPIRY;
+  const spotsLeft = Math.max(0, OFFER_LIMIT - subCount);
+
   return (
     <section id="pricing" className="py-24 md:py-32">
       <div className="container mx-auto px-4 md:px-6">
@@ -58,6 +83,21 @@ const PricingSection = () => {
           <p className="text-muted-foreground max-w-xl mx-auto">
             Two bundles. No hidden charges. Central exams include a free tier for the first 2 sets.
           </p>
+          {loaded && offerActive && (
+            <motion.div
+              initial={{ opacity: 0, scale: 0.95 }}
+              animate={{ opacity: 1, scale: 1 }}
+              className="mt-6 inline-flex items-center gap-2 px-5 py-2.5 rounded-full border border-primary/30 bg-primary/5"
+            >
+              <Flame className="h-4 w-4 text-primary animate-pulse" />
+              <span className="text-sm font-semibold text-foreground">
+                🚀 Launch Offer — First {OFFER_LIMIT} users!
+              </span>
+              <span className="text-xs text-muted-foreground">
+                {spotsLeft > 0 ? `${spotsLeft} spots left` : "Filling up fast!"}
+              </span>
+            </motion.div>
+          )}
         </motion.div>
 
         <motion.div
@@ -96,9 +136,20 @@ const PricingSection = () => {
                 </div>
 
                 <div className="mb-6">
-                  <span className="font-display text-4xl font-bold text-foreground">
-                    {plan.price}
-                  </span>
+                  {offerActive ? (
+                    <div className="flex items-baseline gap-3">
+                      <span className="font-display text-4xl font-bold text-foreground">
+                        {plan.offerPrice}
+                      </span>
+                      <span className="font-display text-lg text-muted-foreground line-through">
+                        {plan.price}
+                      </span>
+                    </div>
+                  ) : (
+                    <span className="font-display text-4xl font-bold text-foreground">
+                      {plan.price}
+                    </span>
+                  )}
                   <span className="text-muted-foreground text-sm ml-2">
                     {plan.period}
                   </span>
