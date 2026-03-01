@@ -1,4 +1,4 @@
-import { useEffect, useState } from "react";
+import { useEffect, useState, useMemo } from "react";
 import { useNavigate } from "react-router-dom";
 import { motion } from "framer-motion";
 import {
@@ -19,6 +19,7 @@ import {
   Crown,
   Check,
   Sparkles,
+  Flame,
 } from "lucide-react";
 import { Card, CardContent, CardHeader, CardTitle } from "@/components/ui/card";
 import { Button } from "@/components/ui/button";
@@ -105,13 +106,19 @@ const Dashboard = () => {
   const [recentResults, setRecentResults] = useState<RecentResult[]>([]);
   const [announcements, setAnnouncements] = useState<Announcement[]>([]);
   const [stats, setStats] = useState({ totalQuizzes: 0, avgScore: 0, bestScore: 0 });
+  const [subCount, setSubCount] = useState(0);
   const [loading, setLoading] = useState(true);
+
+  const OFFER_LIMIT = 500;
+  const OFFER_HARD_EXPIRY = 550;
+  const offerActive = subCount < OFFER_HARD_EXPIRY;
+  const spotsLeft = Math.max(0, OFFER_LIMIT - subCount);
 
   useEffect(() => {
     if (!user) return;
 
     const fetchAll = async () => {
-      const [profileRes, resultsRes, announcementsRes] = await Promise.all([
+      const [profileRes, resultsRes, announcementsRes, subCountRes] = await Promise.all([
         supabase.from("profiles").select("*").eq("id", user.id).maybeSingle(),
         supabase
           .from("user_results")
@@ -125,7 +132,13 @@ const Dashboard = () => {
           .eq("is_active", true)
           .order("published_at", { ascending: false })
           .limit(5),
+        supabase
+          .from("user_subscriptions")
+          .select("*", { count: "exact", head: true })
+          .eq("is_active", true),
       ]);
+
+      setSubCount(subCountRes.count ?? 0);
 
       if (profileRes.data) setProfile(profileRes.data);
 
@@ -466,9 +479,20 @@ const Dashboard = () => {
             <h2 className="font-display text-xl md:text-2xl font-bold text-foreground mb-1">
               Subscription Plans
             </h2>
-            <p className="text-sm text-muted-foreground mb-6">
+            <p className="text-sm text-muted-foreground mb-4">
               First 2 sets of every exam are free. Unlock unlimited access with a plan.
             </p>
+            {offerActive && (
+              <div className="inline-flex items-center gap-2 px-4 py-2 rounded-full border border-primary/30 bg-primary/5 mb-6">
+                <Flame className="h-4 w-4 text-primary animate-pulse" />
+                <span className="text-sm font-semibold text-foreground">
+                  🚀 Launch Offer — First {OFFER_LIMIT} users!
+                </span>
+                <span className="text-xs text-muted-foreground">
+                  {spotsLeft > 0 ? `${spotsLeft} spots left` : "Filling up fast!"}
+                </span>
+              </div>
+            )}
             <div className="grid grid-cols-1 md:grid-cols-2 gap-6">
               {/* Central Bundle */}
               <Card className="bg-gradient-card border-primary/30 relative overflow-hidden">
@@ -481,8 +505,15 @@ const Dashboard = () => {
                   </CardTitle>
                 </CardHeader>
                 <CardContent>
-                  <div className="flex items-baseline gap-1 mb-4">
-                    <span className="text-3xl font-display font-bold text-foreground">₹599</span>
+                  <div className="flex items-baseline gap-2 mb-4">
+                    {offerActive ? (
+                      <>
+                        <span className="text-3xl font-display font-bold text-foreground">₹299</span>
+                        <span className="text-lg font-display text-muted-foreground line-through">₹599</span>
+                      </>
+                    ) : (
+                      <span className="text-3xl font-display font-bold text-foreground">₹599</span>
+                    )}
                     <span className="text-sm text-muted-foreground">/ 1.3 years</span>
                   </div>
                   <div className="space-y-2 mb-5">
@@ -507,8 +538,15 @@ const Dashboard = () => {
                   </CardTitle>
                 </CardHeader>
                 <CardContent>
-                  <div className="flex items-baseline gap-1 mb-4">
-                    <span className="text-3xl font-display font-bold text-foreground">₹999</span>
+                  <div className="flex items-baseline gap-2 mb-4">
+                    {offerActive ? (
+                      <>
+                        <span className="text-3xl font-display font-bold text-foreground">₹599</span>
+                        <span className="text-lg font-display text-muted-foreground line-through">₹999</span>
+                      </>
+                    ) : (
+                      <span className="text-3xl font-display font-bold text-foreground">₹999</span>
+                    )}
                     <span className="text-sm text-muted-foreground">/ 3 years</span>
                   </div>
                   <div className="space-y-2 mb-5">
