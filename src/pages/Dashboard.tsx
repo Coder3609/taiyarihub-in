@@ -517,7 +517,7 @@ const Dashboard = () => {
                     <span className="text-sm text-muted-foreground">/ 1.3 years</span>
                   </div>
                   <div className="space-y-2 mb-5">
-                    {["GATE", "BARC", "ISRO", "CAT", "CA", "SSC CGL", "RBI Grade B"].map((exam) => (
+                    {["GATE", "BARC", "ISRO", "CAT", "CA", "RBI Grade B"].map((exam) => (
                       <div key={exam} className="flex items-center gap-2 text-sm text-foreground">
                         <Check className="h-4 w-4 text-primary shrink-0" />
                         {exam}
