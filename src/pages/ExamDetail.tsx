@@ -36,9 +36,11 @@ const sections = [
     title: "Previous Year Questions",
     shortTitle: "PYQs",
     icon: ScrollText,
-    color: "from-blue-500/20 to-blue-600/5",
-    borderColor: "border-blue-500/30",
-    badgeColor: "bg-blue-500/10 text-blue-400",
+    color: "from-blue-500/20 via-blue-600/10 to-indigo-700/5",
+    borderColor: "border-blue-500/20 hover:border-blue-400/60",
+    badgeColor: "bg-blue-500/15 text-blue-400 ring-1 ring-blue-500/20",
+    glowColor: "group-hover:shadow-[0_0_30px_-5px_rgba(59,130,246,0.3)]",
+    accentDot: "bg-blue-400",
     stats: ["Year-wise sorted", "With solutions"],
   },
   {
@@ -46,9 +48,11 @@ const sections = [
     title: "Mock Tests",
     shortTitle: "Mocks",
     icon: ClipboardList,
-    color: "from-purple-500/20 to-purple-600/5",
-    borderColor: "border-purple-500/30",
-    badgeColor: "bg-purple-500/10 text-purple-400",
+    color: "from-purple-500/20 via-purple-600/10 to-violet-700/5",
+    borderColor: "border-purple-500/20 hover:border-purple-400/60",
+    badgeColor: "bg-purple-500/15 text-purple-400 ring-1 ring-purple-500/20",
+    glowColor: "group-hover:shadow-[0_0_30px_-5px_rgba(168,85,247,0.3)]",
+    accentDot: "bg-purple-400",
     stats: ["Timed tests", "Instant results"],
   },
   {
@@ -56,9 +60,11 @@ const sections = [
     title: "Popular Books",
     shortTitle: "Books",
     icon: BookOpen,
-    color: "from-emerald-500/20 to-emerald-600/5",
-    borderColor: "border-emerald-500/30",
-    badgeColor: "bg-emerald-500/10 text-emerald-400",
+    color: "from-emerald-500/20 via-emerald-600/10 to-teal-700/5",
+    borderColor: "border-emerald-500/20 hover:border-emerald-400/60",
+    badgeColor: "bg-emerald-500/15 text-emerald-400 ring-1 ring-emerald-500/20",
+    glowColor: "group-hover:shadow-[0_0_30px_-5px_rgba(16,185,129,0.3)]",
+    accentDot: "bg-emerald-400",
     stats: ["Best sellers", "Chapter-wise"],
   },
 ];
@@ -181,10 +187,9 @@ const ExamDetail = () => {
             variants={container}
             initial="hidden"
             animate="show"
-            className="grid grid-cols-2 sm:grid-cols-4 gap-2.5"
+            className="grid grid-cols-1 sm:grid-cols-3 gap-4 md:gap-5"
           >
             {sections.map((section) => {
-              // Books go to intermediate source selection page
               const sectionPath = (section.id === "books")
                 ? `${basePath}/sources/${section.id}`
                 : `${basePath}/${section.id}`;
@@ -192,33 +197,42 @@ const ExamDetail = () => {
               <motion.div
                 key={section.id}
                 variants={item}
-                whileHover={{ y: -4, scale: 1.02 }}
+                whileHover={{ y: -6, scale: 1.03 }}
+                whileTap={{ scale: 0.97 }}
                 onClick={() => navigate(sectionPath)}
-                className={`rounded-xl p-3 aspect-square bg-gradient-to-br ${section.color} border ${section.borderColor} cursor-pointer transition-all hover:shadow-lg flex flex-col group`}
+                className={`relative rounded-2xl p-5 md:p-6 bg-gradient-to-br ${section.color} border ${section.borderColor} cursor-pointer transition-all duration-300 ${section.glowColor} flex flex-col group overflow-hidden min-h-[200px]`}
               >
-                <div className="flex items-start justify-between">
-                  <div className={`p-2 rounded-lg ${section.badgeColor}`}>
-                    <section.icon className="h-4 w-4" />
+                {/* Decorative background circle */}
+                <div className="absolute -right-8 -top-8 h-32 w-32 rounded-full bg-gradient-to-br from-white/[0.03] to-transparent pointer-events-none" />
+                <div className="absolute -right-4 -bottom-4 h-20 w-20 rounded-full bg-gradient-to-tl from-white/[0.02] to-transparent pointer-events-none" />
+
+                <div className="flex items-start justify-between relative z-10">
+                  <div className={`p-2.5 rounded-xl ${section.badgeColor} backdrop-blur-sm`}>
+                    <section.icon className="h-5 w-5" />
                   </div>
-                  <ChevronRight className="h-4 w-4 text-muted-foreground group-hover:text-primary group-hover:translate-x-1 transition-all" />
+                  <div className="flex items-center gap-1.5 opacity-0 group-hover:opacity-100 transition-opacity duration-300">
+                    <span className="text-xs text-muted-foreground font-medium">Explore</span>
+                    <ChevronRight className="h-4 w-4 text-primary group-hover:translate-x-1 transition-transform duration-300" />
+                  </div>
                 </div>
 
-                <div className="mt-2 flex-1">
-                  <h3 className="text-sm font-bold text-foreground leading-tight">
+                <div className="mt-4 flex-1 relative z-10">
+                  <h3 className="text-lg md:text-xl font-display font-bold text-foreground tracking-tight">
                     {section.shortTitle}
                   </h3>
-                  <p className="text-[10px] italic text-muted-foreground mt-1.5 line-clamp-2 leading-relaxed">
+                  <p className="text-xs italic text-muted-foreground/80 mt-2 leading-relaxed">
                     "{sectionQuotes[section.id]}"
                   </p>
                 </div>
 
-                <div className="mt-auto pt-2">
-                  <div className="flex flex-wrap gap-1">
+                <div className="mt-auto pt-4 relative z-10">
+                  <div className="flex flex-wrap gap-2">
                     {section.stats.map((stat) => (
                       <span
                         key={stat}
-                        className="text-[9px] px-1.5 py-0.5 rounded bg-muted text-muted-foreground"
+                        className="inline-flex items-center gap-1.5 text-[11px] px-2.5 py-1 rounded-full bg-background/40 backdrop-blur-sm text-muted-foreground border border-border/30 font-medium"
                       >
+                        <span className={`h-1.5 w-1.5 rounded-full ${section.accentDot}`} />
                         {stat}
                       </span>
                     ))}
@@ -227,7 +241,6 @@ const ExamDetail = () => {
               </motion.div>
               );
             })}
-
           </motion.div>
         </div>
       </main>
