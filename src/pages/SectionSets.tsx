@@ -20,7 +20,7 @@ import {
 const sectionMeta: Record<string, { title: string; icon: React.ElementType; color: string; borderColor: string; badgeColor: string }> = {
   pyqs: { title: "Previous Year Questions (PYQs)", icon: ScrollText, color: "from-blue-500/20 to-blue-600/5", borderColor: "border-blue-500/30", badgeColor: "bg-blue-500/10 text-blue-400" },
   mocks: { title: "Mock Tests", icon: ClipboardList, color: "from-purple-500/20 to-purple-600/5", borderColor: "border-purple-500/30", badgeColor: "bg-purple-500/10 text-purple-400" },
-  institute: { title: "Institute Questions", icon: Building2, color: "from-amber-500/20 to-amber-600/5", borderColor: "border-amber-500/30", badgeColor: "bg-amber-500/10 text-amber-400" },
+  
   books: { title: "Popular Books Questions", icon: BookOpen, color: "from-emerald-500/20 to-emerald-600/5", borderColor: "border-emerald-500/30", badgeColor: "bg-emerald-500/10 text-emerald-400" },
 };
 
@@ -90,7 +90,7 @@ const SectionSets = () => {
   const Icon = meta.icon;
   const examName = decodeURIComponent(examSlug || "").replace(/-/g, " ");
   const basePath = streamId ? `/exam/${examSlug}/stream/${streamId}` : `/exam/${examSlug}`;
-  const backPath = (sectionId === "institute" || sectionId === "books") ? `${basePath}/sources/${sectionId}` : basePath;
+  const backPath = (sectionId === "books") ? `${basePath}/sources/${sectionId}` : basePath;
   const { user } = useAuth();
   const { canAccessSet, loading: accessLoading } = useAccessControl();
   const [showPaywall, setShowPaywall] = useState(false);

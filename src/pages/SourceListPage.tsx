@@ -1,24 +1,15 @@
 import { motion } from "framer-motion";
-import { ArrowLeft, Building2, BookOpen, ChevronRight } from "lucide-react";
+import { ArrowLeft, BookOpen, ChevronRight } from "lucide-react";
 import { Button } from "@/components/ui/button";
 import { useNavigate, useParams } from "react-router-dom";
 import Navbar from "@/components/Navbar";
 import Footer from "@/components/Footer";
 
-// Config: map examSlug → institutes and books/authors per exam
+// Config: map examSlug → books/authors per exam
 const examSources: Record<string, {
-  institutes: { id: string; name: string; description: string }[];
   books: { id: string; name: string; description: string }[];
 }> = {
   "GATE-Graduate-Aptitude-Test-in-Engineering": {
-    institutes: [
-      { id: "made-easy", name: "Made Easy", description: "India's leading GATE coaching institute" },
-      { id: "ace-academy", name: "ACE Academy", description: "Premier engineering exam preparation" },
-      { id: "pw", name: "Physics Wallah (PW)", description: "Affordable quality education" },
-      { id: "gate-academy", name: "GATE Academy", description: "Specialized GATE preparation" },
-      { id: "ies-master", name: "IES Master", description: "Expert faculty & curated content" },
-      { id: "unacademy", name: "Unacademy", description: "Top educators, comprehensive courses" },
-    ],
     books: [
       { id: "cormen", name: "Cormen (CLRS)", description: "Introduction to Algorithms" },
       { id: "galvin", name: "Galvin", description: "Operating System Concepts" },
@@ -33,14 +24,6 @@ const examSources: Record<string, {
 };
 
 const sectionConfig = {
-  institute: {
-    title: "Select Institute",
-    subtitle: "Choose an institute to practice their question sets.",
-    icon: Building2,
-    color: "from-amber-500/20 to-amber-600/5",
-    borderColor: "hover:border-amber-500/50",
-    badgeColor: "bg-amber-500/10 text-amber-400",
-  },
   books: {
     title: "Select Author / Book",
     subtitle: "Choose a book to practice chapter-wise questions.",
@@ -65,8 +48,8 @@ const SourceListPage = () => {
   const navigate = useNavigate();
   const { examSlug, sectionId, streamId } = useParams();
 
-  const type = sectionId as "institute" | "books";
-  const config = sectionConfig[type] || sectionConfig.institute;
+  const type = sectionId as "books";
+  const config = sectionConfig[type] || sectionConfig.books;
   const Icon = config.icon;
   const examName = (examSlug || "").replace(/-/g, " ");
 
@@ -74,7 +57,7 @@ const SourceListPage = () => {
     ? `/exam/${examSlug}/stream/${streamId}`
     : `/exam/${examSlug}`;
 
-  const sources = examSources[examSlug || ""]?.[type] || [];
+  const sources = examSources[examSlug || ""]?.books || [];
 
   return (
     <div className="min-h-screen bg-background">
@@ -116,7 +99,7 @@ const SourceListPage = () => {
               <Icon className="h-12 w-12 mx-auto mb-4 opacity-40" />
               <p className="text-lg font-medium">Coming Soon</p>
               <p className="text-sm mt-1">
-                No {type === "institute" ? "institutes" : "books"} available for this exam yet.
+                No books available for this exam yet.
               </p>
             </div>
           ) : (
