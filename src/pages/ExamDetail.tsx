@@ -1,6 +1,6 @@
 import { useState } from "react";
 import { motion } from "framer-motion";
-import { ArrowLeft, ScrollText, ClipboardList, Building2, BookOpen, ChevronRight, Cpu, Radio, Zap, Cog, FlaskConical, Atom, Ruler, Hammer, Droplets, Leaf, LayoutGrid } from "lucide-react";
+import { ArrowLeft, ScrollText, ClipboardList, BookOpen, ChevronRight, Cpu, Radio, Zap, Cog, FlaskConical, Atom, Ruler, Hammer, Droplets, Leaf, LayoutGrid } from "lucide-react";
 import { Button } from "@/components/ui/button";
 import { useNavigate, useParams } from "react-router-dom";
 import Navbar from "@/components/Navbar";
@@ -26,7 +26,7 @@ const examStreams: Record<string, { id: string; title: string; shortName: string
 const sectionQuotes: Record<string, string> = {
   pyqs: "Learn from the past, ace the future.",
   mocks: "Practice under pressure, perform with ease.",
-  institute: "Quality questions from the best minds.",
+  
   books: "Master the classics, conquer the exam.",
 };
 
@@ -50,16 +50,6 @@ const sections = [
     borderColor: "border-purple-500/30",
     badgeColor: "bg-purple-500/10 text-purple-400",
     stats: ["Timed tests", "Instant results"],
-  },
-  {
-    id: "institute",
-    title: "Institute Questions",
-    shortTitle: "Institute",
-    icon: Building2,
-    color: "from-amber-500/20 to-amber-600/5",
-    borderColor: "border-amber-500/30",
-    badgeColor: "bg-amber-500/10 text-amber-400",
-    stats: ["Top institutes", "Expert curated"],
   },
   {
     id: "books",
@@ -194,8 +184,8 @@ const ExamDetail = () => {
             className="grid grid-cols-2 sm:grid-cols-4 gap-2.5"
           >
             {sections.map((section) => {
-              // Institute and Books go to intermediate source selection page
-              const sectionPath = (section.id === "institute" || section.id === "books")
+              // Books go to intermediate source selection page
+              const sectionPath = (section.id === "books")
                 ? `${basePath}/sources/${section.id}`
                 : `${basePath}/${section.id}`;
               return (
