@@ -28,7 +28,6 @@ const AVAILABLE_EXAMS = [
   "ISRO (Indian Space Research Organisation)",
   "CAT (Common Admission Test)",
   "CA (Chartered Accountant – Foundation, Inter & Final)",
-  "SSC Combined Graduate Level (SSC CGL)",
   "RBI Grade B Officer",
 ];
 
