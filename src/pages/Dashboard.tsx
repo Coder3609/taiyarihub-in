@@ -1,6 +1,6 @@
 import { useEffect, useState, useMemo } from "react";
 import { useNavigate } from "react-router-dom";
-import { motion } from "framer-motion";
+import { motion, AnimatePresence } from "framer-motion";
 import {
   GraduationCap,
   User,
@@ -20,12 +20,20 @@ import {
   Check,
   Sparkles,
   Flame,
+  X,
+  TicketPlus,
 } from "lucide-react";
 import { Card, CardContent, CardHeader, CardTitle } from "@/components/ui/card";
 import { Button } from "@/components/ui/button";
 import { Badge } from "@/components/ui/badge";
 import { Avatar, AvatarFallback } from "@/components/ui/avatar";
 import { Separator } from "@/components/ui/separator";
+import {
+  Dialog,
+  DialogContent,
+  DialogHeader,
+  DialogTitle,
+} from "@/components/ui/dialog";
 import { useAuth } from "@/contexts/AuthContext";
 import { supabase } from "@/integrations/supabase/client";
 import Navbar from "@/components/Navbar";
@@ -107,6 +115,8 @@ const Dashboard = () => {
   const [announcements, setAnnouncements] = useState<Announcement[]>([]);
   const [stats, setStats] = useState({ totalQuizzes: 0, avgScore: 0, bestScore: 0 });
   const [subCount, setSubCount] = useState(0);
+  const [userPlans, setUserPlans] = useState<string[]>([]);
+  const [showExtendDialog, setShowExtendDialog] = useState(false);
   const [loading, setLoading] = useState(true);
 
   const OFFER_LIMIT = 500;
@@ -139,6 +149,14 @@ const Dashboard = () => {
       ]);
 
       setSubCount(subCountRes.count ?? 0);
+
+      // Fetch user's own active subscriptions
+      const { data: userSubs } = await supabase
+        .from("user_subscriptions")
+        .select("plan_type")
+        .eq("user_id", user.id)
+        .eq("is_active", true);
+      setUserPlans(userSubs?.map((s: any) => s.plan_type) ?? []);
 
       if (profileRes.data) setProfile(profileRes.data);
 
@@ -473,97 +491,204 @@ const Dashboard = () => {
             </div>
           </motion.div>
 
-          {/* Row 4: Subscription Plans */}
-          <Separator className="my-2" />
-          <motion.div custom={10} variants={fadeUp} initial="hidden" animate="visible">
-            <h2 className="font-display text-xl md:text-2xl font-bold text-foreground mb-1">
-              Subscription Plans
-            </h2>
-            <p className="text-sm text-muted-foreground mb-4">
-              First 2 sets of every exam are free. Unlock unlimited access with a plan.
-            </p>
-            {offerActive && (
-              <div className="inline-flex items-center gap-2 px-4 py-2 rounded-full border border-primary/30 bg-primary/5 mb-6">
-                <Flame className="h-4 w-4 text-primary animate-pulse" />
-                <span className="text-sm font-semibold text-foreground">
-                  🚀 Launch Offer — First {OFFER_LIMIT} users!
-                </span>
-                <span className="text-xs text-muted-foreground">
-                  {spotsLeft > 0 ? `${spotsLeft} spots left` : "Filling up fast!"}
-                </span>
-              </div>
-            )}
-            <div className="grid grid-cols-1 md:grid-cols-2 gap-6">
-              {/* Central Bundle */}
-              <Card className="bg-gradient-card border-primary/30 relative overflow-hidden">
-                <div className="absolute top-0 right-0 px-3 py-1 bg-primary text-primary-foreground text-xs font-display font-semibold rounded-bl-lg">
-                  Popular
-                </div>
-                <CardHeader className="pb-2">
-                  <CardTitle className="font-display text-lg flex items-center gap-2">
-                    <Crown className="h-5 w-5 text-primary" /> Central Bundle
-                  </CardTitle>
-                </CardHeader>
-                <CardContent>
-                  <div className="flex items-baseline gap-2 mb-4">
-                    {offerActive ? (
-                      <>
-                         <span className="text-3xl font-display font-bold text-foreground">₹699</span>
-                         <span className="text-lg font-display text-muted-foreground line-through">₹999</span>
-                       </>
-                     ) : (
-                       <span className="text-3xl font-display font-bold text-foreground">₹999</span>
-                    )}
-                    <span className="text-sm text-muted-foreground">/ 1.3 years</span>
+          {/* Row 4: Subscription Plans — only shown if user has NO active plan */}
+          {userPlans.length === 0 && (
+            <>
+              <Separator className="my-2" />
+              <motion.div custom={10} variants={fadeUp} initial="hidden" animate="visible">
+                <h2 className="font-display text-xl md:text-2xl font-bold text-foreground mb-1">
+                  Subscription Plans
+                </h2>
+                <p className="text-sm text-muted-foreground mb-4">
+                  First 2 sets of every exam are free. Unlock unlimited access with a plan.
+                </p>
+                {offerActive && (
+                  <div className="inline-flex items-center gap-2 px-4 py-2 rounded-full border border-primary/30 bg-primary/5 mb-6">
+                    <Flame className="h-4 w-4 text-primary animate-pulse" />
+                    <span className="text-sm font-semibold text-foreground">
+                      🚀 Launch Offer — First {OFFER_LIMIT} users!
+                    </span>
+                    <span className="text-xs text-muted-foreground">
+                      {spotsLeft > 0 ? `${spotsLeft} spots left` : "Filling up fast!"}
+                    </span>
                   </div>
-                  <div className="space-y-2 mb-5">
-                    {["GATE", "BARC", "ISRO", "CAT", "CA", "RBI Grade B"].map((exam) => (
-                      <div key={exam} className="flex items-center gap-2 text-sm text-foreground">
-                        <Check className="h-4 w-4 text-primary shrink-0" />
-                        {exam}
+                )}
+                <div className="grid grid-cols-1 md:grid-cols-2 gap-6">
+                  {/* Central Bundle */}
+                  <Card className="bg-gradient-card border-primary/30 relative overflow-hidden">
+                    <div className="absolute top-0 right-0 px-3 py-1 bg-primary text-primary-foreground text-xs font-display font-semibold rounded-bl-lg">
+                      Popular
+                    </div>
+                    <CardHeader className="pb-2">
+                      <CardTitle className="font-display text-lg flex items-center gap-2">
+                        <Crown className="h-5 w-5 text-primary" /> Central Bundle
+                      </CardTitle>
+                    </CardHeader>
+                    <CardContent>
+                      <div className="flex items-baseline gap-2 mb-4">
+                        {offerActive ? (
+                          <>
+                            <span className="text-3xl font-display font-bold text-foreground">₹699</span>
+                            <span className="text-lg font-display text-muted-foreground line-through">₹999</span>
+                          </>
+                        ) : (
+                          <span className="text-3xl font-display font-bold text-foreground">₹999</span>
+                        )}
+                        <span className="text-sm text-muted-foreground">/ 1.3 years</span>
                       </div>
-                    ))}
-                  </div>
-                  <Button className="w-full font-display font-semibold" onClick={() => navigate("/pricing")}>
-                    <Sparkles className="h-4 w-4 mr-1.5" /> Get Central Bundle
-                  </Button>
-                </CardContent>
-              </Card>
+                      <div className="space-y-2 mb-5">
+                        {["GATE", "BARC", "ISRO", "CAT", "CA", "RBI Grade B"].map((exam) => (
+                          <div key={exam} className="flex items-center gap-2 text-sm text-foreground">
+                            <Check className="h-4 w-4 text-primary shrink-0" />
+                            {exam}
+                          </div>
+                        ))}
+                      </div>
+                      <Button className="w-full font-display font-semibold" onClick={() => navigate("/pricing")}>
+                        <Sparkles className="h-4 w-4 mr-1.5" /> Get Central Bundle
+                      </Button>
+                    </CardContent>
+                  </Card>
 
-              {/* School & Entrance */}
-              <Card className="bg-gradient-card border-border/50 relative overflow-hidden">
-                <CardHeader className="pb-2">
-                  <CardTitle className="font-display text-lg flex items-center gap-2">
-                    <GraduationCap className="h-5 w-5 text-primary" /> School & Entrance
-                  </CardTitle>
-                </CardHeader>
-                <CardContent>
-                  <div className="flex items-baseline gap-2 mb-4">
-                    {offerActive ? (
-                      <>
-                        <span className="text-3xl font-display font-bold text-foreground">₹599</span>
-                        <span className="text-lg font-display text-muted-foreground line-through">₹999</span>
-                      </>
-                    ) : (
-                      <span className="text-3xl font-display font-bold text-foreground">₹999</span>
-                    )}
-                    <span className="text-sm text-muted-foreground">/ 3 years</span>
-                  </div>
-                  <div className="space-y-2 mb-5">
-                    {["JEE Mains & Advanced", "NEET", "CUET", "CBSE", "ICSE"].map((exam) => (
-                      <div key={exam} className="flex items-center gap-2 text-sm text-foreground">
-                        <Check className="h-4 w-4 text-primary shrink-0" />
-                        {exam}
+                  {/* School & Entrance */}
+                  <Card className="bg-gradient-card border-border/50 relative overflow-hidden">
+                    <CardHeader className="pb-2">
+                      <CardTitle className="font-display text-lg flex items-center gap-2">
+                        <GraduationCap className="h-5 w-5 text-primary" /> School & Entrance
+                      </CardTitle>
+                    </CardHeader>
+                    <CardContent>
+                      <div className="flex items-baseline gap-2 mb-4">
+                        {offerActive ? (
+                          <>
+                            <span className="text-3xl font-display font-bold text-foreground">₹599</span>
+                            <span className="text-lg font-display text-muted-foreground line-through">₹999</span>
+                          </>
+                        ) : (
+                          <span className="text-3xl font-display font-bold text-foreground">₹999</span>
+                        )}
+                        <span className="text-sm text-muted-foreground">/ 3 years</span>
                       </div>
-                    ))}
-                  </div>
-                  <Button variant="outline" className="w-full font-display font-semibold" onClick={() => navigate("/pricing")}>
-                    <Sparkles className="h-4 w-4 mr-1.5" /> Get School & Entrance
-                  </Button>
-                </CardContent>
-              </Card>
-            </div>
-          </motion.div>
+                      <div className="space-y-2 mb-5">
+                        {["JEE Mains & Advanced", "NEET", "CUET", "CBSE", "ICSE"].map((exam) => (
+                          <div key={exam} className="flex items-center gap-2 text-sm text-foreground">
+                            <Check className="h-4 w-4 text-primary shrink-0" />
+                            {exam}
+                          </div>
+                        ))}
+                      </div>
+                      <Button variant="outline" className="w-full font-display font-semibold" onClick={() => navigate("/pricing")}>
+                        <Sparkles className="h-4 w-4 mr-1.5" /> Get School & Entrance
+                      </Button>
+                    </CardContent>
+                  </Card>
+                </div>
+              </motion.div>
+            </>
+          )}
+
+          {/* Floating Extend Sub Button — shown only when user has at least one active plan */}
+          <AnimatePresence>
+            {userPlans.length > 0 && (
+              <motion.div
+                initial={{ opacity: 0, scale: 0.8, y: 20 }}
+                animate={{ opacity: 1, scale: 1, y: 0 }}
+                exit={{ opacity: 0, scale: 0.8, y: 20 }}
+                className="fixed bottom-6 right-6 z-50"
+              >
+                <Button
+                  onClick={() => setShowExtendDialog(true)}
+                  className="rounded-full px-5 py-3 shadow-glow font-display font-semibold gap-2"
+                  size="lg"
+                >
+                  <TicketPlus className="h-5 w-5" />
+                  Extend Sub
+                </Button>
+              </motion.div>
+            )}
+          </AnimatePresence>
+
+          {/* Extend Subscription Dialog */}
+          <Dialog open={showExtendDialog} onOpenChange={setShowExtendDialog}>
+            <DialogContent className="max-w-lg">
+              <DialogHeader>
+                <DialogTitle className="font-display text-xl">Manage Subscription</DialogTitle>
+              </DialogHeader>
+              <div className="space-y-4 mt-2">
+                {/* Central Bundle */}
+                <Card className={`border ${userPlans.includes("central") ? "border-primary/50 bg-primary/5" : "border-border/50"}`}>
+                  <CardContent className="p-5">
+                    <div className="flex items-center justify-between mb-3">
+                      <div className="flex items-center gap-2">
+                        <Crown className="h-5 w-5 text-primary" />
+                        <h3 className="font-display font-bold text-foreground">Central Bundle</h3>
+                      </div>
+                      {userPlans.includes("central") && (
+                        <Badge variant="secondary" className="bg-primary/10 text-primary border-primary/20 text-xs">
+                          Active
+                        </Badge>
+                      )}
+                    </div>
+                    <p className="text-xs text-muted-foreground mb-3">GATE, BARC, ISRO, CAT, CA, RBI Grade B</p>
+                    <div className="flex items-baseline gap-2 mb-4">
+                      {offerActive ? (
+                        <>
+                          <span className="text-2xl font-display font-bold text-foreground">₹699</span>
+                          <span className="text-sm text-muted-foreground line-through">₹999</span>
+                        </>
+                      ) : (
+                        <span className="text-2xl font-display font-bold text-foreground">₹999</span>
+                      )}
+                      <span className="text-xs text-muted-foreground">/ 1.3 years</span>
+                    </div>
+                    <Button
+                      className="w-full font-display font-semibold"
+                      variant={userPlans.includes("central") ? "default" : "outline"}
+                      onClick={() => navigate("/pricing")}
+                    >
+                      {userPlans.includes("central") ? "Extend Central Bundle" : "Get Central Bundle"}
+                    </Button>
+                  </CardContent>
+                </Card>
+
+                {/* School & Entrance */}
+                <Card className={`border ${userPlans.includes("school") ? "border-primary/50 bg-primary/5" : "border-border/50"}`}>
+                  <CardContent className="p-5">
+                    <div className="flex items-center justify-between mb-3">
+                      <div className="flex items-center gap-2">
+                        <GraduationCap className="h-5 w-5 text-primary" />
+                        <h3 className="font-display font-bold text-foreground">School & Entrance</h3>
+                      </div>
+                      {userPlans.includes("school") && (
+                        <Badge variant="secondary" className="bg-primary/10 text-primary border-primary/20 text-xs">
+                          Active
+                        </Badge>
+                      )}
+                    </div>
+                    <p className="text-xs text-muted-foreground mb-3">JEE Mains & Advanced, NEET, CUET, CBSE, ICSE</p>
+                    <div className="flex items-baseline gap-2 mb-4">
+                      {offerActive ? (
+                        <>
+                          <span className="text-2xl font-display font-bold text-foreground">₹599</span>
+                          <span className="text-sm text-muted-foreground line-through">₹999</span>
+                        </>
+                      ) : (
+                        <span className="text-2xl font-display font-bold text-foreground">₹999</span>
+                      )}
+                      <span className="text-xs text-muted-foreground">/ 3 years</span>
+                    </div>
+                    <Button
+                      className="w-full font-display font-semibold"
+                      variant={userPlans.includes("school") ? "default" : "outline"}
+                      onClick={() => navigate("/pricing")}
+                    >
+                      {userPlans.includes("school") ? "Extend School Bundle" : "Get School & Entrance"}
+                    </Button>
+                  </CardContent>
+                </Card>
+              </div>
+            </DialogContent>
+          </Dialog>
         </div>
       </main>
       <Footer />
