@@ -176,7 +176,7 @@ const CentralExams = () => {
               Explore all central government competitive exams organized by group level. Choose your target exam and start preparing today.
             </p>
             <div className="mt-4 inline-flex items-center gap-2 text-sm text-primary">
-              <span className="font-semibold">All Exams: ₹599 for 1.3 Years</span>
+              <span className="font-semibold">All Exams: ₹999 for 1.3 Years</span>
               <span className="ml-2 px-2 py-0.5 rounded-full text-[10px] bg-emerald-500/10 text-emerald-400 border border-emerald-500/20">
                 FREE TIER AVAILABLE
               </span>
