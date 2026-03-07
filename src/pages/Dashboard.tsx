@@ -508,11 +508,11 @@ const Dashboard = () => {
                   <div className="flex items-baseline gap-2 mb-4">
                     {offerActive ? (
                       <>
-                        <span className="text-3xl font-display font-bold text-foreground">₹299</span>
-                        <span className="text-lg font-display text-muted-foreground line-through">₹599</span>
-                      </>
-                    ) : (
-                      <span className="text-3xl font-display font-bold text-foreground">₹599</span>
+                         <span className="text-3xl font-display font-bold text-foreground">₹699</span>
+                         <span className="text-lg font-display text-muted-foreground line-through">₹999</span>
+                       </>
+                     ) : (
+                       <span className="text-3xl font-display font-bold text-foreground">₹999</span>
                     )}
                     <span className="text-sm text-muted-foreground">/ 1.3 years</span>
                   </div>
