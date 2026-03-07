@@ -13,8 +13,8 @@ const plans = [
     icon: Landmark,
     name: "Central Exams Bundle",
     description: "GATE, BARC, ISRO, CAT, CA, SSC — all in one plan",
-    price: "₹599",
-    offerPrice: "₹299",
+    price: "₹999",
+    offerPrice: "₹699",
     period: "for 1.3 Years",
     free: true,
     features: [
