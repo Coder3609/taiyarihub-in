@@ -150,6 +150,14 @@ const Dashboard = () => {
 
       setSubCount(subCountRes.count ?? 0);
 
+      // Fetch user's own active subscriptions
+      const { data: userSubs } = await supabase
+        .from("user_subscriptions")
+        .select("plan_type")
+        .eq("user_id", user.id)
+        .eq("is_active", true);
+      setUserPlans(userSubs?.map((s: any) => s.plan_type) ?? []);
+
       if (profileRes.data) setProfile(profileRes.data);
 
       if (resultsRes.data && resultsRes.data.length > 0) {
