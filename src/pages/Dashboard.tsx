@@ -115,6 +115,8 @@ const Dashboard = () => {
   const [announcements, setAnnouncements] = useState<Announcement[]>([]);
   const [stats, setStats] = useState({ totalQuizzes: 0, avgScore: 0, bestScore: 0 });
   const [subCount, setSubCount] = useState(0);
+  const [userPlans, setUserPlans] = useState<string[]>([]);
+  const [showExtendDialog, setShowExtendDialog] = useState(false);
   const [loading, setLoading] = useState(true);
 
   const OFFER_LIMIT = 500;
