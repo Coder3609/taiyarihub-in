@@ -150,7 +150,7 @@ const Quiz = () => {
     setShowInstructions(false);
     setExamStarted(true);
     startTimeRef.current = Date.now();
-    enterFullscreen();
+    // Fullscreen is optional — user can click the fullscreen button manually
   };
 
   const handleSubmit = useCallback(async () => {
