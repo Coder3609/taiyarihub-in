@@ -51,7 +51,11 @@ const Quiz = () => {
   const { user } = useAuth();
   const { canAccessSet } = useAccessControl();
   const [examStarted, setExamStarted] = useState(false);
-  const { tabSwitches, isFullscreen, enterFullscreen, exitFullscreen } = useProctoring(examStarted);
+  const submitRef = useRef<() => void>();
+  const { tabSwitches, isFullscreen, enterFullscreen, exitFullscreen } = useProctoring(examStarted, () => {
+    // Auto-submit when user exits fullscreen during exam
+    if (submitRef.current) submitRef.current();
+  });
 
   const [questions, setQuestions] = useState<Question[]>([]);
   const [answers, setAnswers] = useState<Record<string, string>>({});
@@ -150,13 +154,14 @@ const Quiz = () => {
     setShowInstructions(false);
     setExamStarted(true);
     startTimeRef.current = Date.now();
-    // Fullscreen is optional — user can click the fullscreen button manually
+    enterFullscreen();
   };
 
   const handleSubmit = useCallback(async () => {
     if (submitting || !examId || !user) return;
     setSubmitting(true);
-    exitFullscreen();
+    // Only exit fullscreen if we're still in it (don't call if triggered by fullscreen exit)
+    if (document.fullscreenElement) exitFullscreen();
 
     const timeTaken = Math.floor((Date.now() - startTimeRef.current) / 1000);
 
@@ -197,6 +202,11 @@ const Quiz = () => {
 
     navigate(`/results/${result?.id}`, { replace: true });
   }, [submitting, examId, user, answers, setNumber, sectionId, tabSwitches, navigate, exitFullscreen]);
+
+  // Keep submitRef in sync so proctoring callback always has latest
+  useEffect(() => {
+    submitRef.current = handleSubmit;
+  }, [handleSubmit]);
 
   const formatTime = (seconds: number) => {
     const h = Math.floor(seconds / 3600);

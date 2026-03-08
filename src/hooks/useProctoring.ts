@@ -7,7 +7,7 @@ interface ProctoringState {
   warnings: string[];
 }
 
-export const useProctoring = (enabled: boolean = true) => {
+export const useProctoring = (enabled: boolean = true, onFullscreenExit?: () => void) => {
   const { toast } = useToast();
   const [state, setState] = useState<ProctoringState>({
     tabSwitches: 0,
@@ -15,13 +15,15 @@ export const useProctoring = (enabled: boolean = true) => {
     warnings: [],
   });
   const tabSwitchRef = useRef(0);
+  const onFullscreenExitRef = useRef(onFullscreenExit);
+  onFullscreenExitRef.current = onFullscreenExit;
 
   const enterFullscreen = useCallback(async () => {
     try {
       await document.documentElement.requestFullscreen();
       setState((s) => ({ ...s, isFullscreen: true }));
     } catch {
-      // Fullscreen may be blocked
+      // Fullscreen may be blocked (e.g. in iframe preview)
     }
   }, []);
 
@@ -54,12 +56,8 @@ export const useProctoring = (enabled: boolean = true) => {
     const handleFullscreenChange = () => {
       const isFs = !!document.fullscreenElement;
       setState((s) => ({ ...s, isFullscreen: isFs }));
-      if (!isFs) {
-        toast({
-          title: "⚠️ Fullscreen Exited",
-          description: "Please stay in fullscreen mode during the exam.",
-          variant: "destructive",
-        });
+      if (!isFs && onFullscreenExitRef.current) {
+        onFullscreenExitRef.current();
       }
     };
 
