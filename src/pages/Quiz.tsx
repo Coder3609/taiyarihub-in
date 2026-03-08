@@ -440,7 +440,7 @@ const Quiz = () => {
 
                   {currentQ.question_type === "integer" ? (
                     <div className="space-y-3">
-                      <label className="text-sm text-muted-foreground">Enter your numerical answer:</label>
+                      <label className="text-sm" style={{ color: "hsl(215 20% 45%)" }}>Enter your numerical answer:</label>
                       <Input
                         type="number"
                         placeholder="Type your answer..."
