@@ -324,11 +324,11 @@ const Quiz = () => {
           <div className="flex items-center gap-3">
             <Clock className="h-4 w-4" style={{ color: "hsl(215 20% 45%)" }} />
             <span className="text-xs font-medium" style={{ color: "hsl(215 20% 45%)" }}>Time Left:</span>
-            <div className={`font-mono text-base font-bold px-4 py-1.5 rounded-lg border-2 ${
+            <div className="font-mono text-base font-bold px-4 py-1.5 rounded-lg border-2" style={
               timeLeft < 300
-                ? "bg-destructive/10 text-destructive border-destructive/30 animate-pulse"
-                : "bg-foreground text-background border-foreground"
-            }`}>
+                ? { background: "hsl(0 84% 95%)", color: "hsl(0 84% 50%)", borderColor: "hsl(0 84% 80%)" }
+                : { background: "hsl(222 47% 11%)", color: "white", borderColor: "hsl(222 47% 11%)" }
+            }>
               {formatTime(timeLeft)}
             </div>
           </div>
