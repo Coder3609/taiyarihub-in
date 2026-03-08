@@ -24,6 +24,8 @@ import {
   ChevronDown,
   FileText,
   HelpCircle,
+  Moon,
+  Sun,
 } from "lucide-react";
 import ExamInstructionsPage from "@/components/ExamInstructionsPage";
 import { Input } from "@/components/ui/input";
