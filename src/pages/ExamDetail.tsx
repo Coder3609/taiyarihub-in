@@ -1,6 +1,6 @@
 import { useState } from "react";
 import { motion } from "framer-motion";
-import { ArrowLeft, ScrollText, ClipboardList, BookOpen, ChevronRight, Cpu, Radio, Zap, Cog, FlaskConical, Atom, Ruler, Hammer, Droplets, Leaf, LayoutGrid, Globe, Rocket } from "lucide-react";
+import { ArrowLeft, ScrollText, ClipboardList, BookOpen, ChevronRight, Cpu, Radio, Zap, Cog, FlaskConical, Atom, Ruler, Hammer, Droplets, Leaf, LayoutGrid, Globe, Rocket, GraduationCap } from "lucide-react";
 import { Button } from "@/components/ui/button";
 import { useNavigate, useParams } from "react-router-dom";
 import Navbar from "@/components/Navbar";
