@@ -29,6 +29,18 @@ const examStreams: Record<string, { id: string; title: string; shortName: string
     { id: "cs", title: "Computer Science", shortName: "CS", icon: Cpu, color: "from-blue-500/20 to-blue-600/5", borderColor: "hover:border-blue-500/50" },
     { id: "ae", title: "Aerospace Engineering", shortName: "AE", icon: Rocket, color: "from-cyan-500/20 to-cyan-600/5", borderColor: "hover:border-cyan-500/50" },
   ],
+  "CBSE": [
+    { id: "class-9", title: "Class 9", shortName: "9", icon: BookOpen, color: "from-blue-500/20 to-blue-600/5", borderColor: "hover:border-blue-500/50" },
+    { id: "class-10", title: "Class 10", shortName: "10", icon: BookOpen, color: "from-emerald-500/20 to-emerald-600/5", borderColor: "hover:border-emerald-500/50" },
+    { id: "class-11", title: "Class 11", shortName: "11", icon: BookOpen, color: "from-purple-500/20 to-purple-600/5", borderColor: "hover:border-purple-500/50" },
+    { id: "class-12", title: "Class 12", shortName: "12", icon: BookOpen, color: "from-amber-500/20 to-amber-600/5", borderColor: "hover:border-amber-500/50" },
+  ],
+  "ICSE": [
+    { id: "class-9", title: "Class 9", shortName: "9", icon: BookOpen, color: "from-blue-500/20 to-blue-600/5", borderColor: "hover:border-blue-500/50" },
+    { id: "class-10", title: "Class 10", shortName: "10", icon: BookOpen, color: "from-emerald-500/20 to-emerald-600/5", borderColor: "hover:border-emerald-500/50" },
+    { id: "class-11", title: "Class 11", shortName: "11", icon: BookOpen, color: "from-purple-500/20 to-purple-600/5", borderColor: "hover:border-purple-500/50" },
+    { id: "class-12", title: "Class 12", shortName: "12", icon: BookOpen, color: "from-amber-500/20 to-amber-600/5", borderColor: "hover:border-amber-500/50" },
+  ],
 };
 
 const sectionQuotes: Record<string, string> = {
