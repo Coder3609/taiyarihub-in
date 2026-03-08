@@ -68,6 +68,7 @@ const Quiz = () => {
   const [showInstructions, setShowInstructions] = useState(true);
   const [activeSection, setActiveSection] = useState<string>("core");
   const [showQuestionPaper, setShowQuestionPaper] = useState(false);
+  const [nightMode, setNightMode] = useState(false);
   const startTimeRef = useRef(Date.now());
 
   // Split questions into sections by category
