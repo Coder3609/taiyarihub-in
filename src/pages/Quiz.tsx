@@ -595,7 +595,7 @@ const Quiz = () => {
       </div>
 
       {/* === NTA-Style Bottom Action Bar === */}
-      <footer className="shrink-0 border-t border-border" style={{ background: "hsl(230 50% 97%)" }}>
+      <footer className="shrink-0 border-t" style={{ background: "hsl(230 50% 97%)", borderColor: "hsl(220 13% 90%)" }}>
         <div className="flex items-center justify-between px-4 py-2.5">
           <div className="flex items-center gap-3">
             <button
