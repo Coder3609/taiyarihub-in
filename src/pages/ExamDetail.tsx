@@ -132,7 +132,7 @@ const ExamDetail = () => {
                 {examName}
               </h1>
               <p className="text-muted-foreground text-sm md:text-base">
-                Select your stream / branch to continue.
+                {examSlug === "CBSE" || examSlug === "ICSE" ? "Select your class to continue." : "Select your stream / branch to continue."}
               </p>
             </motion.div>
 
