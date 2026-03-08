@@ -364,9 +364,9 @@ const Quiz = () => {
               >
                 <span>{sec.icon}</span>
                 <span>{sec.label}</span>
-                <span className={`ml-1 text-[10px] px-1.5 py-0.5 rounded-full font-bold ${
-                  isActive ? "bg-primary/10 text-primary" : "bg-muted text-muted-foreground"
-                }`}>
+                <span className="ml-1 text-[10px] px-1.5 py-0.5 rounded-full font-bold" style={
+                  isActive ? { background: "hsl(38 92% 93%)", color: "hsl(38 92% 40%)" } : { background: "hsl(220 13% 91%)", color: "hsl(215 20% 45%)" }
+                }>
                   {answeredCount}/{secQuestions.length}
                 </span>
               </button>
