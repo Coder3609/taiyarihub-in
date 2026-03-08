@@ -87,6 +87,18 @@ const sections = [
     accentDot: "bg-emerald-400",
     stats: ["Best sellers", "Chapter-wise"],
   },
+  {
+    id: "master",
+    title: "Subject-wise Master Questions",
+    shortTitle: "Master",
+    icon: GraduationCap,
+    color: "from-rose-500/20 via-rose-600/10 to-pink-700/5",
+    borderColor: "border-rose-500/20 hover:border-rose-400/60",
+    badgeColor: "bg-rose-500/15 text-rose-400 ring-1 ring-rose-500/20",
+    glowColor: "group-hover:shadow-[0_0_30px_-5px_rgba(244,63,94,0.3)]",
+    accentDot: "bg-rose-400",
+    stats: ["Subject-wise", "Expert level"],
+  },
 ];
 const container = {
   hidden: {},
