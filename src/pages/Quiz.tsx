@@ -392,11 +392,11 @@ const Quiz = () => {
               <span className="text-xs" style={{ color: "hsl(215 20% 45%)" }}>of {currentSectionQuestions.length}</span>
             </div>
             <div className="flex items-center gap-4 text-xs">
-              <span className="text-muted-foreground">
+              <span style={{ color: "hsl(215 20% 45%)" }}>
                 Marks: <span className="font-bold" style={{ color: "hsl(142 72% 40%)" }}>+4</span>{" "}
-                <span className="font-bold text-destructive">-1</span>
+                <span className="font-bold" style={{ color: "hsl(0 84% 50%)" }}>-1</span>
               </span>
-              <span className="font-semibold text-foreground bg-muted/50 px-2.5 py-1 rounded">
+              <span className="font-semibold px-2.5 py-1 rounded" style={{ color: "hsl(222 47% 11%)", background: "hsl(220 13% 91%)" }}>
                 {currentQ.question_type === "integer"
                   ? "Numerical"
                   : currentQ.question_type === "msq"
