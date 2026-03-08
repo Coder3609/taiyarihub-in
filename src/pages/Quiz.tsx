@@ -285,7 +285,7 @@ const Quiz = () => {
   }
 
   return (
-    <div className="h-screen flex flex-col overflow-hidden" style={{ background: "#f0f0f0" }}>
+    <div className="h-screen flex flex-col overflow-hidden" style={{ background: "#f0f0f0", color: "hsl(222 47% 11%)" }}>
       {/* === NTA-Style Top Header === */}
       <header className="shrink-0" style={{ background: "linear-gradient(135deg, hsl(230 60% 28%), hsl(230 65% 22%))" }}>
         {/* Row 1: Branding + Exam Name + User */}
