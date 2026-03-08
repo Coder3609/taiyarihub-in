@@ -433,8 +433,8 @@ const Quiz = () => {
                       {currentQ.source_label}
                     </div>
                   )}
-                  <p className="text-sm md:text-[15px] text-foreground leading-relaxed mb-8">
-                    <span className="font-semibold text-muted-foreground">Q{sectionIndex + 1}.</span>{" "}
+                  <p className="text-sm md:text-[15px] leading-relaxed mb-8" style={{ color: "hsl(222 47% 11%)" }}>
+                    <span className="font-semibold" style={{ color: "hsl(215 20% 45%)" }}>Q{sectionIndex + 1}.</span>{" "}
                     {currentQ.question_text}
                   </p>
 
