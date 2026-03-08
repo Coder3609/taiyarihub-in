@@ -183,6 +183,52 @@ const Profile = () => {
                 </div>
               </div>
             </div>
+
+            {/* Edit Dialog */}
+            <Dialog open={editOpen} onOpenChange={setEditOpen}>
+              <DialogContent className="sm:max-w-md">
+                <DialogHeader>
+                  <DialogTitle className="font-display">Edit Profile</DialogTitle>
+                </DialogHeader>
+                <div className="space-y-4 pt-2">
+                  <div className="space-y-2">
+                    <Label>Full Name</Label>
+                    <Input value={editName} onChange={e => setEditName(e.target.value)} placeholder="Your full name" />
+                  </div>
+                  <div className="space-y-2">
+                    <Label>Email</Label>
+                    <Input value={profile?.email || user?.email || ""} disabled className="opacity-60" />
+                    <p className="text-[10px] text-muted-foreground">Email cannot be changed</p>
+                  </div>
+                  <div className="space-y-2">
+                    <Label>Gender</Label>
+                    <Select value={editGender} onValueChange={setEditGender}>
+                      <SelectTrigger><SelectValue placeholder="Select gender" /></SelectTrigger>
+                      <SelectContent>
+                        <SelectItem value="Male">Male</SelectItem>
+                        <SelectItem value="Female">Female</SelectItem>
+                        <SelectItem value="Other">Other</SelectItem>
+                      </SelectContent>
+                    </Select>
+                  </div>
+                  <div className="space-y-2">
+                    <Label>Preparing For</Label>
+                    <div className="grid grid-cols-2 gap-2 max-h-48 overflow-y-auto">
+                      {EXAM_OPTIONS.map(exam => (
+                        <label key={exam} className="flex items-center gap-2 text-sm cursor-pointer">
+                          <Checkbox checked={editExams.includes(exam)} onCheckedChange={() => toggleExam(exam)} />
+                          <span className="text-foreground">{exam}</span>
+                        </label>
+                      ))}
+                    </div>
+                  </div>
+                  <Button onClick={handleSave} disabled={saving} className="w-full font-display font-semibold">
+                    {saving ? <Loader2 className="h-4 w-4 animate-spin mr-2" /> : null}
+                    Save Changes
+                  </Button>
+                </div>
+              </DialogContent>
+            </Dialog>
           </motion.div>
         </div>
       </main>
