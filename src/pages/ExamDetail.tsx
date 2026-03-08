@@ -1,6 +1,6 @@
 import { useState } from "react";
 import { motion } from "framer-motion";
-import { ArrowLeft, ScrollText, ClipboardList, BookOpen, ChevronRight, Cpu, Radio, Zap, Cog, FlaskConical, Atom, Ruler, Hammer, Droplets, Leaf, LayoutGrid } from "lucide-react";
+import { ArrowLeft, ScrollText, ClipboardList, BookOpen, ChevronRight, Cpu, Radio, Zap, Cog, FlaskConical, Atom, Ruler, Hammer, Droplets, Leaf, LayoutGrid, Globe } from "lucide-react";
 import { Button } from "@/components/ui/button";
 import { useNavigate, useParams } from "react-router-dom";
 import Navbar from "@/components/Navbar";
@@ -20,6 +20,14 @@ const examStreams: Record<string, { id: string; title: string; shortName: string
     { id: "mt", title: "Metallurgical Engineering", shortName: "MT", icon: Hammer, color: "from-stone-500/20 to-stone-600/5", borderColor: "hover:border-stone-500/50" },
     { id: "pe", title: "Petroleum Engineering", shortName: "PE", icon: Droplets, color: "from-yellow-500/20 to-yellow-600/5", borderColor: "hover:border-yellow-500/50" },
     { id: "ph", title: "Physics", shortName: "PH", icon: Atom, color: "from-indigo-500/20 to-indigo-600/5", borderColor: "hover:border-indigo-500/50" },
+  ],
+  "ISRO-Indian-Space-Research-Organisation": [
+    { id: "me", title: "Mechanical Engineering", shortName: "ME", icon: Cog, color: "from-emerald-500/20 to-emerald-600/5", borderColor: "hover:border-emerald-500/50" },
+    { id: "ce", title: "Civil Engineering", shortName: "CE", icon: Ruler, color: "from-orange-500/20 to-orange-600/5", borderColor: "hover:border-orange-500/50" },
+    { id: "ee", title: "Electrical Engineering", shortName: "EE", icon: Zap, color: "from-amber-500/20 to-amber-600/5", borderColor: "hover:border-amber-500/50" },
+    { id: "ec", title: "Electronics & Communication", shortName: "EC", icon: Radio, color: "from-purple-500/20 to-purple-600/5", borderColor: "hover:border-purple-500/50" },
+    { id: "cs", title: "Computer Science", shortName: "CS", icon: Cpu, color: "from-blue-500/20 to-blue-600/5", borderColor: "hover:border-blue-500/50" },
+    { id: "ae", title: "Aerospace Engineering", shortName: "AE", icon: Globe, color: "from-cyan-500/20 to-cyan-600/5", borderColor: "hover:border-cyan-500/50" },
   ],
 };
 
