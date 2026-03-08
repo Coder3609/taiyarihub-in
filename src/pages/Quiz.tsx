@@ -356,11 +356,11 @@ const Quiz = () => {
               <button
                 key={sec.id}
                 onClick={() => switchSection(sec.id)}
-                className={`flex items-center gap-2 px-4 py-2.5 text-xs font-semibold border-b-[3px] transition-all ${
-                  isActive
-                    ? "border-primary text-primary bg-primary/5"
-                    : "border-transparent text-muted-foreground hover:text-foreground hover:bg-muted/30"
-                }`}
+                className="flex items-center gap-2 px-4 py-2.5 text-xs font-semibold border-b-[3px] transition-all"
+                style={isActive
+                  ? { borderColor: "hsl(38 92% 50%)", color: "hsl(38 92% 40%)", background: "hsl(38 92% 97%)" }
+                  : { borderColor: "transparent", color: "hsl(215 20% 45%)" }
+                }
               >
                 <span>{sec.icon}</span>
                 <span>{sec.label}</span>
