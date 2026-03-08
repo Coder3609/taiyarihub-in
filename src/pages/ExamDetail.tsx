@@ -6,42 +6,50 @@ import { useNavigate, useParams } from "react-router-dom";
 import Navbar from "@/components/Navbar";
 import Footer from "@/components/Footer";
 
-// Streams config for exams that have multiple branches/streams
-const examStreams: Record<string, { id: string; title: string; shortName: string; icon: React.ElementType; color: string; borderColor: string }[]> = {
+// Streams config — each stream has a `slug` that maps to a separate exam in the DB
+const examStreams: Record<string, { id: string; slug: string; title: string; shortName: string; icon: React.ElementType; color: string; borderColor: string }[]> = {
   "GATE-Graduate-Aptitude-Test-in-Engineering": [
-    { id: "cs", title: "Computer Science & IT", shortName: "CS", icon: Cpu, color: "from-blue-500/20 to-blue-600/5", borderColor: "hover:border-blue-500/50" },
-    { id: "ec", title: "Electronics & Communication", shortName: "EC", icon: Radio, color: "from-purple-500/20 to-purple-600/5", borderColor: "hover:border-purple-500/50" },
-    { id: "ee", title: "Electrical Engineering", shortName: "EE", icon: Zap, color: "from-amber-500/20 to-amber-600/5", borderColor: "hover:border-amber-500/50" },
-    { id: "me", title: "Mechanical Engineering", shortName: "ME", icon: Cog, color: "from-emerald-500/20 to-emerald-600/5", borderColor: "hover:border-emerald-500/50" },
-    { id: "ce", title: "Civil Engineering", shortName: "CE", icon: Ruler, color: "from-orange-500/20 to-orange-600/5", borderColor: "hover:border-orange-500/50" },
-    { id: "ch", title: "Chemical Engineering", shortName: "CH", icon: FlaskConical, color: "from-pink-500/20 to-pink-600/5", borderColor: "hover:border-pink-500/50" },
-    { id: "in", title: "Instrumentation Engineering", shortName: "IN", icon: LayoutGrid, color: "from-cyan-500/20 to-cyan-600/5", borderColor: "hover:border-cyan-500/50" },
-    { id: "bt", title: "Biotechnology", shortName: "BT", icon: Leaf, color: "from-lime-500/20 to-lime-600/5", borderColor: "hover:border-lime-500/50" },
-    { id: "mt", title: "Metallurgical Engineering", shortName: "MT", icon: Hammer, color: "from-stone-500/20 to-stone-600/5", borderColor: "hover:border-stone-500/50" },
-    { id: "pe", title: "Petroleum Engineering", shortName: "PE", icon: Droplets, color: "from-yellow-500/20 to-yellow-600/5", borderColor: "hover:border-yellow-500/50" },
-    { id: "ph", title: "Physics", shortName: "PH", icon: Atom, color: "from-indigo-500/20 to-indigo-600/5", borderColor: "hover:border-indigo-500/50" },
+    { id: "cs", slug: "GATE-CS", title: "Computer Science & IT", shortName: "CS", icon: Cpu, color: "from-blue-500/20 to-blue-600/5", borderColor: "hover:border-blue-500/50" },
+    { id: "ec", slug: "GATE-EC", title: "Electronics & Communication", shortName: "EC", icon: Radio, color: "from-purple-500/20 to-purple-600/5", borderColor: "hover:border-purple-500/50" },
+    { id: "ee", slug: "GATE-EE", title: "Electrical Engineering", shortName: "EE", icon: Zap, color: "from-amber-500/20 to-amber-600/5", borderColor: "hover:border-amber-500/50" },
+    { id: "me", slug: "GATE-ME", title: "Mechanical Engineering", shortName: "ME", icon: Cog, color: "from-emerald-500/20 to-emerald-600/5", borderColor: "hover:border-emerald-500/50" },
+    { id: "ce", slug: "GATE-CE", title: "Civil Engineering", shortName: "CE", icon: Ruler, color: "from-orange-500/20 to-orange-600/5", borderColor: "hover:border-orange-500/50" },
+    { id: "ch", slug: "GATE-CH", title: "Chemical Engineering", shortName: "CH", icon: FlaskConical, color: "from-pink-500/20 to-pink-600/5", borderColor: "hover:border-pink-500/50" },
+    { id: "in", slug: "GATE-IN", title: "Instrumentation Engineering", shortName: "IN", icon: LayoutGrid, color: "from-cyan-500/20 to-cyan-600/5", borderColor: "hover:border-cyan-500/50" },
+    { id: "bt", slug: "GATE-BT", title: "Biotechnology", shortName: "BT", icon: Leaf, color: "from-lime-500/20 to-lime-600/5", borderColor: "hover:border-lime-500/50" },
+    { id: "mt", slug: "GATE-MT", title: "Metallurgical Engineering", shortName: "MT", icon: Hammer, color: "from-stone-500/20 to-stone-600/5", borderColor: "hover:border-stone-500/50" },
+    { id: "pe", slug: "GATE-PE", title: "Petroleum Engineering", shortName: "PE", icon: Droplets, color: "from-yellow-500/20 to-yellow-600/5", borderColor: "hover:border-yellow-500/50" },
+    { id: "ph", slug: "GATE-PH", title: "Physics", shortName: "PH", icon: Atom, color: "from-indigo-500/20 to-indigo-600/5", borderColor: "hover:border-indigo-500/50" },
   ],
   "ISRO-Indian-Space-Research-Organisation": [
-    { id: "me", title: "Mechanical Engineering", shortName: "ME", icon: Cog, color: "from-emerald-500/20 to-emerald-600/5", borderColor: "hover:border-emerald-500/50" },
-    { id: "ce", title: "Civil Engineering", shortName: "CE", icon: Ruler, color: "from-orange-500/20 to-orange-600/5", borderColor: "hover:border-orange-500/50" },
-    { id: "ee", title: "Electrical Engineering", shortName: "EE", icon: Zap, color: "from-amber-500/20 to-amber-600/5", borderColor: "hover:border-amber-500/50" },
-    { id: "ec", title: "Electronics & Communication", shortName: "EC", icon: Radio, color: "from-purple-500/20 to-purple-600/5", borderColor: "hover:border-purple-500/50" },
-    { id: "cs", title: "Computer Science", shortName: "CS", icon: Cpu, color: "from-blue-500/20 to-blue-600/5", borderColor: "hover:border-blue-500/50" },
-    { id: "ae", title: "Aerospace Engineering", shortName: "AE", icon: Rocket, color: "from-cyan-500/20 to-cyan-600/5", borderColor: "hover:border-cyan-500/50" },
+    { id: "me", slug: "ISRO-ME", title: "Mechanical Engineering", shortName: "ME", icon: Cog, color: "from-emerald-500/20 to-emerald-600/5", borderColor: "hover:border-emerald-500/50" },
+    { id: "ce", slug: "ISRO-CE", title: "Civil Engineering", shortName: "CE", icon: Ruler, color: "from-orange-500/20 to-orange-600/5", borderColor: "hover:border-orange-500/50" },
+    { id: "ee", slug: "ISRO-EE", title: "Electrical Engineering", shortName: "EE", icon: Zap, color: "from-amber-500/20 to-amber-600/5", borderColor: "hover:border-amber-500/50" },
+    { id: "ec", slug: "ISRO-EC", title: "Electronics & Communication", shortName: "EC", icon: Radio, color: "from-purple-500/20 to-purple-600/5", borderColor: "hover:border-purple-500/50" },
+    { id: "cs", slug: "ISRO-CS", title: "Computer Science", shortName: "CS", icon: Cpu, color: "from-blue-500/20 to-blue-600/5", borderColor: "hover:border-blue-500/50" },
+    { id: "ae", slug: "ISRO-AE", title: "Aerospace Engineering", shortName: "AE", icon: Rocket, color: "from-cyan-500/20 to-cyan-600/5", borderColor: "hover:border-cyan-500/50" },
   ],
   "CBSE": [
-    { id: "class-9", title: "Class 9", shortName: "9", icon: BookOpen, color: "from-blue-500/20 to-blue-600/5", borderColor: "hover:border-blue-500/50" },
-    { id: "class-10", title: "Class 10", shortName: "10", icon: BookOpen, color: "from-emerald-500/20 to-emerald-600/5", borderColor: "hover:border-emerald-500/50" },
-    { id: "class-11", title: "Class 11", shortName: "11", icon: BookOpen, color: "from-purple-500/20 to-purple-600/5", borderColor: "hover:border-purple-500/50" },
-    { id: "class-12", title: "Class 12", shortName: "12", icon: BookOpen, color: "from-amber-500/20 to-amber-600/5", borderColor: "hover:border-amber-500/50" },
+    { id: "class-9", slug: "CBSE-Class-9", title: "Class 9", shortName: "9", icon: BookOpen, color: "from-blue-500/20 to-blue-600/5", borderColor: "hover:border-blue-500/50" },
+    { id: "class-10", slug: "CBSE-Class-10", title: "Class 10", shortName: "10", icon: BookOpen, color: "from-emerald-500/20 to-emerald-600/5", borderColor: "hover:border-emerald-500/50" },
+    { id: "class-11", slug: "CBSE-Class-11", title: "Class 11", shortName: "11", icon: BookOpen, color: "from-purple-500/20 to-purple-600/5", borderColor: "hover:border-purple-500/50" },
+    { id: "class-12", slug: "CBSE-Class-12", title: "Class 12", shortName: "12", icon: BookOpen, color: "from-amber-500/20 to-amber-600/5", borderColor: "hover:border-amber-500/50" },
   ],
   "ICSE": [
-    { id: "class-9", title: "Class 9", shortName: "9", icon: BookOpen, color: "from-blue-500/20 to-blue-600/5", borderColor: "hover:border-blue-500/50" },
-    { id: "class-10", title: "Class 10", shortName: "10", icon: BookOpen, color: "from-emerald-500/20 to-emerald-600/5", borderColor: "hover:border-emerald-500/50" },
-    { id: "class-11", title: "Class 11", shortName: "11", icon: BookOpen, color: "from-purple-500/20 to-purple-600/5", borderColor: "hover:border-purple-500/50" },
-    { id: "class-12", title: "Class 12", shortName: "12", icon: BookOpen, color: "from-amber-500/20 to-amber-600/5", borderColor: "hover:border-amber-500/50" },
+    { id: "class-9", slug: "ICSE-Class-9", title: "Class 9", shortName: "9", icon: BookOpen, color: "from-blue-500/20 to-blue-600/5", borderColor: "hover:border-blue-500/50" },
+    { id: "class-10", slug: "ICSE-Class-10", title: "Class 10", shortName: "10", icon: BookOpen, color: "from-emerald-500/20 to-emerald-600/5", borderColor: "hover:border-emerald-500/50" },
+    { id: "class-11", slug: "ICSE-Class-11", title: "Class 11", shortName: "11", icon: BookOpen, color: "from-purple-500/20 to-purple-600/5", borderColor: "hover:border-purple-500/50" },
+    { id: "class-12", slug: "ICSE-Class-12", title: "Class 12", shortName: "12", icon: BookOpen, color: "from-amber-500/20 to-amber-600/5", borderColor: "hover:border-amber-500/50" },
   ],
 };
+
+// Map parent exam slugs for back navigation
+const parentExamMap: Record<string, string> = {};
+Object.entries(examStreams).forEach(([parentSlug, streams]) => {
+  streams.forEach(s => {
+    parentExamMap[s.slug] = parentSlug;
+  });
+});
 
 const sectionQuotes: Record<string, string> = {
   pyqs: "Learn from the past, ace the future.",
@@ -100,6 +108,7 @@ const sections = [
     stats: ["Subject-wise", "Expert level"],
   },
 ];
+
 const container = {
   hidden: {},
   show: { transition: { staggerChildren: 0.1 } },
@@ -112,15 +121,15 @@ const item = {
 
 const ExamDetail = () => {
   const navigate = useNavigate();
-  const { examSlug, streamId } = useParams();
+  const { examSlug } = useParams();
 
   const examName = (examSlug || "").replace(/-/g, " ");
   const streams = examStreams[examSlug || ""];
   const hasStreams = !!streams && streams.length > 0;
+  const parentSlug = parentExamMap[examSlug || ""];
 
-  // If exam has streams and no stream selected yet, show stream selection
-  if (hasStreams && !streamId) {
-    const selectedStream = streams.find((s) => s.id === streamId);
+  // If this is a parent exam with streams, show stream selection
+  if (hasStreams) {
     return (
       <div className="min-h-screen bg-background">
         <Navbar />
@@ -160,7 +169,7 @@ const ExamDetail = () => {
                   variants={item}
                   whileHover={{ y: -4, scale: 1.02 }}
                   whileTap={{ scale: 0.98 }}
-                  onClick={() => navigate(`/exam/${examSlug}/stream/${stream.id}`)}
+                  onClick={() => navigate(`/exam/${stream.slug}`)}
                   className={`relative rounded-xl p-3 aspect-square bg-gradient-to-br ${stream.color} border border-border/50 ${stream.borderColor} cursor-pointer transition-all flex flex-col justify-between group`}
                 >
                   <div className="flex items-start justify-between">
@@ -184,9 +193,19 @@ const ExamDetail = () => {
     );
   }
 
-  // Show sections (PYQs, Mocks, etc.)
-  const selectedStream = streams?.find((s) => s.id === streamId);
-  const basePath = streamId ? `/exam/${examSlug}/stream/${streamId}` : `/exam/${examSlug}`;
+  // Show sections (PYQs, Mocks, Books, Master) for a specific exam/stream
+  const basePath = `/exam/${examSlug}`;
+
+  // Determine display name: if this is a child exam (e.g. GATE-CS), show parent + stream name
+  let displayName = examName;
+  if (parentSlug) {
+    const parentStreams = examStreams[parentSlug];
+    const thisStream = parentStreams?.find(s => s.slug === examSlug);
+    if (thisStream) {
+      const parentName = parentSlug.replace(/-/g, " ");
+      displayName = `${parentName} — ${thisStream.title}`;
+    }
+  }
 
   return (
     <div className="min-h-screen bg-background">
@@ -195,7 +214,7 @@ const ExamDetail = () => {
         <div className="container mx-auto px-4 md:px-6 max-w-5xl">
           <Button
             variant="ghost"
-            onClick={() => streamId ? navigate(`/exam/${examSlug}`) : navigate("/")}
+            onClick={() => parentSlug ? navigate(`/exam/${parentSlug}`) : navigate("/")}
             className="mb-6 text-muted-foreground hover:text-foreground"
           >
             <ArrowLeft className="mr-2 h-4 w-4" />
@@ -208,7 +227,7 @@ const ExamDetail = () => {
             className="mb-10"
           >
             <h1 className="font-display text-2xl md:text-4xl font-bold text-foreground mb-2 capitalize">
-              {selectedStream ? `${examName} — ${selectedStream.title}` : examName}
+              {displayName}
             </h1>
             <p className="text-muted-foreground text-sm md:text-base">
               Choose a section below to start practicing.
@@ -219,7 +238,7 @@ const ExamDetail = () => {
             variants={container}
             initial="hidden"
             animate="show"
-            className="grid grid-cols-1 sm:grid-cols-3 gap-4 md:gap-5"
+            className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-4 gap-4 md:gap-5"
           >
             {sections.map((section) => {
               const sectionPath = (section.id === "books")
