@@ -152,7 +152,7 @@ const Profile = () => {
             <div className="rounded-2xl border border-border/50 bg-card p-6 space-y-5">
               <div className="flex items-center justify-between">
                 <h2 className="font-display font-bold text-foreground">Details</h2>
-                <Button variant="ghost" size="sm" onClick={() => navigate("/complete-profile")} className="text-primary gap-1">
+                <Button variant="ghost" size="sm" onClick={openEdit} className="text-primary gap-1">
                   <Edit className="h-3.5 w-3.5" /> Edit
                 </Button>
               </div>
