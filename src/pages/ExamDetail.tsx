@@ -1,6 +1,6 @@
 import { useState } from "react";
 import { motion } from "framer-motion";
-import { ArrowLeft, ScrollText, ClipboardList, BookOpen, ChevronRight, Cpu, Radio, Zap, Cog, FlaskConical, Atom, Ruler, Hammer, Droplets, Leaf, LayoutGrid, Globe } from "lucide-react";
+import { ArrowLeft, ScrollText, ClipboardList, BookOpen, ChevronRight, Cpu, Radio, Zap, Cog, FlaskConical, Atom, Ruler, Hammer, Droplets, Leaf, LayoutGrid, Globe, Rocket } from "lucide-react";
 import { Button } from "@/components/ui/button";
 import { useNavigate, useParams } from "react-router-dom";
 import Navbar from "@/components/Navbar";
@@ -27,7 +27,7 @@ const examStreams: Record<string, { id: string; title: string; shortName: string
     { id: "ee", title: "Electrical Engineering", shortName: "EE", icon: Zap, color: "from-amber-500/20 to-amber-600/5", borderColor: "hover:border-amber-500/50" },
     { id: "ec", title: "Electronics & Communication", shortName: "EC", icon: Radio, color: "from-purple-500/20 to-purple-600/5", borderColor: "hover:border-purple-500/50" },
     { id: "cs", title: "Computer Science", shortName: "CS", icon: Cpu, color: "from-blue-500/20 to-blue-600/5", borderColor: "hover:border-blue-500/50" },
-    { id: "ae", title: "Aerospace Engineering", shortName: "AE", icon: Globe, color: "from-cyan-500/20 to-cyan-600/5", borderColor: "hover:border-cyan-500/50" },
+    { id: "ae", title: "Aerospace Engineering", shortName: "AE", icon: Rocket, color: "from-cyan-500/20 to-cyan-600/5", borderColor: "hover:border-cyan-500/50" },
   ],
 };
 
