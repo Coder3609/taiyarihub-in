@@ -27,7 +27,7 @@ const examStreams: Record<string, { id: string; title: string; shortName: string
     { id: "ee", title: "Electrical Engineering", shortName: "EE", icon: Zap, color: "from-amber-500/20 to-amber-600/5", borderColor: "hover:border-amber-500/50" },
     { id: "ec", title: "Electronics & Communication", shortName: "EC", icon: Radio, color: "from-purple-500/20 to-purple-600/5", borderColor: "hover:border-purple-500/50" },
     { id: "cs", title: "Computer Science", shortName: "CS", icon: Cpu, color: "from-blue-500/20 to-blue-600/5", borderColor: "hover:border-blue-500/50" },
-    { id: "ae", title: "Aerospace Engineering", shortName: "AE", icon: Globe, color: "from-cyan-500/20 to-cyan-600/5", borderColor: "hover:border-cyan-500/50" },
+    { id: "ae", title: "Aerospace Engineering", shortName: "AE", icon: Rocket, color: "from-cyan-500/20 to-cyan-600/5", borderColor: "hover:border-cyan-500/50" },
   ],
 };
 
