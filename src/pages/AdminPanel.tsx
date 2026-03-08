@@ -8,12 +8,10 @@ import { Button } from "@/components/ui/button";
 import { Input } from "@/components/ui/input";
 import { Textarea } from "@/components/ui/textarea";
 import { Select, SelectContent, SelectItem, SelectTrigger, SelectValue } from "@/components/ui/select";
-import { Card, CardContent, CardHeader, CardTitle } from "@/components/ui/card";
-import { Table, TableBody, TableCell, TableHead, TableHeader, TableRow } from "@/components/ui/table";
-import { Dialog, DialogContent, DialogHeader, DialogTitle, DialogFooter } from "@/components/ui/dialog";
+import { Card, CardContent, CardHeader, CardTitle, CardDescription } from "@/components/ui/card";
 import { Badge } from "@/components/ui/badge";
 import { toast } from "@/hooks/use-toast";
-import { ArrowLeft, Plus, Pencil, Trash2, Loader2, Search, ShieldCheck } from "lucide-react";
+import { ArrowLeft, Plus, Loader2, ShieldCheck, CheckCircle2, RotateCcw, List } from "lucide-react";
 
 interface Exam {
   id: string;
@@ -22,177 +20,126 @@ interface Exam {
   category: string;
 }
 
-interface Question {
-  id: string;
-  question_number: number;
-  question_text: string;
-  option_a: string;
-  option_b: string;
-  option_c: string;
-  option_d: string;
-  correct_answer: string;
-  explanation: string | null;
-  question_type: string;
-  set_number: number;
-  source_label: string | null;
-  exam_id: string;
-}
-
-const emptyQuestion = {
-  question_text: "",
-  option_a: "",
-  option_b: "",
-  option_c: "",
-  option_d: "",
-  correct_answer: "A",
-  explanation: "",
-  question_type: "mcq",
-  set_number: 1,
-  question_number: 1,
-  source_label: "",
-};
-
 const AdminPanel = () => {
   const navigate = useNavigate();
   const { user, loading: authLoading } = useAuth();
   const { isAdmin, loading: accessLoading } = useAccessControl();
 
   const [exams, setExams] = useState<Exam[]>([]);
-  const [selectedExamId, setSelectedExamId] = useState("");
-  const [selectedSet, setSelectedSet] = useState("1");
-  const [questions, setQuestions] = useState<Question[]>([]);
-  const [loadingQuestions, setLoadingQuestions] = useState(false);
-  const [search, setSearch] = useState("");
-
-  // Dialog state
-  const [dialogOpen, setDialogOpen] = useState(false);
-  const [editing, setEditing] = useState<Question | null>(null);
-  const [form, setForm] = useState(emptyQuestion);
   const [saving, setSaving] = useState(false);
+  const [savedCount, setSavedCount] = useState(0);
+  const [recentQuestions, setRecentQuestions] = useState<{ id: string; question_number: number; question_text: string }[]>([]);
 
-  // Delete dialog
-  const [deleteTarget, setDeleteTarget] = useState<Question | null>(null);
-  const [deleting, setDeleting] = useState(false);
+  // Form fields
+  const [examId, setExamId] = useState("");
+  const [setNumber, setSetNumber] = useState("1");
+  const [sectionType, setSectionType] = useState("pyqs");
+  const [questionCategory, setQuestionCategory] = useState("core");
+  const [questionNumber, setQuestionNumber] = useState("1");
+  const [questionType, setQuestionType] = useState("mcq");
+  const [sourceLabel, setSourceLabel] = useState("");
+  const [questionText, setQuestionText] = useState("");
+  const [optionA, setOptionA] = useState("");
+  const [optionB, setOptionB] = useState("");
+  const [optionC, setOptionC] = useState("");
+  const [optionD, setOptionD] = useState("");
+  const [correctAnswer, setCorrectAnswer] = useState("A");
+  const [explanation, setExplanation] = useState("");
 
   useEffect(() => {
     if (!authLoading && !user) navigate("/auth", { replace: true });
     if (!authLoading && !accessLoading && !isAdmin) navigate("/", { replace: true });
   }, [authLoading, accessLoading, user, isAdmin, navigate]);
 
-  // Fetch exams
   useEffect(() => {
     const fetchExams = async () => {
       const { data } = await supabase.from("exams").select("id, name, slug, category").order("name");
       setExams(data || []);
-      if (data && data.length > 0 && !selectedExamId) setSelectedExamId(data[0].id);
     };
     if (isAdmin) fetchExams();
   }, [isAdmin]);
 
-  // Fetch questions when exam/set changes
+  // Auto-increment question number when exam/set changes
   useEffect(() => {
-    if (!selectedExamId) return;
-    const fetchQuestions = async () => {
-      setLoadingQuestions(true);
+    if (!examId) return;
+    const fetchNext = async () => {
       const { data } = await supabase
         .from("questions")
-        .select("*")
-        .eq("exam_id", selectedExamId)
-        .eq("set_number", parseInt(selectedSet))
-        .order("question_number", { ascending: true });
-      setQuestions((data as Question[]) || []);
-      setLoadingQuestions(false);
+        .select("question_number")
+        .eq("exam_id", examId)
+        .eq("set_number", parseInt(setNumber))
+        .order("question_number", { ascending: false })
+        .limit(1);
+      const next = data && data.length > 0 ? data[0].question_number + 1 : 1;
+      setQuestionNumber(String(next));
     };
-    fetchQuestions();
-  }, [selectedExamId, selectedSet]);
+    fetchNext();
+  }, [examId, setNumber]);
 
-  const openAdd = () => {
-    setEditing(null);
-    const nextNum = questions.length > 0 ? Math.max(...questions.map(q => q.question_number)) + 1 : 1;
-    setForm({ ...emptyQuestion, set_number: parseInt(selectedSet), question_number: nextNum });
-    setDialogOpen(true);
-  };
-
-  const openEdit = (q: Question) => {
-    setEditing(q);
-    setForm({
-      question_text: q.question_text,
-      option_a: q.option_a,
-      option_b: q.option_b,
-      option_c: q.option_c,
-      option_d: q.option_d,
-      correct_answer: q.correct_answer,
-      explanation: q.explanation || "",
-      question_type: q.question_type,
-      set_number: q.set_number,
-      question_number: q.question_number,
-      source_label: q.source_label || "",
-    });
-    setDialogOpen(true);
+  const resetQuestionFields = () => {
+    setQuestionText("");
+    setOptionA("");
+    setOptionB("");
+    setOptionC("");
+    setOptionD("");
+    setCorrectAnswer("A");
+    setExplanation("");
+    setQuestionNumber(prev => String(parseInt(prev) + 1));
   };
 
   const handleSave = async () => {
-    if (!form.question_text.trim()) {
+    if (!examId) {
+      toast({ title: "Please select an exam first", variant: "destructive" });
+      return;
+    }
+    if (!questionText.trim()) {
       toast({ title: "Question text is required", variant: "destructive" });
       return;
     }
-    setSaving(true);
 
+    setSaving(true);
     const payload = {
-      exam_id: selectedExamId,
-      question_text: form.question_text.trim(),
-      option_a: form.option_a.trim(),
-      option_b: form.option_b.trim(),
-      option_c: form.option_c.trim(),
-      option_d: form.option_d.trim(),
-      correct_answer: form.correct_answer.trim(),
-      explanation: form.explanation.trim() || null,
-      question_type: form.question_type,
-      set_number: form.set_number,
-      question_number: form.question_number,
-      source_label: form.source_label?.trim() || null,
+      exam_id: examId,
+      set_number: parseInt(setNumber),
+      question_category: questionCategory,
+      question_number: parseInt(questionNumber),
+      question_type: questionType,
+      source_label: sourceLabel.trim() || null,
+      question_text: questionText.trim(),
+      option_a: optionA.trim(),
+      option_b: optionB.trim(),
+      option_c: optionC.trim(),
+      option_d: optionD.trim(),
+      correct_answer: correctAnswer.trim(),
+      explanation: explanation.trim() || null,
     };
 
-    if (editing) {
-      const { error } = await supabase.from("questions").update(payload).eq("id", editing.id);
-      if (error) {
-        toast({ title: "Error updating question", description: error.message, variant: "destructive" });
-      } else {
-        toast({ title: "Question updated!" });
-        setQuestions(prev => prev.map(q => q.id === editing.id ? { ...q, ...payload } : q));
-      }
-    } else {
-      const { data, error } = await supabase.from("questions").insert(payload).select().single();
-      if (error) {
-        toast({ title: "Error adding question", description: error.message, variant: "destructive" });
-      } else {
-        toast({ title: "Question added!" });
-        setQuestions(prev => [...prev, data as Question].sort((a, b) => a.question_number - b.question_number));
-      }
-    }
+    const { data, error } = await supabase.from("questions").insert(payload).select("id, question_number, question_text").single();
 
-    setSaving(false);
-    setDialogOpen(false);
-  };
-
-  const handleDelete = async () => {
-    if (!deleteTarget) return;
-    setDeleting(true);
-    const { error } = await supabase.from("questions").delete().eq("id", deleteTarget.id);
     if (error) {
-      toast({ title: "Error deleting", description: error.message, variant: "destructive" });
+      toast({ title: "Error adding question", description: error.message, variant: "destructive" });
     } else {
-      toast({ title: "Question deleted" });
-      setQuestions(prev => prev.filter(q => q.id !== deleteTarget.id));
+      setSavedCount(c => c + 1);
+      setRecentQuestions(prev => [data, ...prev].slice(0, 5));
+      toast({ title: `✅ Q${data.question_number} added!` });
+      resetQuestionFields();
     }
-    setDeleting(false);
-    setDeleteTarget(null);
+    setSaving(false);
   };
 
-  const filtered = questions.filter(q =>
-    q.question_text.toLowerCase().includes(search.toLowerCase()) ||
-    q.question_number.toString().includes(search)
-  );
+  const handleResetAll = () => {
+    setQuestionText("");
+    setOptionA("");
+    setOptionB("");
+    setOptionC("");
+    setOptionD("");
+    setCorrectAnswer("A");
+    setExplanation("");
+    setSourceLabel("");
+    setQuestionType("mcq");
+    setSavedCount(0);
+    setRecentQuestions([]);
+  };
 
   if (authLoading || accessLoading) {
     return (
@@ -208,208 +155,194 @@ const AdminPanel = () => {
     <div className="min-h-screen bg-background">
       <Navbar />
       <main className="pt-24 pb-16">
-        <div className="container mx-auto px-4 md:px-6 max-w-6xl">
+        <div className="container mx-auto px-4 md:px-6 max-w-3xl">
           <Button variant="ghost" onClick={() => navigate("/")} className="mb-4 text-muted-foreground">
             <ArrowLeft className="mr-2 h-4 w-4" /> Back
           </Button>
 
           <div className="flex items-center gap-3 mb-6">
             <ShieldCheck className="h-7 w-7 text-primary" />
-            <h1 className="font-display text-2xl font-bold text-foreground">Admin Panel — Questions</h1>
+            <div>
+              <h1 className="font-display text-2xl font-bold text-foreground">Add Questions</h1>
+              <p className="text-sm text-muted-foreground">Simple form — fill & save, repeat.</p>
+            </div>
+            {savedCount > 0 && (
+              <Badge variant="secondary" className="ml-auto text-sm">
+                <CheckCircle2 className="h-3.5 w-3.5 mr-1" />
+                {savedCount} added
+              </Badge>
+            )}
           </div>
 
-          {/* Filters */}
-          <Card className="mb-6">
-            <CardContent className="pt-6">
-              <div className="flex flex-col md:flex-row gap-4">
-                <div className="flex-1">
-                  <label className="text-sm text-muted-foreground mb-1 block">Exam</label>
-                  <Select value={selectedExamId} onValueChange={setSelectedExamId}>
-                    <SelectTrigger><SelectValue placeholder="Select exam" /></SelectTrigger>
+          {/* Step 1: Select exam & settings */}
+          <Card className="mb-4">
+            <CardHeader className="pb-3">
+              <CardTitle className="text-base">① Select Exam & Settings</CardTitle>
+              <CardDescription>These stay the same while you add multiple questions</CardDescription>
+            </CardHeader>
+            <CardContent className="space-y-4">
+              <div>
+                <label className="text-sm font-medium mb-1.5 block">Exam *</label>
+                <Select value={examId} onValueChange={setExamId}>
+                  <SelectTrigger><SelectValue placeholder="Pick an exam..." /></SelectTrigger>
+                  <SelectContent>
+                    {exams.map(e => (
+                      <SelectItem key={e.id} value={e.id}>{e.name}</SelectItem>
+                    ))}
+                  </SelectContent>
+                </Select>
+              </div>
+
+              <div className="grid grid-cols-2 sm:grid-cols-4 gap-3">
+                <div>
+                  <label className="text-sm font-medium mb-1.5 block">Set #</label>
+                  <Input type="number" min={1} value={setNumber} onChange={e => setSetNumber(e.target.value)} />
+                </div>
+                <div>
+                  <label className="text-sm font-medium mb-1.5 block">Section</label>
+                  <Select value={sectionType} onValueChange={setSectionType}>
+                    <SelectTrigger><SelectValue /></SelectTrigger>
                     <SelectContent>
-                      {exams.map(e => (
-                        <SelectItem key={e.id} value={e.id}>{e.name} ({e.category})</SelectItem>
-                      ))}
+                      <SelectItem value="pyqs">PYQs</SelectItem>
+                      <SelectItem value="mocks">Mocks</SelectItem>
+                      <SelectItem value="books">Books</SelectItem>
+                      <SelectItem value="master">Master</SelectItem>
                     </SelectContent>
                   </Select>
                 </div>
-                <div className="w-32">
-                  <label className="text-sm text-muted-foreground mb-1 block">Set #</label>
-                  <Input
-                    type="number"
-                    min={1}
-                    value={selectedSet}
-                    onChange={e => setSelectedSet(e.target.value)}
-                  />
+                <div>
+                  <label className="text-sm font-medium mb-1.5 block">Category</label>
+                  <Select value={questionCategory} onValueChange={setQuestionCategory}>
+                    <SelectTrigger><SelectValue /></SelectTrigger>
+                    <SelectContent>
+                      <SelectItem value="core">Core</SelectItem>
+                      <SelectItem value="aptitude">Aptitude</SelectItem>
+                      <SelectItem value="reasoning">Reasoning</SelectItem>
+                      <SelectItem value="english">English</SelectItem>
+                    </SelectContent>
+                  </Select>
                 </div>
-                <div className="flex-1">
-                  <label className="text-sm text-muted-foreground mb-1 block">Search</label>
-                  <div className="relative">
-                    <Search className="absolute left-3 top-1/2 -translate-y-1/2 h-4 w-4 text-muted-foreground" />
-                    <Input
-                      placeholder="Search questions..."
-                      value={search}
-                      onChange={e => setSearch(e.target.value)}
-                      className="pl-9"
-                    />
-                  </div>
+                <div>
+                  <label className="text-sm font-medium mb-1.5 block">Type</label>
+                  <Select value={questionType} onValueChange={setQuestionType}>
+                    <SelectTrigger><SelectValue /></SelectTrigger>
+                    <SelectContent>
+                      <SelectItem value="mcq">MCQ</SelectItem>
+                      <SelectItem value="msq">MSQ</SelectItem>
+                      <SelectItem value="integer">Integer</SelectItem>
+                    </SelectContent>
+                  </Select>
                 </div>
+              </div>
+
+              <div>
+                <label className="text-sm font-medium mb-1.5 block">Source Label (optional)</label>
+                <Input placeholder="e.g. GATE 2023, Cormen Ch.5" value={sourceLabel} onChange={e => setSourceLabel(e.target.value)} />
+              </div>
+            </CardContent>
+          </Card>
+
+          {/* Step 2: Question details */}
+          <Card className="mb-4">
+            <CardHeader className="pb-3">
+              <CardTitle className="text-base flex items-center justify-between">
+                ② Question Details
+                <span className="text-sm font-normal text-muted-foreground">Q#{questionNumber}</span>
+              </CardTitle>
+            </CardHeader>
+            <CardContent className="space-y-4">
+              <div>
+                <label className="text-sm font-medium mb-1.5 block">Question Text *</label>
+                <Textarea
+                  rows={4}
+                  placeholder="Type or paste your question here..."
+                  value={questionText}
+                  onChange={e => setQuestionText(e.target.value)}
+                  className="text-sm"
+                />
+              </div>
+
+              <div className="grid grid-cols-1 sm:grid-cols-2 gap-3">
+                <div>
+                  <label className="text-sm font-medium mb-1.5 block text-emerald-400">A</label>
+                  <Input placeholder="Option A" value={optionA} onChange={e => setOptionA(e.target.value)} />
+                </div>
+                <div>
+                  <label className="text-sm font-medium mb-1.5 block text-blue-400">B</label>
+                  <Input placeholder="Option B" value={optionB} onChange={e => setOptionB(e.target.value)} />
+                </div>
+                <div>
+                  <label className="text-sm font-medium mb-1.5 block text-amber-400">C</label>
+                  <Input placeholder="Option C" value={optionC} onChange={e => setOptionC(e.target.value)} />
+                </div>
+                <div>
+                  <label className="text-sm font-medium mb-1.5 block text-rose-400">D</label>
+                  <Input placeholder="Option D" value={optionD} onChange={e => setOptionD(e.target.value)} />
+                </div>
+              </div>
+
+              <div className="grid grid-cols-2 gap-3">
+                <div>
+                  <label className="text-sm font-medium mb-1.5 block">
+                    Correct Answer *
+                    <span className="text-xs text-muted-foreground ml-1">
+                      {questionType === "msq" ? "(e.g. A,C)" : questionType === "integer" ? "(number)" : "(A/B/C/D)"}
+                    </span>
+                  </label>
+                  <Input value={correctAnswer} onChange={e => setCorrectAnswer(e.target.value)} />
+                </div>
+                <div>
+                  <label className="text-sm font-medium mb-1.5 block">Q Number</label>
+                  <Input type="number" min={1} value={questionNumber} onChange={e => setQuestionNumber(e.target.value)} />
+                </div>
+              </div>
+
+              <div>
+                <label className="text-sm font-medium mb-1.5 block">Explanation (optional)</label>
+                <Textarea
+                  rows={2}
+                  placeholder="Why is this the correct answer?"
+                  value={explanation}
+                  onChange={e => setExplanation(e.target.value)}
+                  className="text-sm"
+                />
               </div>
             </CardContent>
           </Card>
 
           {/* Actions */}
-          <div className="flex items-center justify-between mb-4">
-            <p className="text-sm text-muted-foreground">
-              {filtered.length} question{filtered.length !== 1 ? "s" : ""} in Set {selectedSet}
-            </p>
-            <Button onClick={openAdd} disabled={!selectedExamId}>
-              <Plus className="mr-2 h-4 w-4" /> Add Question
+          <div className="flex gap-3 mb-6">
+            <Button onClick={handleSave} disabled={saving || !examId} className="flex-1" size="lg">
+              {saving ? <Loader2 className="mr-2 h-4 w-4 animate-spin" /> : <Plus className="mr-2 h-4 w-4" />}
+              Save & Next
+            </Button>
+            <Button variant="outline" onClick={handleResetAll} size="lg">
+              <RotateCcw className="mr-2 h-4 w-4" /> Reset
             </Button>
           </div>
 
-          {/* Table */}
-          <Card>
-            <CardContent className="p-0">
-              {loadingQuestions ? (
-                <div className="flex items-center justify-center py-12">
-                  <Loader2 className="h-6 w-6 animate-spin text-primary" />
+          {/* Recently added */}
+          {recentQuestions.length > 0 && (
+            <Card>
+              <CardHeader className="pb-3">
+                <CardTitle className="text-base flex items-center gap-2">
+                  <List className="h-4 w-4" /> Recently Added
+                </CardTitle>
+              </CardHeader>
+              <CardContent>
+                <div className="space-y-2">
+                  {recentQuestions.map(q => (
+                    <div key={q.id} className="flex items-start gap-3 text-sm p-2 rounded-lg bg-muted/30">
+                      <Badge variant="secondary" className="shrink-0 mt-0.5">Q{q.question_number}</Badge>
+                      <span className="text-muted-foreground line-clamp-1">{q.question_text}</span>
+                    </div>
+                  ))}
                 </div>
-              ) : filtered.length === 0 ? (
-                <div className="text-center py-12 text-muted-foreground">
-                  No questions found. Click "Add Question" to get started.
-                </div>
-              ) : (
-                <Table>
-                  <TableHeader>
-                    <TableRow>
-                      <TableHead className="w-16">#</TableHead>
-                      <TableHead>Question</TableHead>
-                      <TableHead className="w-20">Type</TableHead>
-                      <TableHead className="w-20">Answer</TableHead>
-                      <TableHead className="w-24 text-right">Actions</TableHead>
-                    </TableRow>
-                  </TableHeader>
-                  <TableBody>
-                    {filtered.map(q => (
-                      <TableRow key={q.id}>
-                        <TableCell className="font-mono text-sm">{q.question_number}</TableCell>
-                        <TableCell className="max-w-md truncate text-sm">{q.question_text}</TableCell>
-                        <TableCell>
-                          <Badge variant="secondary" className="text-xs uppercase">{q.question_type}</Badge>
-                        </TableCell>
-                        <TableCell className="font-mono text-sm">{q.correct_answer}</TableCell>
-                        <TableCell className="text-right">
-                          <div className="flex justify-end gap-1">
-                            <Button variant="ghost" size="icon" onClick={() => openEdit(q)}>
-                              <Pencil className="h-4 w-4" />
-                            </Button>
-                            <Button variant="ghost" size="icon" onClick={() => setDeleteTarget(q)} className="text-destructive hover:text-destructive">
-                              <Trash2 className="h-4 w-4" />
-                            </Button>
-                          </div>
-                        </TableCell>
-                      </TableRow>
-                    ))}
-                  </TableBody>
-                </Table>
-              )}
-            </CardContent>
-          </Card>
+              </CardContent>
+            </Card>
+          )}
         </div>
       </main>
-
-      {/* Add/Edit Dialog */}
-      <Dialog open={dialogOpen} onOpenChange={setDialogOpen}>
-        <DialogContent className="max-w-2xl max-h-[90vh] overflow-y-auto">
-          <DialogHeader>
-            <DialogTitle>{editing ? "Edit Question" : "Add Question"}</DialogTitle>
-          </DialogHeader>
-          <div className="space-y-4">
-            <div className="grid grid-cols-3 gap-4">
-              <div>
-                <label className="text-sm text-muted-foreground mb-1 block">Q Number</label>
-                <Input type="number" min={1} value={form.question_number} onChange={e => setForm(f => ({ ...f, question_number: parseInt(e.target.value) || 1 }))} />
-              </div>
-              <div>
-                <label className="text-sm text-muted-foreground mb-1 block">Type</label>
-                <Select value={form.question_type} onValueChange={v => setForm(f => ({ ...f, question_type: v }))}>
-                  <SelectTrigger><SelectValue /></SelectTrigger>
-                  <SelectContent>
-                    <SelectItem value="mcq">MCQ</SelectItem>
-                    <SelectItem value="msq">MSQ</SelectItem>
-                    <SelectItem value="integer">Integer (NAT)</SelectItem>
-                  </SelectContent>
-                </Select>
-              </div>
-              <div>
-                <label className="text-sm text-muted-foreground mb-1 block">Source Label</label>
-                <Input placeholder="e.g. GATE 2023" value={form.source_label} onChange={e => setForm(f => ({ ...f, source_label: e.target.value }))} />
-              </div>
-            </div>
-
-            <div>
-              <label className="text-sm text-muted-foreground mb-1 block">Question Text</label>
-              <Textarea rows={3} value={form.question_text} onChange={e => setForm(f => ({ ...f, question_text: e.target.value }))} />
-            </div>
-
-            <div className="grid grid-cols-2 gap-4">
-              <div>
-                <label className="text-sm text-muted-foreground mb-1 block">Option A</label>
-                <Input value={form.option_a} onChange={e => setForm(f => ({ ...f, option_a: e.target.value }))} />
-              </div>
-              <div>
-                <label className="text-sm text-muted-foreground mb-1 block">Option B</label>
-                <Input value={form.option_b} onChange={e => setForm(f => ({ ...f, option_b: e.target.value }))} />
-              </div>
-              <div>
-                <label className="text-sm text-muted-foreground mb-1 block">Option C</label>
-                <Input value={form.option_c} onChange={e => setForm(f => ({ ...f, option_c: e.target.value }))} />
-              </div>
-              <div>
-                <label className="text-sm text-muted-foreground mb-1 block">Option D</label>
-                <Input value={form.option_d} onChange={e => setForm(f => ({ ...f, option_d: e.target.value }))} />
-              </div>
-            </div>
-
-            <div>
-              <label className="text-sm text-muted-foreground mb-1 block">
-                Correct Answer {form.question_type === "msq" ? "(comma-separated, e.g. A,C)" : form.question_type === "integer" ? "(numeric value)" : "(A/B/C/D)"}
-              </label>
-              <Input value={form.correct_answer} onChange={e => setForm(f => ({ ...f, correct_answer: e.target.value }))} />
-            </div>
-
-            <div>
-              <label className="text-sm text-muted-foreground mb-1 block">Explanation (optional)</label>
-              <Textarea rows={3} value={form.explanation} onChange={e => setForm(f => ({ ...f, explanation: e.target.value }))} />
-            </div>
-          </div>
-          <DialogFooter>
-            <Button variant="outline" onClick={() => setDialogOpen(false)}>Cancel</Button>
-            <Button onClick={handleSave} disabled={saving}>
-              {saving && <Loader2 className="mr-2 h-4 w-4 animate-spin" />}
-              {editing ? "Update" : "Add"}
-            </Button>
-          </DialogFooter>
-        </DialogContent>
-      </Dialog>
-
-      {/* Delete Confirmation */}
-      <Dialog open={!!deleteTarget} onOpenChange={() => setDeleteTarget(null)}>
-        <DialogContent>
-          <DialogHeader>
-            <DialogTitle>Delete Question #{deleteTarget?.question_number}?</DialogTitle>
-          </DialogHeader>
-          <p className="text-sm text-muted-foreground">This action cannot be undone.</p>
-          <DialogFooter>
-            <Button variant="outline" onClick={() => setDeleteTarget(null)}>Cancel</Button>
-            <Button variant="destructive" onClick={handleDelete} disabled={deleting}>
-              {deleting && <Loader2 className="mr-2 h-4 w-4 animate-spin" />}
-              Delete
-            </Button>
-          </DialogFooter>
-        </DialogContent>
-      </Dialog>
     </div>
   );
 };
