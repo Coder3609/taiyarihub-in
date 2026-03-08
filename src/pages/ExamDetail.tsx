@@ -1,6 +1,6 @@
 import { useState } from "react";
 import { motion } from "framer-motion";
-import { ArrowLeft, ScrollText, ClipboardList, BookOpen, ChevronRight, Cpu, Radio, Zap, Cog, FlaskConical, Atom, Ruler, Hammer, Droplets, Leaf, LayoutGrid, Globe, Rocket } from "lucide-react";
+import { ArrowLeft, ScrollText, ClipboardList, BookOpen, ChevronRight, Cpu, Radio, Zap, Cog, FlaskConical, Atom, Ruler, Hammer, Droplets, Leaf, LayoutGrid, Globe, Rocket, GraduationCap } from "lucide-react";
 import { Button } from "@/components/ui/button";
 import { useNavigate, useParams } from "react-router-dom";
 import Navbar from "@/components/Navbar";
@@ -46,8 +46,8 @@ const examStreams: Record<string, { id: string; title: string; shortName: string
 const sectionQuotes: Record<string, string> = {
   pyqs: "Learn from the past, ace the future.",
   mocks: "Practice under pressure, perform with ease.",
-  
   books: "Master the classics, conquer the exam.",
+  master: "Subject by subject, reach mastery.",
 };
 
 const sections = [
@@ -86,6 +86,18 @@ const sections = [
     glowColor: "group-hover:shadow-[0_0_30px_-5px_rgba(16,185,129,0.3)]",
     accentDot: "bg-emerald-400",
     stats: ["Best sellers", "Chapter-wise"],
+  },
+  {
+    id: "master",
+    title: "Subject-wise Master Questions",
+    shortTitle: "Master",
+    icon: GraduationCap,
+    color: "from-rose-500/20 via-rose-600/10 to-pink-700/5",
+    borderColor: "border-rose-500/20 hover:border-rose-400/60",
+    badgeColor: "bg-rose-500/15 text-rose-400 ring-1 ring-rose-500/20",
+    glowColor: "group-hover:shadow-[0_0_30px_-5px_rgba(244,63,94,0.3)]",
+    accentDot: "bg-rose-400",
+    stats: ["Subject-wise", "Expert level"],
   },
 ];
 const container = {
