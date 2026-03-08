@@ -5,10 +5,22 @@ import { useAuth } from "@/contexts/AuthContext";
 import { useAccessControl } from "@/hooks/useAccessControl";
 import { Button } from "@/components/ui/button";
 import { Badge } from "@/components/ui/badge";
+import { Dialog, DialogContent, DialogHeader, DialogTitle } from "@/components/ui/dialog";
+import { Input } from "@/components/ui/input";
+import { Label } from "@/components/ui/label";
+import { Select, SelectContent, SelectItem, SelectTrigger, SelectValue } from "@/components/ui/select";
+import { Checkbox } from "@/components/ui/checkbox";
 import { motion } from "framer-motion";
 import { ArrowLeft, User, Mail, Crown, Shield, BookOpen, Loader2, Edit } from "lucide-react";
+import { toast } from "sonner";
 import Navbar from "@/components/Navbar";
 import Footer from "@/components/Footer";
+
+const EXAM_OPTIONS = [
+  "UPSC ESE/IES", "GATE", "ISRO", "BARC", "DRDO",
+  "SSC JE", "RRB JE", "State PSC AE/JE",
+  "UPSC Indian Statistical Service", "UPSC IFS",
+];
 
 interface ProfileData {
   full_name: string | null;
