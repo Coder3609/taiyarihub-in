@@ -611,7 +611,8 @@ const Quiz = () => {
             </button>
             <button
               onClick={clearResponse}
-              className="inline-flex items-center gap-1.5 text-xs font-semibold px-3 py-2 rounded-lg border border-border bg-white text-muted-foreground hover:bg-muted/30 transition-all"
+              className="inline-flex items-center gap-1.5 text-xs font-semibold px-3 py-2 rounded-lg border transition-all"
+              style={{ borderColor: "hsl(220 13% 80%)", background: "white", color: "hsl(215 20% 45%)" }}
             >
               Clear Response
             </button>
