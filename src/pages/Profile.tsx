@@ -5,10 +5,22 @@ import { useAuth } from "@/contexts/AuthContext";
 import { useAccessControl } from "@/hooks/useAccessControl";
 import { Button } from "@/components/ui/button";
 import { Badge } from "@/components/ui/badge";
+import { Dialog, DialogContent, DialogHeader, DialogTitle } from "@/components/ui/dialog";
+import { Input } from "@/components/ui/input";
+import { Label } from "@/components/ui/label";
+import { Select, SelectContent, SelectItem, SelectTrigger, SelectValue } from "@/components/ui/select";
+import { Checkbox } from "@/components/ui/checkbox";
 import { motion } from "framer-motion";
 import { ArrowLeft, User, Mail, Crown, Shield, BookOpen, Loader2, Edit } from "lucide-react";
+import { toast } from "sonner";
 import Navbar from "@/components/Navbar";
 import Footer from "@/components/Footer";
+
+const EXAM_OPTIONS = [
+  "UPSC ESE/IES", "GATE", "ISRO", "BARC", "DRDO",
+  "SSC JE", "RRB JE", "State PSC AE/JE",
+  "UPSC Indian Statistical Service", "UPSC IFS",
+];
 
 interface ProfileData {
   full_name: string | null;
@@ -25,23 +37,53 @@ const Profile = () => {
   const navigate = useNavigate();
   const [profile, setProfile] = useState<ProfileData | null>(null);
   const [loading, setLoading] = useState(true);
+  const [editOpen, setEditOpen] = useState(false);
+  const [editName, setEditName] = useState("");
+  const [editGender, setEditGender] = useState("");
+  const [editExams, setEditExams] = useState<string[]>([]);
+  const [saving, setSaving] = useState(false);
+
+  const fetchProfile = async () => {
+    if (!user) return;
+    const { data } = await supabase
+      .from("profiles")
+      .select("full_name, email, username, gender, preparing_for, created_at")
+      .eq("id", user.id)
+      .single();
+    setProfile(data as ProfileData | null);
+    setLoading(false);
+  };
 
   useEffect(() => {
     if (authLoading) return;
     if (!user) { navigate("/auth", { replace: true }); return; }
-
-    const fetchProfile = async () => {
-      const { data } = await supabase
-        .from("profiles")
-        .select("full_name, email, username, gender, preparing_for, created_at")
-        .eq("id", user.id)
-        .single();
-
-      setProfile(data as ProfileData | null);
-      setLoading(false);
-    };
     fetchProfile();
   }, [user, authLoading, navigate]);
+
+  const openEdit = () => {
+    setEditName(profile?.full_name || "");
+    setEditGender(profile?.gender || "");
+    setEditExams(profile?.preparing_for || []);
+    setEditOpen(true);
+  };
+
+  const handleSave = async () => {
+    if (!user) return;
+    setSaving(true);
+    const { error } = await supabase
+      .from("profiles")
+      .update({ full_name: editName, gender: editGender, preparing_for: editExams })
+      .eq("id", user.id);
+    setSaving(false);
+    if (error) { toast.error("Failed to update profile"); return; }
+    toast.success("Profile updated");
+    setEditOpen(false);
+    fetchProfile();
+  };
+
+  const toggleExam = (exam: string) => {
+    setEditExams(prev => prev.includes(exam) ? prev.filter(e => e !== exam) : [...prev, exam]);
+  };
 
   if (authLoading || loading || accessLoading) {
     return (
@@ -110,7 +152,7 @@ const Profile = () => {
             <div className="rounded-2xl border border-border/50 bg-card p-6 space-y-5">
               <div className="flex items-center justify-between">
                 <h2 className="font-display font-bold text-foreground">Details</h2>
-                <Button variant="ghost" size="sm" onClick={() => navigate("/complete-profile")} className="text-primary gap-1">
+                <Button variant="ghost" size="sm" onClick={openEdit} className="text-primary gap-1">
                   <Edit className="h-3.5 w-3.5" /> Edit
                 </Button>
               </div>
@@ -141,6 +183,52 @@ const Profile = () => {
                 </div>
               </div>
             </div>
+
+            {/* Edit Dialog */}
+            <Dialog open={editOpen} onOpenChange={setEditOpen}>
+              <DialogContent className="sm:max-w-md">
+                <DialogHeader>
+                  <DialogTitle className="font-display">Edit Profile</DialogTitle>
+                </DialogHeader>
+                <div className="space-y-4 pt-2">
+                  <div className="space-y-2">
+                    <Label>Full Name</Label>
+                    <Input value={editName} onChange={e => setEditName(e.target.value)} placeholder="Your full name" />
+                  </div>
+                  <div className="space-y-2">
+                    <Label>Email</Label>
+                    <Input value={profile?.email || user?.email || ""} disabled className="opacity-60" />
+                    <p className="text-[10px] text-muted-foreground">Email cannot be changed</p>
+                  </div>
+                  <div className="space-y-2">
+                    <Label>Gender</Label>
+                    <Select value={editGender} onValueChange={setEditGender}>
+                      <SelectTrigger><SelectValue placeholder="Select gender" /></SelectTrigger>
+                      <SelectContent>
+                        <SelectItem value="Male">Male</SelectItem>
+                        <SelectItem value="Female">Female</SelectItem>
+                        <SelectItem value="Other">Other</SelectItem>
+                      </SelectContent>
+                    </Select>
+                  </div>
+                  <div className="space-y-2">
+                    <Label>Preparing For</Label>
+                    <div className="grid grid-cols-2 gap-2 max-h-48 overflow-y-auto">
+                      {EXAM_OPTIONS.map(exam => (
+                        <label key={exam} className="flex items-center gap-2 text-sm cursor-pointer">
+                          <Checkbox checked={editExams.includes(exam)} onCheckedChange={() => toggleExam(exam)} />
+                          <span className="text-foreground">{exam}</span>
+                        </label>
+                      ))}
+                    </div>
+                  </div>
+                  <Button onClick={handleSave} disabled={saving} className="w-full font-display font-semibold">
+                    {saving ? <Loader2 className="h-4 w-4 animate-spin mr-2" /> : null}
+                    Save Changes
+                  </Button>
+                </div>
+              </DialogContent>
+            </Dialog>
           </motion.div>
         </div>
       </main>
