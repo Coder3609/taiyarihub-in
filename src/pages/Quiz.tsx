@@ -526,7 +526,7 @@ const Quiz = () => {
           </div>
 
           {/* Status Legend */}
-          <div className="p-3 border-b border-border grid grid-cols-2 gap-y-2.5 gap-x-3" style={{ background: "white" }}>
+          <div className="p-3 border-b grid grid-cols-2 gap-y-2.5 gap-x-3" style={{ background: "white", borderColor: "hsl(220 13% 90%)" }}>
             {[
               { count: statusCounts["not-visited"], label: "Not Visited", bg: "hsl(210 15% 85%)", text: "hsl(210 10% 40%)", border: "none" },
               { count: statusCounts["not-answered"], label: "Not Answered", bg: "hsl(0 72% 51%)", text: "white", border: "none" },
