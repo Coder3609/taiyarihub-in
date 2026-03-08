@@ -451,7 +451,7 @@ const Quiz = () => {
                     </div>
                   ) : currentQ.question_type === "msq" ? (
                     <div className="space-y-3">
-                      <p className="text-xs text-muted-foreground mb-2">Select all correct options</p>
+                      <p className="text-xs mb-2" style={{ color: "hsl(215 20% 45%)" }}>Select all correct options</p>
                       {options.map((opt) => {
                         const selectedKeys = (answers[currentQ.id] || "").split(",").filter(Boolean);
                         const isSelected = selectedKeys.includes(opt.key);
