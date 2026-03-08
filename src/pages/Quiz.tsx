@@ -541,7 +541,7 @@ const Quiz = () => {
                 >
                   {item.count}
                 </span>
-                <span className="text-[10px] text-muted-foreground leading-tight">{item.label}</span>
+                <span className="text-[10px] leading-tight" style={{ color: "hsl(215 20% 45%)" }}>{item.label}</span>
               </div>
             ))}
           </div>
