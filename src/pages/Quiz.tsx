@@ -389,7 +389,7 @@ const Quiz = () => {
               <span className="text-xs font-bold text-white w-7 h-7 rounded-lg flex items-center justify-center" style={{ background: "hsl(230 60% 45%)" }}>
                 {sectionIndex + 1}
               </span>
-              <span className="text-xs text-muted-foreground">of {currentSectionQuestions.length}</span>
+              <span className="text-xs" style={{ color: "hsl(215 20% 45%)" }}>of {currentSectionQuestions.length}</span>
             </div>
             <div className="flex items-center gap-4 text-xs">
               <span className="text-muted-foreground">
