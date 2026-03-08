@@ -406,7 +406,7 @@ const Quiz = () => {
             </div>
 
             {tabSwitches > 0 && (
-              <span className="text-[10px] px-2 py-0.5 rounded-full bg-destructive/10 text-destructive border border-destructive/20 flex items-center gap-1">
+              <span className="text-[10px] px-2 py-0.5 rounded-full flex items-center gap-1" style={{ background: "hsl(0 84% 95%)", color: "hsl(0 84% 50%)", border: "1px solid hsl(0 84% 85%)" }}>
                 <Eye className="h-3 w-3" /> {tabSwitches}
               </span>
             )}
