@@ -581,7 +581,7 @@ const Quiz = () => {
           </div>
 
           {/* Sidebar Submit */}
-          <div className="p-3 border-t border-border" style={{ background: "white" }}>
+          <div className="p-3 border-t" style={{ background: "white", borderColor: "hsl(220 13% 90%)" }}>
             <Button
               className="w-full font-semibold text-sm"
               onClick={handleSubmit}
