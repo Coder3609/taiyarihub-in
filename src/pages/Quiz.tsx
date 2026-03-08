@@ -51,7 +51,11 @@ const Quiz = () => {
   const { user } = useAuth();
   const { canAccessSet } = useAccessControl();
   const [examStarted, setExamStarted] = useState(false);
-  const { tabSwitches, isFullscreen, enterFullscreen, exitFullscreen } = useProctoring(examStarted);
+  const submitRef = useRef<() => void>();
+  const { tabSwitches, isFullscreen, enterFullscreen, exitFullscreen } = useProctoring(examStarted, () => {
+    // Auto-submit when user exits fullscreen during exam
+    if (submitRef.current) submitRef.current();
+  });
 
   const [questions, setQuestions] = useState<Question[]>([]);
   const [answers, setAnswers] = useState<Record<string, string>>({});
