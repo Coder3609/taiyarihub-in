@@ -513,15 +513,15 @@ const Quiz = () => {
         </main>
 
         {/* === NTA-Style Right Sidebar === */}
-        <aside className="hidden md:flex flex-col w-[280px] border-l border-border shrink-0 overflow-y-auto" style={{ background: "hsl(230 50% 98%)" }}>
+        <aside className="hidden md:flex flex-col w-[280px] border-l shrink-0 overflow-y-auto" style={{ background: "hsl(230 50% 98%)", borderColor: "hsl(220 13% 90%)" }}>
           {/* User info */}
-          <div className="p-4 border-b border-border flex items-center gap-3" style={{ background: "white" }}>
-            <div className="w-10 h-10 rounded-full bg-muted flex items-center justify-center border border-border">
-              <User className="h-5 w-5 text-muted-foreground" />
+          <div className="p-4 border-b flex items-center gap-3" style={{ background: "white", borderColor: "hsl(220 13% 90%)" }}>
+            <div className="w-10 h-10 rounded-full flex items-center justify-center border" style={{ background: "hsl(220 13% 95%)", borderColor: "hsl(220 13% 85%)" }}>
+              <User className="h-5 w-5" style={{ color: "hsl(215 20% 45%)" }} />
             </div>
             <div>
-              <p className="text-sm font-semibold text-foreground">{user?.email?.split("@")[0]}</p>
-              <p className="text-[11px] text-muted-foreground">Candidate</p>
+              <p className="text-sm font-semibold" style={{ color: "hsl(222 47% 11%)" }}>{user?.email?.split("@")[0]}</p>
+              <p className="text-[11px]" style={{ color: "hsl(215 20% 55%)" }}>Candidate</p>
             </div>
           </div>
 
