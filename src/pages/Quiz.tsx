@@ -285,7 +285,7 @@ const Quiz = () => {
   }
 
   return (
-    <div className="h-screen flex flex-col overflow-hidden" style={{ background: "#f0f0f0" }}>
+    <div className="h-screen flex flex-col overflow-hidden" style={{ background: "#f0f0f0", color: "hsl(222 47% 11%)" }}>
       {/* === NTA-Style Top Header === */}
       <header className="shrink-0" style={{ background: "linear-gradient(135deg, hsl(230 60% 28%), hsl(230 65% 22%))" }}>
         {/* Row 1: Branding + Exam Name + User */}
@@ -314,21 +314,21 @@ const Quiz = () => {
         {/* Row 2: Language + Timer + Submit */}
         <div className="flex items-center justify-between px-4 py-2 border-t border-white/10" style={{ background: "hsl(230 50% 95%)" }}>
           <div className="flex items-center gap-2">
-            <Globe className="h-3.5 w-3.5 text-muted-foreground" />
-            <span className="text-xs text-muted-foreground">View in:</span>
-            <button className="text-xs font-medium text-foreground bg-white border border-border rounded px-2.5 py-1 flex items-center gap-1">
+            <Globe className="h-3.5 w-3.5" style={{ color: "hsl(215 20% 45%)" }} />
+            <span className="text-xs" style={{ color: "hsl(215 20% 45%)" }}>View in:</span>
+            <button className="text-xs font-medium bg-white border rounded px-2.5 py-1 flex items-center gap-1" style={{ color: "hsl(222 47% 11%)", borderColor: "hsl(220 13% 80%)" }}>
               English <ChevronDown className="h-3 w-3" />
             </button>
           </div>
 
           <div className="flex items-center gap-3">
-            <Clock className="h-4 w-4 text-muted-foreground" />
-            <span className="text-xs font-medium text-muted-foreground">Time Left:</span>
-            <div className={`font-mono text-base font-bold px-4 py-1.5 rounded-lg border-2 ${
+            <Clock className="h-4 w-4" style={{ color: "hsl(215 20% 45%)" }} />
+            <span className="text-xs font-medium" style={{ color: "hsl(215 20% 45%)" }}>Time Left:</span>
+            <div className="font-mono text-base font-bold px-4 py-1.5 rounded-lg border-2" style={
               timeLeft < 300
-                ? "bg-destructive/10 text-destructive border-destructive/30 animate-pulse"
-                : "bg-foreground text-background border-foreground"
-            }`}>
+                ? { background: "hsl(0 84% 95%)", color: "hsl(0 84% 50%)", borderColor: "hsl(0 84% 80%)" }
+                : { background: "hsl(222 47% 11%)", color: "white", borderColor: "hsl(222 47% 11%)" }
+            }>
               {formatTime(timeLeft)}
             </div>
           </div>
@@ -346,8 +346,8 @@ const Quiz = () => {
         </div>
 
         {/* Row 3: Section Tabs */}
-        <div className="flex items-center px-4 border-t border-border/20" style={{ background: "white" }}>
-          <span className="text-[11px] text-muted-foreground mr-3 font-semibold tracking-wider uppercase">Sections</span>
+        <div className="flex items-center px-4 border-t" style={{ background: "white", borderColor: "hsl(220 13% 90%)" }}>
+          <span className="text-[11px] mr-3 font-semibold tracking-wider uppercase" style={{ color: "hsl(215 20% 45%)" }}>Sections</span>
           {availableSections.map((sec) => {
             const secQuestions = sec.id === "reasoning" ? reasoningQuestions : coreQuestions;
             const answeredCount = secQuestions.filter((q) => answers[q.id]).length;
@@ -356,17 +356,17 @@ const Quiz = () => {
               <button
                 key={sec.id}
                 onClick={() => switchSection(sec.id)}
-                className={`flex items-center gap-2 px-4 py-2.5 text-xs font-semibold border-b-[3px] transition-all ${
-                  isActive
-                    ? "border-primary text-primary bg-primary/5"
-                    : "border-transparent text-muted-foreground hover:text-foreground hover:bg-muted/30"
-                }`}
+                className="flex items-center gap-2 px-4 py-2.5 text-xs font-semibold border-b-[3px] transition-all"
+                style={isActive
+                  ? { borderColor: "hsl(38 92% 50%)", color: "hsl(38 92% 40%)", background: "hsl(38 92% 97%)" }
+                  : { borderColor: "transparent", color: "hsl(215 20% 45%)" }
+                }
               >
                 <span>{sec.icon}</span>
                 <span>{sec.label}</span>
-                <span className={`ml-1 text-[10px] px-1.5 py-0.5 rounded-full font-bold ${
-                  isActive ? "bg-primary/10 text-primary" : "bg-muted text-muted-foreground"
-                }`}>
+                <span className="ml-1 text-[10px] px-1.5 py-0.5 rounded-full font-bold" style={
+                  isActive ? { background: "hsl(38 92% 93%)", color: "hsl(38 92% 40%)" } : { background: "hsl(220 13% 91%)", color: "hsl(215 20% 45%)" }
+                }>
                   {answeredCount}/{secQuestions.length}
                 </span>
               </button>
@@ -383,20 +383,20 @@ const Quiz = () => {
 
         {/* Row 4: Question Info Bar */}
         {currentQ && (
-          <div className="flex items-center justify-between px-4 py-2 border-t border-border/20" style={{ background: "hsl(230 50% 97%)" }}>
+          <div className="flex items-center justify-between px-4 py-2 border-t" style={{ background: "hsl(230 50% 97%)", borderColor: "hsl(220 13% 90%)" }}>
             <div className="flex items-center gap-2.5">
-              <span className="text-xs text-muted-foreground font-medium">Question No.</span>
+              <span className="text-xs font-medium" style={{ color: "hsl(215 20% 45%)" }}>Question No.</span>
               <span className="text-xs font-bold text-white w-7 h-7 rounded-lg flex items-center justify-center" style={{ background: "hsl(230 60% 45%)" }}>
                 {sectionIndex + 1}
               </span>
-              <span className="text-xs text-muted-foreground">of {currentSectionQuestions.length}</span>
+              <span className="text-xs" style={{ color: "hsl(215 20% 45%)" }}>of {currentSectionQuestions.length}</span>
             </div>
             <div className="flex items-center gap-4 text-xs">
-              <span className="text-muted-foreground">
+              <span style={{ color: "hsl(215 20% 45%)" }}>
                 Marks: <span className="font-bold" style={{ color: "hsl(142 72% 40%)" }}>+4</span>{" "}
-                <span className="font-bold text-destructive">-1</span>
+                <span className="font-bold" style={{ color: "hsl(0 84% 50%)" }}>-1</span>
               </span>
-              <span className="font-semibold text-foreground bg-muted/50 px-2.5 py-1 rounded">
+              <span className="font-semibold px-2.5 py-1 rounded" style={{ color: "hsl(222 47% 11%)", background: "hsl(220 13% 91%)" }}>
                 {currentQ.question_type === "integer"
                   ? "Numerical"
                   : currentQ.question_type === "msq"
@@ -406,7 +406,7 @@ const Quiz = () => {
             </div>
 
             {tabSwitches > 0 && (
-              <span className="text-[10px] px-2 py-0.5 rounded-full bg-destructive/10 text-destructive border border-destructive/20 flex items-center gap-1">
+              <span className="text-[10px] px-2 py-0.5 rounded-full flex items-center gap-1" style={{ background: "hsl(0 84% 95%)", color: "hsl(0 84% 50%)", border: "1px solid hsl(0 84% 85%)" }}>
                 <Eye className="h-3 w-3" /> {tabSwitches}
               </span>
             )}
@@ -433,14 +433,14 @@ const Quiz = () => {
                       {currentQ.source_label}
                     </div>
                   )}
-                  <p className="text-sm md:text-[15px] text-foreground leading-relaxed mb-8">
-                    <span className="font-semibold text-muted-foreground">Q{sectionIndex + 1}.</span>{" "}
+                  <p className="text-sm md:text-[15px] leading-relaxed mb-8" style={{ color: "hsl(222 47% 11%)" }}>
+                    <span className="font-semibold" style={{ color: "hsl(215 20% 45%)" }}>Q{sectionIndex + 1}.</span>{" "}
                     {currentQ.question_text}
                   </p>
 
                   {currentQ.question_type === "integer" ? (
                     <div className="space-y-3">
-                      <label className="text-sm text-muted-foreground">Enter your numerical answer:</label>
+                      <label className="text-sm" style={{ color: "hsl(215 20% 45%)" }}>Enter your numerical answer:</label>
                       <Input
                         type="number"
                         placeholder="Type your answer..."
@@ -451,7 +451,7 @@ const Quiz = () => {
                     </div>
                   ) : currentQ.question_type === "msq" ? (
                     <div className="space-y-3">
-                      <p className="text-xs text-muted-foreground mb-2">Select all correct options</p>
+                      <p className="text-xs mb-2" style={{ color: "hsl(215 20% 45%)" }}>Select all correct options</p>
                       {options.map((opt) => {
                         const selectedKeys = (answers[currentQ.id] || "").split(",").filter(Boolean);
                         const isSelected = selectedKeys.includes(opt.key);
@@ -465,18 +465,18 @@ const Quiz = () => {
                                 return { ...prev, [currentQ.id]: updated.sort().join(",") };
                               });
                             }}
-                            className={`w-full text-left p-4 rounded-xl border-2 transition-all flex items-center gap-4 ${
-                              isSelected
-                                ? "border-primary bg-primary/5"
-                                : "border-border bg-white hover:border-muted-foreground/30 hover:bg-muted/20"
-                            }`}
+                            className="w-full text-left p-4 rounded-xl border-2 transition-all flex items-center gap-4"
+                            style={isSelected
+                              ? { borderColor: "hsl(38 92% 50%)", background: "hsl(38 92% 97%)" }
+                              : { borderColor: "hsl(220 13% 80%)", background: "white" }
+                            }
                           >
-                            <span className={`shrink-0 w-9 h-9 rounded-full flex items-center justify-center text-sm font-bold border-2 ${
-                              isSelected ? "bg-primary text-primary-foreground border-primary" : "bg-muted/50 text-muted-foreground border-border"
-                            }`}>
+                            <span className="shrink-0 w-9 h-9 rounded-full flex items-center justify-center text-sm font-bold border-2" style={
+                              isSelected ? { background: "hsl(38 92% 50%)", color: "hsl(222 47% 6%)", borderColor: "hsl(38 92% 50%)" } : { background: "hsl(220 13% 95%)", color: "hsl(215 20% 45%)", borderColor: "hsl(220 13% 80%)" }
+                            }>
                               {isSelected ? <CheckSquare className="h-4 w-4" /> : opt.key}
                             </span>
-                            <span className="text-sm text-foreground">{opt.text}</span>
+                            <span className="text-sm" style={{ color: "hsl(222 47% 11%)" }}>{opt.text}</span>
                           </button>
                         );
                       })}
@@ -489,18 +489,18 @@ const Quiz = () => {
                           <button
                             key={opt.key}
                             onClick={() => setAnswers((prev) => ({ ...prev, [currentQ.id]: opt.key }))}
-                            className={`w-full text-left p-4 rounded-xl border-2 transition-all flex items-center gap-4 ${
-                              selected
-                                ? "border-primary bg-primary/5"
-                                : "border-border bg-white hover:border-muted-foreground/30 hover:bg-muted/20"
-                            }`}
+                            className="w-full text-left p-4 rounded-xl border-2 transition-all flex items-center gap-4"
+                            style={selected
+                              ? { borderColor: "hsl(38 92% 50%)", background: "hsl(38 92% 97%)" }
+                              : { borderColor: "hsl(220 13% 80%)", background: "white" }
+                            }
                           >
-                            <span className={`shrink-0 w-9 h-9 rounded-full flex items-center justify-center text-sm font-bold border-2 ${
-                              selected ? "bg-primary text-primary-foreground border-primary" : "bg-muted/50 text-muted-foreground border-border"
-                            }`}>
+                            <span className="shrink-0 w-9 h-9 rounded-full flex items-center justify-center text-sm font-bold border-2" style={
+                              selected ? { background: "hsl(38 92% 50%)", color: "hsl(222 47% 6%)", borderColor: "hsl(38 92% 50%)" } : { background: "hsl(220 13% 95%)", color: "hsl(215 20% 45%)", borderColor: "hsl(220 13% 80%)" }
+                            }>
                               {opt.key}
                             </span>
-                            <span className="text-sm text-foreground">{opt.text}</span>
+                            <span className="text-sm" style={{ color: "hsl(222 47% 11%)" }}>{opt.text}</span>
                           </button>
                         );
                       })}
@@ -513,20 +513,20 @@ const Quiz = () => {
         </main>
 
         {/* === NTA-Style Right Sidebar === */}
-        <aside className="hidden md:flex flex-col w-[280px] border-l border-border shrink-0 overflow-y-auto" style={{ background: "hsl(230 50% 98%)" }}>
+        <aside className="hidden md:flex flex-col w-[280px] border-l shrink-0 overflow-y-auto" style={{ background: "hsl(230 50% 98%)", borderColor: "hsl(220 13% 90%)" }}>
           {/* User info */}
-          <div className="p-4 border-b border-border flex items-center gap-3" style={{ background: "white" }}>
-            <div className="w-10 h-10 rounded-full bg-muted flex items-center justify-center border border-border">
-              <User className="h-5 w-5 text-muted-foreground" />
+          <div className="p-4 border-b flex items-center gap-3" style={{ background: "white", borderColor: "hsl(220 13% 90%)" }}>
+            <div className="w-10 h-10 rounded-full flex items-center justify-center border" style={{ background: "hsl(220 13% 95%)", borderColor: "hsl(220 13% 85%)" }}>
+              <User className="h-5 w-5" style={{ color: "hsl(215 20% 45%)" }} />
             </div>
             <div>
-              <p className="text-sm font-semibold text-foreground">{user?.email?.split("@")[0]}</p>
-              <p className="text-[11px] text-muted-foreground">Candidate</p>
+              <p className="text-sm font-semibold" style={{ color: "hsl(222 47% 11%)" }}>{user?.email?.split("@")[0]}</p>
+              <p className="text-[11px]" style={{ color: "hsl(215 20% 55%)" }}>Candidate</p>
             </div>
           </div>
 
           {/* Status Legend */}
-          <div className="p-3 border-b border-border grid grid-cols-2 gap-y-2.5 gap-x-3" style={{ background: "white" }}>
+          <div className="p-3 border-b grid grid-cols-2 gap-y-2.5 gap-x-3" style={{ background: "white", borderColor: "hsl(220 13% 90%)" }}>
             {[
               { count: statusCounts["not-visited"], label: "Not Visited", bg: "hsl(210 15% 85%)", text: "hsl(210 10% 40%)", border: "none" },
               { count: statusCounts["not-answered"], label: "Not Answered", bg: "hsl(0 72% 51%)", text: "white", border: "none" },
@@ -541,16 +541,16 @@ const Quiz = () => {
                 >
                   {item.count}
                 </span>
-                <span className="text-[10px] text-muted-foreground leading-tight">{item.label}</span>
+                <span className="text-[10px] leading-tight" style={{ color: "hsl(215 20% 45%)" }}>{item.label}</span>
               </div>
             ))}
           </div>
 
           {/* Question Palette */}
           <div className="p-3 flex-1" style={{ background: "white" }}>
-            <div className="flex items-center gap-2 mb-3 pb-2 border-b border-border">
-              <LayoutGrid className="h-3.5 w-3.5 text-muted-foreground" />
-              <span className="text-[11px] font-semibold text-muted-foreground tracking-wide">Question Palette</span>
+            <div className="flex items-center gap-2 mb-3 pb-2 border-b" style={{ borderColor: "hsl(220 13% 90%)" }}>
+              <LayoutGrid className="h-3.5 w-3.5" style={{ color: "hsl(215 20% 45%)" }} />
+              <span className="text-[11px] font-semibold tracking-wide" style={{ color: "hsl(215 20% 45%)" }}>Question Palette</span>
             </div>
             <div className="grid grid-cols-5 gap-2">
               {currentSectionQuestions.map((q, i) => {
@@ -581,7 +581,7 @@ const Quiz = () => {
           </div>
 
           {/* Sidebar Submit */}
-          <div className="p-3 border-t border-border" style={{ background: "white" }}>
+          <div className="p-3 border-t" style={{ background: "white", borderColor: "hsl(220 13% 90%)" }}>
             <Button
               className="w-full font-semibold text-sm"
               onClick={handleSubmit}
@@ -595,7 +595,7 @@ const Quiz = () => {
       </div>
 
       {/* === NTA-Style Bottom Action Bar === */}
-      <footer className="shrink-0 border-t border-border" style={{ background: "hsl(230 50% 97%)" }}>
+      <footer className="shrink-0 border-t" style={{ background: "hsl(230 50% 97%)", borderColor: "hsl(220 13% 90%)" }}>
         <div className="flex items-center justify-between px-4 py-2.5">
           <div className="flex items-center gap-3">
             <button
@@ -611,7 +611,8 @@ const Quiz = () => {
             </button>
             <button
               onClick={clearResponse}
-              className="inline-flex items-center gap-1.5 text-xs font-semibold px-3 py-2 rounded-lg border border-border bg-white text-muted-foreground hover:bg-muted/30 transition-all"
+              className="inline-flex items-center gap-1.5 text-xs font-semibold px-3 py-2 rounded-lg border transition-all"
+              style={{ borderColor: "hsl(220 13% 80%)", background: "white", color: "hsl(215 20% 45%)" }}
             >
               Clear Response
             </button>
