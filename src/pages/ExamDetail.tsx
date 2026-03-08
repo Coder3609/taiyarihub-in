@@ -46,8 +46,8 @@ const examStreams: Record<string, { id: string; title: string; shortName: string
 const sectionQuotes: Record<string, string> = {
   pyqs: "Learn from the past, ace the future.",
   mocks: "Practice under pressure, perform with ease.",
-  
   books: "Master the classics, conquer the exam.",
+  master: "Subject by subject, reach mastery.",
 };
 
 const sections = [
