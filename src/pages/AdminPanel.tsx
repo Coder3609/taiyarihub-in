@@ -47,8 +47,9 @@ const AdminPanel = () => {
   const [explanation, setExplanation] = useState("");
 
   useEffect(() => {
-    if (!authLoading && !user) navigate("/auth", { replace: true });
-    if (!authLoading && !accessLoading && !isAdmin) navigate("/", { replace: true });
+    if (authLoading || accessLoading) return; // Wait until both are done
+    if (!user) navigate("/auth", { replace: true });
+    else if (!isAdmin) navigate("/", { replace: true });
   }, [authLoading, accessLoading, user, isAdmin, navigate]);
 
   useEffect(() => {
