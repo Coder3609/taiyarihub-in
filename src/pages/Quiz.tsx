@@ -383,9 +383,9 @@ const Quiz = () => {
 
         {/* Row 4: Question Info Bar */}
         {currentQ && (
-          <div className="flex items-center justify-between px-4 py-2 border-t border-border/20" style={{ background: "hsl(230 50% 97%)" }}>
+          <div className="flex items-center justify-between px-4 py-2 border-t" style={{ background: "hsl(230 50% 97%)", borderColor: "hsl(220 13% 90%)" }}>
             <div className="flex items-center gap-2.5">
-              <span className="text-xs text-muted-foreground font-medium">Question No.</span>
+              <span className="text-xs font-medium" style={{ color: "hsl(215 20% 45%)" }}>Question No.</span>
               <span className="text-xs font-bold text-white w-7 h-7 rounded-lg flex items-center justify-center" style={{ background: "hsl(230 60% 45%)" }}>
                 {sectionIndex + 1}
               </span>
