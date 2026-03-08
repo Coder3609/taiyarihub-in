@@ -495,12 +495,12 @@ const Quiz = () => {
                               : { borderColor: "hsl(220 13% 80%)", background: "white" }
                             }
                           >
-                            <span className={`shrink-0 w-9 h-9 rounded-full flex items-center justify-center text-sm font-bold border-2 ${
-                              selected ? "bg-primary text-primary-foreground border-primary" : "bg-muted/50 text-muted-foreground border-border"
-                            }`}>
+                            <span className="shrink-0 w-9 h-9 rounded-full flex items-center justify-center text-sm font-bold border-2" style={
+                              selected ? { background: "hsl(38 92% 50%)", color: "hsl(222 47% 6%)", borderColor: "hsl(38 92% 50%)" } : { background: "hsl(220 13% 95%)", color: "hsl(215 20% 45%)", borderColor: "hsl(220 13% 80%)" }
+                            }>
                               {opt.key}
                             </span>
-                            <span className="text-sm text-foreground">{opt.text}</span>
+                            <span className="text-sm" style={{ color: "hsl(222 47% 11%)" }}>{opt.text}</span>
                           </button>
                         );
                       })}
