@@ -37,23 +37,53 @@ const Profile = () => {
   const navigate = useNavigate();
   const [profile, setProfile] = useState<ProfileData | null>(null);
   const [loading, setLoading] = useState(true);
+  const [editOpen, setEditOpen] = useState(false);
+  const [editName, setEditName] = useState("");
+  const [editGender, setEditGender] = useState("");
+  const [editExams, setEditExams] = useState<string[]>([]);
+  const [saving, setSaving] = useState(false);
+
+  const fetchProfile = async () => {
+    if (!user) return;
+    const { data } = await supabase
+      .from("profiles")
+      .select("full_name, email, username, gender, preparing_for, created_at")
+      .eq("id", user.id)
+      .single();
+    setProfile(data as ProfileData | null);
+    setLoading(false);
+  };
 
   useEffect(() => {
     if (authLoading) return;
     if (!user) { navigate("/auth", { replace: true }); return; }
-
-    const fetchProfile = async () => {
-      const { data } = await supabase
-        .from("profiles")
-        .select("full_name, email, username, gender, preparing_for, created_at")
-        .eq("id", user.id)
-        .single();
-
-      setProfile(data as ProfileData | null);
-      setLoading(false);
-    };
     fetchProfile();
   }, [user, authLoading, navigate]);
+
+  const openEdit = () => {
+    setEditName(profile?.full_name || "");
+    setEditGender(profile?.gender || "");
+    setEditExams(profile?.preparing_for || []);
+    setEditOpen(true);
+  };
+
+  const handleSave = async () => {
+    if (!user) return;
+    setSaving(true);
+    const { error } = await supabase
+      .from("profiles")
+      .update({ full_name: editName, gender: editGender, preparing_for: editExams })
+      .eq("id", user.id);
+    setSaving(false);
+    if (error) { toast.error("Failed to update profile"); return; }
+    toast.success("Profile updated");
+    setEditOpen(false);
+    fetchProfile();
+  };
+
+  const toggleExam = (exam: string) => {
+    setEditExams(prev => prev.includes(exam) ? prev.filter(e => e !== exam) : [...prev, exam]);
+  };
 
   if (authLoading || loading || accessLoading) {
     return (
