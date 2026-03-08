@@ -160,7 +160,8 @@ const Quiz = () => {
   const handleSubmit = useCallback(async () => {
     if (submitting || !examId || !user) return;
     setSubmitting(true);
-    exitFullscreen();
+    // Only exit fullscreen if we're still in it (don't call if triggered by fullscreen exit)
+    if (document.fullscreenElement) exitFullscreen();
 
     const timeTaken = Math.floor((Date.now() - startTimeRef.current) / 1000);
 
@@ -201,6 +202,11 @@ const Quiz = () => {
 
     navigate(`/results/${result?.id}`, { replace: true });
   }, [submitting, examId, user, answers, setNumber, sectionId, tabSwitches, navigate, exitFullscreen]);
+
+  // Keep submitRef in sync so proctoring callback always has latest
+  useEffect(() => {
+    submitRef.current = handleSubmit;
+  }, [handleSubmit]);
 
   const formatTime = (seconds: number) => {
     const h = Math.floor(seconds / 3600);
