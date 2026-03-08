@@ -548,9 +548,9 @@ const Quiz = () => {
 
           {/* Question Palette */}
           <div className="p-3 flex-1" style={{ background: "white" }}>
-            <div className="flex items-center gap-2 mb-3 pb-2 border-b border-border">
-              <LayoutGrid className="h-3.5 w-3.5 text-muted-foreground" />
-              <span className="text-[11px] font-semibold text-muted-foreground tracking-wide">Question Palette</span>
+            <div className="flex items-center gap-2 mb-3 pb-2 border-b" style={{ borderColor: "hsl(220 13% 90%)" }}>
+              <LayoutGrid className="h-3.5 w-3.5" style={{ color: "hsl(215 20% 45%)" }} />
+              <span className="text-[11px] font-semibold tracking-wide" style={{ color: "hsl(215 20% 45%)" }}>Question Palette</span>
             </div>
             <div className="grid grid-cols-5 gap-2">
               {currentSectionQuestions.map((q, i) => {
