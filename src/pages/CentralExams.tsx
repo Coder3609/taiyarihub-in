@@ -24,10 +24,7 @@ const difficultyColor: Record<string, string> = {
 // Only these exams are available right now
 const AVAILABLE_EXAMS = [
   "GATE (Graduate Aptitude Test in Engineering)",
-  "BARC (Bhabha Atomic Research Centre)",
   "ISRO (Indian Space Research Organisation)",
-  "CAT (Common Admission Test)",
-  "CA (Chartered Accountant – Foundation, Inter & Final)",
   "RBI Grade B Officer",
 ];
 
