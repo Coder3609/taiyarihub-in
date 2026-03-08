@@ -44,11 +44,10 @@ const App = () => (
             <Route path="/exams/state" element={<StateExams />} />
             <Route path="/exams/state/:stateSlug" element={<StateExamDetail />} />
             <Route path="/exam/:examSlug" element={<ExamDetail />} />
-            <Route path="/exam/:examSlug/stream/:streamId" element={<ExamDetail />} />
-            <Route path="/exam/:examSlug/stream/:streamId/sources/:sectionId" element={<SourceListPage />} />
-            <Route path="/exam/:examSlug/stream/:streamId/:sectionId/:sourceId/:setNumber" element={<Quiz />} />
-            <Route path="/exam/:examSlug/stream/:streamId/:sectionId/:setNumber" element={<Quiz />} />
-            <Route path="/exam/:examSlug/stream/:streamId/:sectionId" element={<SectionSets />} />
+            <Route path="/exam/:examSlug/sources/:sectionId" element={<SourceListPage />} />
+            <Route path="/exam/:examSlug/:sectionId/:sourceId/:setNumber" element={<Quiz />} />
+            <Route path="/exam/:examSlug/:sectionId/:setNumber" element={<Quiz />} />
+            <Route path="/exam/:examSlug/:sectionId" element={<SectionSets />} />
             <Route path="/exam/:examSlug/sources/:sectionId" element={<SourceListPage />} />
             <Route path="/exam/:examSlug/:sectionId/:sourceId/:setNumber" element={<Quiz />} />
             <Route path="/exam/:examSlug/:sectionId/:setNumber" element={<Quiz />} />
