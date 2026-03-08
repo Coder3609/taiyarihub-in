@@ -322,8 +322,8 @@ const Quiz = () => {
           </div>
 
           <div className="flex items-center gap-3">
-            <Clock className="h-4 w-4 text-muted-foreground" />
-            <span className="text-xs font-medium text-muted-foreground">Time Left:</span>
+            <Clock className="h-4 w-4" style={{ color: "hsl(215 20% 45%)" }} />
+            <span className="text-xs font-medium" style={{ color: "hsl(215 20% 45%)" }}>Time Left:</span>
             <div className={`font-mono text-base font-bold px-4 py-1.5 rounded-lg border-2 ${
               timeLeft < 300
                 ? "bg-destructive/10 text-destructive border-destructive/30 animate-pulse"
