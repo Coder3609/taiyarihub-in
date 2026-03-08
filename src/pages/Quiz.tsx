@@ -489,11 +489,11 @@ const Quiz = () => {
                           <button
                             key={opt.key}
                             onClick={() => setAnswers((prev) => ({ ...prev, [currentQ.id]: opt.key }))}
-                            className={`w-full text-left p-4 rounded-xl border-2 transition-all flex items-center gap-4 ${
-                              selected
-                                ? "border-primary bg-primary/5"
-                                : "border-border bg-white hover:border-muted-foreground/30 hover:bg-muted/20"
-                            }`}
+                            className="w-full text-left p-4 rounded-xl border-2 transition-all flex items-center gap-4"
+                            style={selected
+                              ? { borderColor: "hsl(38 92% 50%)", background: "hsl(38 92% 97%)" }
+                              : { borderColor: "hsl(220 13% 80%)", background: "white" }
+                            }
                           >
                             <span className={`shrink-0 w-9 h-9 rounded-full flex items-center justify-center text-sm font-bold border-2 ${
                               selected ? "bg-primary text-primary-foreground border-primary" : "bg-muted/50 text-muted-foreground border-border"
