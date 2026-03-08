@@ -25,7 +25,6 @@ const difficultyColor: Record<string, string> = {
 const AVAILABLE_EXAMS = [
   "GATE (Graduate Aptitude Test in Engineering)",
   "ISRO (Indian Space Research Organisation)",
-  "RBI Grade B Officer",
 ];
 
 const isExamAvailable = (name: string) => AVAILABLE_EXAMS.includes(name);
