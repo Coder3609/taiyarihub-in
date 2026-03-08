@@ -346,8 +346,8 @@ const Quiz = () => {
         </div>
 
         {/* Row 3: Section Tabs */}
-        <div className="flex items-center px-4 border-t border-border/20" style={{ background: "white" }}>
-          <span className="text-[11px] text-muted-foreground mr-3 font-semibold tracking-wider uppercase">Sections</span>
+        <div className="flex items-center px-4 border-t" style={{ background: "white", borderColor: "hsl(220 13% 90%)" }}>
+          <span className="text-[11px] mr-3 font-semibold tracking-wider uppercase" style={{ color: "hsl(215 20% 45%)" }}>Sections</span>
           {availableSections.map((sec) => {
             const secQuestions = sec.id === "reasoning" ? reasoningQuestions : coreQuestions;
             const answeredCount = secQuestions.filter((q) => answers[q.id]).length;
