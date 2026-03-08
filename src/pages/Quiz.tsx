@@ -314,9 +314,9 @@ const Quiz = () => {
         {/* Row 2: Language + Timer + Submit */}
         <div className="flex items-center justify-between px-4 py-2 border-t border-white/10" style={{ background: "hsl(230 50% 95%)" }}>
           <div className="flex items-center gap-2">
-            <Globe className="h-3.5 w-3.5 text-muted-foreground" />
-            <span className="text-xs text-muted-foreground">View in:</span>
-            <button className="text-xs font-medium text-foreground bg-white border border-border rounded px-2.5 py-1 flex items-center gap-1">
+            <Globe className="h-3.5 w-3.5" style={{ color: "hsl(215 20% 45%)" }} />
+            <span className="text-xs" style={{ color: "hsl(215 20% 45%)" }}>View in:</span>
+            <button className="text-xs font-medium bg-white border rounded px-2.5 py-1 flex items-center gap-1" style={{ color: "hsl(222 47% 11%)", borderColor: "hsl(220 13% 80%)" }}>
               English <ChevronDown className="h-3 w-3" />
             </button>
           </div>
