@@ -28,7 +28,7 @@ const TermsOfService = () => {
           <motion.div initial={{ opacity: 0, y: 20 }} animate={{ opacity: 1, y: 0 }} transition={{ delay: 0.1 }} className="prose prose-sm prose-invert max-w-none space-y-6 text-muted-foreground">
             <section>
               <h2 className="text-lg font-display font-bold text-foreground">1. Acceptance of Terms</h2>
-              <p>By accessing and using EDUMask, you agree to be bound by these Terms of Service. If you do not agree to these terms, please do not use our platform.</p>
+              <p>By accessing and using Taiyari Hub, you agree to be bound by these Terms of Service. If you do not agree to these terms, please do not use our platform.</p>
             </section>
 
             <section>
