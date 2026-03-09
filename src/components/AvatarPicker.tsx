@@ -18,8 +18,8 @@ export const AVATAR_OPTIONS = [
   { id: "avatar-2", src: avatar2, label: "Student Girl" },
   { id: "avatar-3", src: avatar3, label: "Music Lover" },
   { id: "avatar-4", src: avatar4, label: "Graduate" },
-  { id: "avatar-5", src: avatar5, label: "Turban" },
-  { id: "avatar-6", src: avatar6, label: "Hijab" },
+  { id: "avatar-5", src: avatar5, label: "Astronaut" },
+  { id: "avatar-6", src: avatar6, label: "Ninja" },
   { id: "avatar-7", src: avatar7, label: "Scientist" },
   { id: "avatar-8", src: avatar8, label: "Engineer" },
 ];
