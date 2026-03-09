@@ -33,7 +33,7 @@ const Careers = () => {
             <p className="text-muted-foreground max-w-lg mx-auto mb-6">
               We don't have any open roles at the moment, but we're always looking for talented people. Send us your resume and we'll keep you in mind for future opportunities.
             </p>
-            <a href="mailto:careers@edumask.in">
+            <a href="mailto:careers@taiyarihub.in">
               <Button className="font-semibold">Send Your Resume</Button>
             </a>
           </motion.div>

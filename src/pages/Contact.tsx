@@ -83,7 +83,7 @@ const Contact = () => {
             <MessageCircle className="h-10 w-10 text-primary mx-auto mb-3" />
             <h3 className="font-display font-bold text-foreground mb-2">Business Inquiries</h3>
             <p className="text-sm text-muted-foreground mb-1">For partnerships, collaborations, or business-related queries:</p>
-            <a href="mailto:business@edumask.in" className="text-sm font-medium text-primary hover:underline">business@edumask.in</a>
+            <a href="mailto:business@taiyarihub.in" className="text-sm font-medium text-primary hover:underline">business@taiyarihub.in</a>
           </motion.div>
         </div>
       </main>

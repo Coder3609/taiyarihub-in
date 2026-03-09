@@ -52,7 +52,7 @@ const FeaturesSection = () => {
           className="text-center mb-16"
         >
           <span className="text-primary font-display font-semibold text-sm uppercase tracking-wider">
-            Why EDUMask
+            Why Taiyari Hub
           </span>
           <h2 className="font-display text-3xl md:text-5xl font-bold mt-3 mb-4">
             Built for Serious Aspirants

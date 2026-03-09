@@ -54,7 +54,7 @@ const Footer = () => {
               </span>
             </Link>
             <p className="text-sm text-muted-foreground leading-relaxed">
-              India's most comprehensive exam preparation platform. Learn smarter, score higher.
+              India's most comprehensive exam preparation platform. Taiyari karo, topper bano.
             </p>
           </div>
 

@@ -45,7 +45,7 @@ const HeroSection = () => {
             className="font-display text-4xl sm:text-5xl md:text-7xl font-bold leading-tight mb-6"
           >
             Master Every Exam with{" "}
-            <span className="text-gradient">EDUMask</span>
+            <span className="text-gradient">Taiyari Hub</span>
           </motion.h1>
 
           <motion.p

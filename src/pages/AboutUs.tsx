@@ -37,7 +37,7 @@ const AboutUs = () => {
           <motion.div initial={{ opacity: 0, y: 20 }} animate={{ opacity: 1, y: 0 }} transition={{ delay: 0.1 }} className="mb-16">
             <h2 className="font-display text-xl md:text-2xl font-bold text-foreground mb-3">Our Story</h2>
             <div className="space-y-4 text-muted-foreground leading-relaxed">
-              <p>We started EDUMask with a simple belief — every student deserves access to high-quality exam preparation, regardless of their background or location.</p>
+              <p>We started Taiyari Hub with a simple belief — every student deserves access to high-quality exam preparation, regardless of their background or location.</p>
               <p>Today, we serve thousands of students preparing for competitive exams across India, providing them with previous year questions, mock tests, subject-wise practice, and detailed solutions — all powered by modern technology.</p>
             </div>
           </motion.div>

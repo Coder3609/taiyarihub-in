@@ -58,7 +58,7 @@ const TermsOfService = () => {
 
             <section>
               <h2 className="text-lg font-display font-bold text-foreground">7. Contact</h2>
-              <p>For questions regarding these terms, please reach out to <a href="mailto:support@edumask.in" className="text-primary hover:underline">support@edumask.in</a>.</p>
+              <p>For questions regarding these terms, please reach out to <a href="mailto:support@taiyarihub.in" className="text-primary hover:underline">support@taiyarihub.in</a>.</p>
             </section>
           </motion.div>
         </div>
