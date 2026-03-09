@@ -586,7 +586,7 @@ const Quiz = () => {
                   )}
                   <p className="text-sm md:text-[15px] leading-relaxed mb-8" style={{ color: t.questionText }}>
                     <span className="font-semibold" style={{ color: t.questionNum }}>Q{sectionIndex + 1}.</span>{" "}
-                    {currentQ.question_text}
+                    {qText}
                   </p>
 
                   {currentQ.question_type === "integer" ? (
