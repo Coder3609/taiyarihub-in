@@ -26,6 +26,7 @@ import {
   HelpCircle,
   Moon,
   Sun,
+  GraduationCap,
 } from "lucide-react";
 import ExamInstructionsPage from "@/components/ExamInstructionsPage";
 import { Input } from "@/components/ui/input";
@@ -75,22 +76,68 @@ const Quiz = () => {
   const [nightMode, setNightMode] = useState(false);
   const startTimeRef = useRef(Date.now());
 
+  // Detect if this is a JEE Advanced exam
+  const isJEEAdvanced = useMemo(() => {
+    const slug = decodeURIComponent(examSlug || "");
+    return slug.toLowerCase().includes("jee-advanced");
+  }, [examSlug]);
+
   // Split questions into sections by category
-  const coreQuestions = useMemo(() => questions.filter((q) => q.question_category !== "reasoning"), [questions]);
-  const reasoningQuestions = useMemo(() => questions.filter((q) => q.question_category === "reasoning"), [questions]);
+  const sectionGroups = useMemo(() => {
+    if (isJEEAdvanced) {
+      // JEE Advanced: Physics, Chemistry, Mathematics
+      const physics = questions.filter((q) => q.question_category === "physics");
+      const chemistry = questions.filter((q) => q.question_category === "chemistry");
+      const mathematics = questions.filter((q) => q.question_category === "mathematics");
+      return { physics, chemistry, mathematics };
+    }
+    return {};
+  }, [questions, isJEEAdvanced]);
+
+  const coreQuestions = useMemo(() => {
+    if (isJEEAdvanced) return [];
+    return questions.filter((q) => q.question_category !== "reasoning");
+  }, [questions, isJEEAdvanced]);
+  const reasoningQuestions = useMemo(() => {
+    if (isJEEAdvanced) return [];
+    return questions.filter((q) => q.question_category === "reasoning");
+  }, [questions, isJEEAdvanced]);
 
   // Determine available sections dynamically
   const availableSections = useMemo(() => {
+    if (isJEEAdvanced) {
+      const sections: { id: string; label: string; icon: string }[] = [];
+      if ((sectionGroups.physics?.length || 0) > 0) sections.push({ id: "physics", label: "Physics", icon: "⚛️" });
+      if ((sectionGroups.chemistry?.length || 0) > 0) sections.push({ id: "chemistry", label: "Chemistry", icon: "🧪" });
+      if ((sectionGroups.mathematics?.length || 0) > 0) sections.push({ id: "mathematics", label: "Mathematics", icon: "📐" });
+      if (sections.length === 0) sections.push({ id: "physics", label: "All Questions", icon: "📝" });
+      return sections;
+    }
     const sections: { id: string; label: string; icon: string }[] = [];
     if (coreQuestions.length > 0) sections.push({ id: "core", label: "Core CS", icon: "⚙️" });
     if (reasoningQuestions.length > 0) sections.push({ id: "reasoning", label: "General Aptitude", icon: "🧠" });
     if (sections.length === 0) sections.push({ id: "core", label: "All Questions", icon: "📝" });
     return sections;
-  }, [coreQuestions, reasoningQuestions]);
+  }, [isJEEAdvanced, sectionGroups, coreQuestions, reasoningQuestions]);
 
-  const currentSectionQuestions = activeSection === "reasoning" ? reasoningQuestions : coreQuestions;
+  const currentSectionQuestions = useMemo(() => {
+    if (isJEEAdvanced) {
+      if (activeSection === "chemistry") return sectionGroups.chemistry || [];
+      if (activeSection === "mathematics") return sectionGroups.mathematics || [];
+      return sectionGroups.physics || [];
+    }
+    return activeSection === "reasoning" ? reasoningQuestions : coreQuestions;
+  }, [isJEEAdvanced, activeSection, sectionGroups, coreQuestions, reasoningQuestions]);
+
   const sectionIndex = Math.min(currentIndex, currentSectionQuestions.length - 1);
   const currentQ = currentSectionQuestions[sectionIndex];
+
+  // Set initial section for JEE Advanced
+  useEffect(() => {
+    if (isJEEAdvanced && questions.length > 0 && activeSection === "core") {
+      setActiveSection("physics");
+    }
+  }, [isJEEAdvanced, questions, activeSection]);
 
   // Mark visited
   useEffect(() => {
@@ -350,23 +397,31 @@ const Quiz = () => {
 
   return (
     <div className="h-screen flex flex-col overflow-hidden" style={{ background: t.pageBg, color: t.pageText }}>
-      {/* === NTA-Style Top Header === */}
-      <header className="shrink-0" style={{ background: t.headerBg }}>
+      {/* === Top Header === */}
+      <header className="shrink-0" style={{ background: isJEEAdvanced ? "linear-gradient(135deg, hsl(25 80% 28%), hsl(0 65% 22%))" : t.headerBg }}>
         {/* Row 1: Branding + Exam Name + User */}
         <div className="flex items-center justify-between px-4 py-2.5">
           <div className="flex items-center gap-3">
             <div className="w-9 h-9 rounded-full bg-white/10 flex items-center justify-center border border-white/20">
-              <LayoutGrid className="h-4 w-4 text-white" />
+              {isJEEAdvanced ? <GraduationCap className="h-4 w-4 text-white" /> : <LayoutGrid className="h-4 w-4 text-white" />}
             </div>
             <div>
-              <p className="text-[11px] text-white/60 font-medium tracking-wide">National Testing Agency</p>
-              <p className="text-xs text-white/80">Computer Based Test</p>
+              <p className="text-[11px] text-white/60 font-medium tracking-wide">
+                {isJEEAdvanced ? "Joint Admission Board (JAB)" : "National Testing Agency"}
+              </p>
+              <p className="text-xs text-white/80">
+                {isJEEAdvanced ? "IIT JEE Advanced — Computer Based Test" : "Computer Based Test"}
+              </p>
             </div>
           </div>
 
           <div className="text-center">
             <p className="text-sm font-bold text-white tracking-wide">{examName}</p>
-            <p className="text-[11px] text-white/60">Session 1</p>
+            <p className="text-[11px] text-white/60">
+              {isJEEAdvanced
+                ? (examSlug?.includes("Paper-1") ? "Paper 1" : examSlug?.includes("Paper-2") ? "Paper 2" : "Session 1")
+                : "Session 1"}
+            </p>
           </div>
 
           <div className="flex items-center gap-2.5">

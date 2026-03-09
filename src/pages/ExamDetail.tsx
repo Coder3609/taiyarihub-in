@@ -1,6 +1,6 @@
 import { useState } from "react";
 import { motion } from "framer-motion";
-import { ArrowLeft, ScrollText, ClipboardList, BookOpen, ChevronRight, Cpu, Radio, Zap, Cog, FlaskConical, Atom, Ruler, Hammer, Droplets, Leaf, LayoutGrid, Globe, Rocket, GraduationCap } from "lucide-react";
+import { ArrowLeft, ScrollText, ClipboardList, BookOpen, ChevronRight, Cpu, Radio, Zap, Cog, FlaskConical, Atom, Ruler, Hammer, Droplets, Leaf, LayoutGrid, Globe, Rocket, GraduationCap, FileText, Beaker } from "lucide-react";
 import { Button } from "@/components/ui/button";
 import { useNavigate, useParams } from "react-router-dom";
 import Navbar from "@/components/Navbar";
@@ -40,6 +40,10 @@ const examStreams: Record<string, { id: string; slug: string; title: string; sho
     { id: "class-10", slug: "ICSE-Class-10", title: "Class 10", shortName: "10", icon: BookOpen, color: "from-emerald-500/20 to-emerald-600/5", borderColor: "hover:border-emerald-500/50" },
     { id: "class-11", slug: "ICSE-Class-11", title: "Class 11", shortName: "11", icon: BookOpen, color: "from-purple-500/20 to-purple-600/5", borderColor: "hover:border-purple-500/50" },
     { id: "class-12", slug: "ICSE-Class-12", title: "Class 12", shortName: "12", icon: BookOpen, color: "from-amber-500/20 to-amber-600/5", borderColor: "hover:border-amber-500/50" },
+  ],
+  "JEE-Advanced": [
+    { id: "paper-1", slug: "JEE-Advanced-Paper-1", title: "Paper 1 — Physics, Chemistry, Mathematics", shortName: "P1", icon: FileText, color: "from-orange-500/20 to-red-600/5", borderColor: "hover:border-orange-500/50" },
+    { id: "paper-2", slug: "JEE-Advanced-Paper-2", title: "Paper 2 — Physics, Chemistry, Mathematics", shortName: "P2", icon: FileText, color: "from-indigo-500/20 to-blue-600/5", borderColor: "hover:border-indigo-500/50" },
   ],
 };
 
@@ -153,7 +157,7 @@ const ExamDetail = () => {
                 {examName}
               </h1>
               <p className="text-muted-foreground text-sm md:text-base">
-                {examSlug === "CBSE" || examSlug === "ICSE" ? "Select your class to continue." : "Select your stream / branch to continue."}
+                {examSlug === "CBSE" || examSlug === "ICSE" ? "Select your class to continue." : examSlug === "JEE-Advanced" ? "Select your paper to continue." : "Select your stream / branch to continue."}
               </p>
             </motion.div>
 
