@@ -43,7 +43,7 @@ const TermsOfService = () => {
 
             <section>
               <h2 className="text-lg font-display font-bold text-foreground">4. Content & Intellectual Property</h2>
-              <p>All content on EDUMask, including questions, solutions, and study materials, is the intellectual property of EDUMask or its licensors. You may not reproduce, distribute, or commercially exploit any content without prior written consent.</p>
+              <p>All content on Taiyari Hub, including questions, solutions, and study materials, is the intellectual property of Taiyari Hub or its licensors. You may not reproduce, distribute, or commercially exploit any content without prior written consent.</p>
             </section>
 
             <section>
