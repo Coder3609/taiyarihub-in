@@ -180,7 +180,7 @@ const Quiz = () => {
 
       const { data: qs } = await supabase
         .from("questions")
-        .select("id, question_number, question_text, option_a, option_b, option_c, option_d, question_type, question_category, source_label")
+        .select("id, question_number, question_text, option_a, option_b, option_c, option_d, question_type, question_category, source_label, question_text_hi, option_a_hi, option_b_hi, option_c_hi, option_d_hi")
         .eq("exam_id", exam.id)
         .eq("set_number", parseInt(setNumber || "1"))
         .order("question_number", { ascending: true });
