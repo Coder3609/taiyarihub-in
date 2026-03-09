@@ -30,7 +30,7 @@ const AboutUs = () => {
               Empowering Students to <span className="text-primary">Ace Every Exam</span>
             </h1>
             <p className="text-muted-foreground text-base md:text-lg leading-relaxed max-w-3xl">
-              EDUMask is India's comprehensive exam preparation platform. We provide AI-powered practice, real exam simulations, and expert solutions for GATE, JEE, UPSC, SSC, Banking, Board exams and more — all in one place.
+              Taiyari Hub is India's comprehensive exam preparation platform. We provide AI-powered practice, real exam simulations, and expert solutions for GATE, JEE, UPSC, SSC, Banking, Board exams and more — all in one place.
             </p>
           </motion.div>
 
