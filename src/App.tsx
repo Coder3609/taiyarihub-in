@@ -21,6 +21,13 @@ import Auth from "./pages/Auth";
 import CompleteProfile from "./pages/CompleteProfile";
 import Profile from "./pages/Profile";
 import AdminPanel from "./pages/AdminPanel";
+import AboutUs from "./pages/AboutUs";
+import Careers from "./pages/Careers";
+import Blog from "./pages/Blog";
+import Contact from "./pages/Contact";
+import PrivacyPolicy from "./pages/PrivacyPolicy";
+import TermsOfService from "./pages/TermsOfService";
+import RefundPolicy from "./pages/RefundPolicy";
 import NotFound from "./pages/NotFound";
 
 const queryClient = new QueryClient();
