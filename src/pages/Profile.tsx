@@ -11,10 +11,11 @@ import { Label } from "@/components/ui/label";
 import { Select, SelectContent, SelectItem, SelectTrigger, SelectValue } from "@/components/ui/select";
 import { Checkbox } from "@/components/ui/checkbox";
 import { motion } from "framer-motion";
-import { ArrowLeft, User, Mail, Crown, Shield, BookOpen, Loader2, Edit } from "lucide-react";
+import { ArrowLeft, User, Mail, Crown, Shield, BookOpen, Loader2, Edit, Camera } from "lucide-react";
 import { toast } from "sonner";
 import Navbar from "@/components/Navbar";
 import Footer from "@/components/Footer";
+import AvatarPicker, { getAvatarSrc } from "@/components/AvatarPicker";
 
 const EXAM_OPTIONS = [
   "UPSC ESE/IES", "GATE", "ISRO", "BARC", "DRDO",
@@ -28,6 +29,7 @@ interface ProfileData {
   username: string | null;
   gender: string | null;
   preparing_for: string[] | null;
+  avatar_url: string | null;
   created_at: string;
 }
 
@@ -38,16 +40,18 @@ const Profile = () => {
   const [profile, setProfile] = useState<ProfileData | null>(null);
   const [loading, setLoading] = useState(true);
   const [editOpen, setEditOpen] = useState(false);
+  const [avatarOpen, setAvatarOpen] = useState(false);
   const [editName, setEditName] = useState("");
   const [editGender, setEditGender] = useState("");
   const [editExams, setEditExams] = useState<string[]>([]);
   const [saving, setSaving] = useState(false);
+  const [avatarSaving, setAvatarSaving] = useState(false);
 
   const fetchProfile = async () => {
     if (!user) return;
     const { data } = await supabase
       .from("profiles")
-      .select("full_name, email, username, gender, preparing_for, created_at")
+      .select("full_name, email, username, gender, preparing_for, avatar_url, created_at")
       .eq("id", user.id)
       .single();
     setProfile(data as ProfileData | null);
@@ -81,6 +85,20 @@ const Profile = () => {
     fetchProfile();
   };
 
+  const handleAvatarSelect = async (avatarId: string) => {
+    if (!user) return;
+    setAvatarSaving(true);
+    const { error } = await supabase
+      .from("profiles")
+      .update({ avatar_url: avatarId })
+      .eq("id", user.id);
+    setAvatarSaving(false);
+    if (error) { toast.error("Failed to update avatar"); return; }
+    toast.success("Avatar updated!");
+    setAvatarOpen(false);
+    fetchProfile();
+  };
+
   const toggleExam = (exam: string) => {
     setEditExams(prev => prev.includes(exam) ? prev.filter(e => e !== exam) : [...prev, exam]);
   };
@@ -104,6 +122,11 @@ const Profile = () => {
     ? new Date(profile.created_at).toLocaleDateString("en-IN", { month: "long", year: "numeric" })
     : "";
 
+  const avatarSrc = getAvatarSrc(profile?.avatar_url);
+  const initials = profile?.full_name
+    ? profile.full_name.split(" ").map(n => n[0]).join("").toUpperCase().slice(0, 2)
+    : "?";
+
   return (
     <div className="min-h-screen bg-background">
       <Navbar />
@@ -118,7 +141,30 @@ const Profile = () => {
           </Button>
 
           <motion.div initial={{ opacity: 0, y: 20 }} animate={{ opacity: 1, y: 0 }}>
-            <h1 className="font-display text-2xl md:text-3xl font-bold text-foreground mb-6">My Profile</h1>
+            {/* Avatar + Name Header */}
+            <div className="flex items-center gap-5 mb-6">
+              <div className="relative group">
+                <div className="h-20 w-20 rounded-full border-[3px] border-primary/60 overflow-hidden bg-muted flex items-center justify-center">
+                  {avatarSrc ? (
+                    <img src={avatarSrc} alt="Avatar" className="h-full w-full object-cover" />
+                  ) : (
+                    <span className="text-xl font-bold text-muted-foreground">{initials}</span>
+                  )}
+                </div>
+                <button
+                  onClick={() => setAvatarOpen(true)}
+                  className="absolute inset-0 rounded-full bg-black/50 opacity-0 group-hover:opacity-100 transition-opacity flex items-center justify-center cursor-pointer"
+                >
+                  <Camera className="h-5 w-5 text-white" />
+                </button>
+              </div>
+              <div>
+                <h1 className="font-display text-2xl md:text-3xl font-bold text-foreground">
+                  {profile?.full_name || "My Profile"}
+                </h1>
+                <p className="text-sm text-muted-foreground">{profile?.email || user?.email}</p>
+              </div>
+            </div>
 
             {/* Plan Status Box */}
             <div className={`rounded-2xl border p-5 mb-6 ${planColor}`}>
@@ -229,6 +275,15 @@ const Profile = () => {
                 </div>
               </DialogContent>
             </Dialog>
+
+            {/* Avatar Picker Dialog */}
+            <AvatarPicker
+              open={avatarOpen}
+              onOpenChange={setAvatarOpen}
+              currentAvatar={profile?.avatar_url || null}
+              onSelect={handleAvatarSelect}
+              saving={avatarSaving}
+            />
           </motion.div>
         </div>
       </main>
