@@ -42,6 +42,11 @@ interface Question {
   question_type: "mcq" | "msq" | "integer";
   question_category: string;
   source_label?: string | null;
+  question_text_hi?: string | null;
+  option_a_hi?: string | null;
+  option_b_hi?: string | null;
+  option_c_hi?: string | null;
+  option_d_hi?: string | null;
 }
 
 type QuestionStatus = "not-visited" | "not-answered" | "answered" | "marked" | "answered-marked";
