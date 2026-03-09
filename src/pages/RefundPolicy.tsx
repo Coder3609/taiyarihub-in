@@ -33,7 +33,7 @@ const RefundPolicy = () => {
 
             <section>
               <h2 className="text-lg font-display font-bold text-foreground">2. How to Request a Refund</h2>
-              <p>To request a refund, please email us at <a href="mailto:support@edumask.in" className="text-primary hover:underline">support@edumask.in</a> with your registered email, order details, and reason for the refund request.</p>
+              <p>To request a refund, please email us at <a href="mailto:support@taiyarihub.in" className="text-primary hover:underline">support@taiyarihub.in</a> with your registered email, order details, and reason for the refund request.</p>
             </section>
 
             <section>
