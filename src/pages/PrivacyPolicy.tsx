@@ -48,7 +48,7 @@ const PrivacyPolicy = () => {
 
             <section>
               <h2 className="text-lg font-display font-bold text-foreground">5. Your Rights</h2>
-              <p>You have the right to access, correct, or delete your personal data. You may request a copy of your data or ask us to remove your account at any time by contacting us at <a href="mailto:support@edumask.in" className="text-primary hover:underline">support@edumask.in</a>.</p>
+              <p>You have the right to access, correct, or delete your personal data. You may request a copy of your data or ask us to remove your account at any time by contacting us at <a href="mailto:support@taiyarihub.in" className="text-primary hover:underline">support@taiyarihub.in</a>.</p>
             </section>
 
             <section>
