@@ -20,7 +20,7 @@ const Careers = () => {
           <motion.div initial={{ opacity: 0, y: 20 }} animate={{ opacity: 1, y: 0 }} className="mb-12">
             <span className="inline-block px-4 py-1.5 rounded-full text-xs font-semibold tracking-wider uppercase bg-primary/10 text-primary border border-primary/20 mb-4">Careers</span>
             <h1 className="font-display text-3xl md:text-5xl font-bold text-foreground mb-4">
-              Join the <span className="text-primary">EDUMask</span> Team
+              Join the <span className="text-primary">Taiyari Hub</span> Team
             </h1>
             <p className="text-muted-foreground text-base md:text-lg leading-relaxed max-w-3xl">
               Help us build the future of exam preparation in India. We're looking for passionate people who care about education.
