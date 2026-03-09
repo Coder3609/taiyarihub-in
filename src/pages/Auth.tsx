@@ -42,18 +42,40 @@ const Auth = () => {
 
   const handleEmailAuth = async (e: React.FormEvent) => {
     e.preventDefault();
+
+    // Input validation
+    const trimmedEmail = email.trim();
+    const trimmedName = fullName.trim();
+
+    if (!trimmedEmail || !/^[^\s@]+@[^\s@]+\.[^\s@]+$/.test(trimmedEmail)) {
+      toast({ title: "Invalid email address", variant: "destructive" });
+      return;
+    }
+    if (password.length < 6) {
+      toast({ title: "Password must be at least 6 characters", variant: "destructive" });
+      return;
+    }
+    if (password.length > 128) {
+      toast({ title: "Password is too long", variant: "destructive" });
+      return;
+    }
+    if (!isLogin && (!trimmedName || trimmedName.length < 2 || trimmedName.length > 100)) {
+      toast({ title: "Name must be 2–100 characters", variant: "destructive" });
+      return;
+    }
+
     setLoading(true);
     try {
       if (isLogin) {
-        const { error } = await supabase.auth.signInWithPassword({ email, password });
+        const { error } = await supabase.auth.signInWithPassword({ email: trimmedEmail, password });
         if (error) throw error;
         navigate("/");
       } else {
         const { error } = await supabase.auth.signUp({
-          email,
+          email: trimmedEmail,
           password,
           options: {
-            data: { full_name: fullName },
+            data: { full_name: trimmedName },
             emailRedirectTo: window.location.origin,
           },
         });
