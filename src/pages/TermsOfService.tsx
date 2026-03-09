@@ -33,7 +33,7 @@ const TermsOfService = () => {
 
             <section>
               <h2 className="text-lg font-display font-bold text-foreground">2. Use of Services</h2>
-              <p>You agree to use EDUMask only for lawful purposes and in accordance with these terms. You must not misuse the platform, attempt to access restricted areas, or interfere with the proper working of the service.</p>
+              <p>You agree to use Taiyari Hub only for lawful purposes and in accordance with these terms. You must not misuse the platform, attempt to access restricted areas, or interfere with the proper working of the service.</p>
             </section>
 
             <section>
