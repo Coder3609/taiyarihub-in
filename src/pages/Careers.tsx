@@ -20,7 +20,7 @@ const Careers = () => {
           <motion.div initial={{ opacity: 0, y: 20 }} animate={{ opacity: 1, y: 0 }} className="mb-12">
             <span className="inline-block px-4 py-1.5 rounded-full text-xs font-semibold tracking-wider uppercase bg-primary/10 text-primary border border-primary/20 mb-4">Careers</span>
             <h1 className="font-display text-3xl md:text-5xl font-bold text-foreground mb-4">
-              Join the <span className="text-primary">EDUMask</span> Team
+              Join the <span className="text-primary">Taiyari Hub</span> Team
             </h1>
             <p className="text-muted-foreground text-base md:text-lg leading-relaxed max-w-3xl">
               Help us build the future of exam preparation in India. We're looking for passionate people who care about education.
@@ -33,7 +33,7 @@ const Careers = () => {
             <p className="text-muted-foreground max-w-lg mx-auto mb-6">
               We don't have any open roles at the moment, but we're always looking for talented people. Send us your resume and we'll keep you in mind for future opportunities.
             </p>
-            <a href="mailto:careers@edumask.in">
+            <a href="mailto:careers@taiyarihub.in">
               <Button className="font-semibold">Send Your Resume</Button>
             </a>
           </motion.div>

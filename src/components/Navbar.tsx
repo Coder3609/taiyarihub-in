@@ -24,7 +24,7 @@ const Navbar = () => {
           <a href="/" className="flex items-center gap-2">
             <GraduationCap className="h-8 w-8 text-primary" />
             <span className="font-display text-xl font-bold text-foreground">
-              EDU<span className="text-primary">Mask</span>
+              Taiyari<span className="text-primary"> Hub</span>
             </span>
           </a>
 

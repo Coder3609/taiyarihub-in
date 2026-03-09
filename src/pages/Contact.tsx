@@ -10,8 +10,8 @@ const contactChannels = [
     icon: Mail,
     title: "Email Us",
     description: "For general inquiries and support",
-    value: "support@edumask.in",
-    href: "mailto:support@edumask.in",
+    value: "support@taiyarihub.in",
+    href: "mailto:support@taiyarihub.in",
     color: "from-blue-500/20 to-blue-600/5",
     iconColor: "text-blue-400",
   },
@@ -19,8 +19,8 @@ const contactChannels = [
     icon: Twitter,
     title: "Twitter / X",
     description: "Follow us for updates and tips",
-    value: "@EDUMask",
-    href: "https://twitter.com/EDUMask",
+    value: "@TaiyariHub",
+    href: "https://twitter.com/TaiyariHub",
     color: "from-sky-500/20 to-sky-600/5",
     iconColor: "text-sky-400",
   },
@@ -28,8 +28,8 @@ const contactChannels = [
     icon: Linkedin,
     title: "LinkedIn",
     description: "Connect with us professionally",
-    value: "EDUMask",
-    href: "https://linkedin.com/company/edumask",
+    value: "Taiyari Hub",
+    href: "https://linkedin.com/company/taiyarihub",
     color: "from-indigo-500/20 to-indigo-600/5",
     iconColor: "text-indigo-400",
   },
@@ -83,7 +83,7 @@ const Contact = () => {
             <MessageCircle className="h-10 w-10 text-primary mx-auto mb-3" />
             <h3 className="font-display font-bold text-foreground mb-2">Business Inquiries</h3>
             <p className="text-sm text-muted-foreground mb-1">For partnerships, collaborations, or business-related queries:</p>
-            <a href="mailto:business@edumask.in" className="text-sm font-medium text-primary hover:underline">business@edumask.in</a>
+            <a href="mailto:business@taiyarihub.in" className="text-sm font-medium text-primary hover:underline">business@taiyarihub.in</a>
           </motion.div>
         </div>
       </main>

@@ -50,11 +50,11 @@ const Footer = () => {
             <Link to="/" className="flex items-center gap-2 mb-4">
               <GraduationCap className="h-7 w-7 text-primary" />
               <span className="font-display text-lg font-bold text-foreground">
-                EDU<span className="text-primary">Mask</span>
+                Taiyari<span className="text-primary"> Hub</span>
               </span>
             </Link>
             <p className="text-sm text-muted-foreground leading-relaxed">
-              India's most comprehensive exam preparation platform. Learn smarter, score higher.
+              India's most comprehensive exam preparation platform. Taiyari karo, topper bano.
             </p>
           </div>
 
@@ -81,7 +81,7 @@ const Footer = () => {
 
         <div className="border-t border-border/50 pt-8 text-center">
           <p className="text-xs text-muted-foreground">
-            © {new Date().getFullYear()} EDUMask. All rights reserved.
+            © {new Date().getFullYear()} Taiyari Hub. All rights reserved.
           </p>
         </div>
       </div>

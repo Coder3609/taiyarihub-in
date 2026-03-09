@@ -110,7 +110,7 @@ const Auth = () => {
         <div className="text-center mb-8">
           <div className="inline-flex items-center gap-2 mb-4">
             <GraduationCap className="h-8 w-8 text-primary" />
-            <span className="font-display text-2xl font-bold text-foreground">EDUMask</span>
+            <span className="font-display text-2xl font-bold text-foreground">Taiyari Hub</span>
           </div>
           <h1 className="font-display text-xl font-bold text-foreground">
             {isLogin ? "Welcome back" : "Create your account"}

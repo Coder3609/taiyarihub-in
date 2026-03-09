@@ -20,7 +20,7 @@ const Blog = () => {
           <motion.div initial={{ opacity: 0, y: 20 }} animate={{ opacity: 1, y: 0 }} className="mb-12">
             <span className="inline-block px-4 py-1.5 rounded-full text-xs font-semibold tracking-wider uppercase bg-primary/10 text-primary border border-primary/20 mb-4">Blog</span>
             <h1 className="font-display text-3xl md:text-5xl font-bold text-foreground mb-4">
-              EDUMask <span className="text-primary">Blog</span>
+              Taiyari Hub <span className="text-primary">Blog</span>
             </h1>
             <p className="text-muted-foreground text-base md:text-lg leading-relaxed max-w-3xl">
               Tips, strategies, and updates to help you prepare smarter.

@@ -28,12 +28,12 @@ const TermsOfService = () => {
           <motion.div initial={{ opacity: 0, y: 20 }} animate={{ opacity: 1, y: 0 }} transition={{ delay: 0.1 }} className="prose prose-sm prose-invert max-w-none space-y-6 text-muted-foreground">
             <section>
               <h2 className="text-lg font-display font-bold text-foreground">1. Acceptance of Terms</h2>
-              <p>By accessing and using EDUMask, you agree to be bound by these Terms of Service. If you do not agree to these terms, please do not use our platform.</p>
+              <p>By accessing and using Taiyari Hub, you agree to be bound by these Terms of Service. If you do not agree to these terms, please do not use our platform.</p>
             </section>
 
             <section>
               <h2 className="text-lg font-display font-bold text-foreground">2. Use of Services</h2>
-              <p>You agree to use EDUMask only for lawful purposes and in accordance with these terms. You must not misuse the platform, attempt to access restricted areas, or interfere with the proper working of the service.</p>
+              <p>You agree to use Taiyari Hub only for lawful purposes and in accordance with these terms. You must not misuse the platform, attempt to access restricted areas, or interfere with the proper working of the service.</p>
             </section>
 
             <section>
@@ -43,7 +43,7 @@ const TermsOfService = () => {
 
             <section>
               <h2 className="text-lg font-display font-bold text-foreground">4. Content & Intellectual Property</h2>
-              <p>All content on EDUMask, including questions, solutions, and study materials, is the intellectual property of EDUMask or its licensors. You may not reproduce, distribute, or commercially exploit any content without prior written consent.</p>
+              <p>All content on Taiyari Hub, including questions, solutions, and study materials, is the intellectual property of Taiyari Hub or its licensors. You may not reproduce, distribute, or commercially exploit any content without prior written consent.</p>
             </section>
 
             <section>
@@ -53,12 +53,12 @@ const TermsOfService = () => {
 
             <section>
               <h2 className="text-lg font-display font-bold text-foreground">6. Limitation of Liability</h2>
-              <p>EDUMask is provided "as is" without warranties of any kind. We are not liable for any indirect, incidental, or consequential damages arising from your use of the platform.</p>
+              <p>Taiyari Hub is provided "as is" without warranties of any kind. We are not liable for any indirect, incidental, or consequential damages arising from your use of the platform.</p>
             </section>
 
             <section>
               <h2 className="text-lg font-display font-bold text-foreground">7. Contact</h2>
-              <p>For questions regarding these terms, please reach out to <a href="mailto:support@edumask.in" className="text-primary hover:underline">support@edumask.in</a>.</p>
+              <p>For questions regarding these terms, please reach out to <a href="mailto:support@taiyarihub.in" className="text-primary hover:underline">support@taiyarihub.in</a>.</p>
             </section>
           </motion.div>
         </div>

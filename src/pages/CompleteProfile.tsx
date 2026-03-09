@@ -172,7 +172,7 @@ const CompleteProfile = () => {
       return;
     }
 
-    toast({ title: "Profile completed! 🎉", description: "Welcome to EDUMask" });
+    toast({ title: "Profile completed! 🎉", description: "Welcome to Taiyari Hub" });
     navigate("/", { replace: true });
   };
 
@@ -194,7 +194,7 @@ const CompleteProfile = () => {
         <div className="text-center mb-6">
           <div className="inline-flex items-center gap-2 mb-3">
             <GraduationCap className="h-8 w-8 text-primary" />
-            <span className="font-display text-2xl font-bold text-foreground">EDUMask</span>
+            <span className="font-display text-2xl font-bold text-foreground">Taiyari Hub</span>
           </div>
           <h1 className="font-display text-xl font-bold text-foreground flex items-center justify-center gap-2">
             <Sparkles className="h-5 w-5 text-primary" /> Complete Your Profile
