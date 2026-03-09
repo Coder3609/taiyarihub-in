@@ -453,9 +453,28 @@ const Quiz = () => {
           <div className="flex items-center gap-2">
             <Globe className="h-3.5 w-3.5" style={{ color: t.row2Text }} />
             <span className="text-xs" style={{ color: t.row2Text }}>View in:</span>
-            <button className="text-xs font-medium border rounded px-2.5 py-1 flex items-center gap-1" style={{ color: t.langBtnText, borderColor: t.langBtnBorder, background: t.langBtnBg }}>
-              English <ChevronDown className="h-3 w-3" />
-            </button>
+            <div className="flex rounded-lg overflow-hidden border" style={{ borderColor: t.langBtnBorder }}>
+              <button
+                onClick={() => setLanguage("en")}
+                className="text-xs font-medium px-2.5 py-1 transition-all"
+                style={language === "en"
+                  ? { background: "hsl(230 60% 45%)", color: "white" }
+                  : { background: t.langBtnBg, color: t.langBtnText }
+                }
+              >
+                English
+              </button>
+              <button
+                onClick={() => setLanguage("hi")}
+                className="text-xs font-medium px-2.5 py-1 transition-all"
+                style={language === "hi"
+                  ? { background: "hsl(230 60% 45%)", color: "white" }
+                  : { background: t.langBtnBg, color: t.langBtnText }
+                }
+              >
+                हिन्दी
+              </button>
+            </div>
           </div>
 
           <div className="flex items-center gap-3">
