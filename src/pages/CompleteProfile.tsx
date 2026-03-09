@@ -132,12 +132,26 @@ const CompleteProfile = () => {
 
   const handleSubmit = async (e: React.FormEvent) => {
     e.preventDefault();
-    if (!fullName.trim() || !gender) {
-      toast({ title: "Please fill all fields", variant: "destructive" });
+    const trimmedName = fullName.trim();
+
+    if (!trimmedName || trimmedName.length < 2 || trimmedName.length > 100) {
+      toast({ title: "Name must be 2–100 characters", variant: "destructive" });
+      return;
+    }
+    if (!/^[a-zA-Z\s.'-]+$/.test(trimmedName)) {
+      toast({ title: "Name contains invalid characters", variant: "destructive" });
+      return;
+    }
+    if (!gender) {
+      toast({ title: "Please select your gender", variant: "destructive" });
       return;
     }
     if (selectedExams.length === 0) {
       toast({ title: "Select at least one exam", variant: "destructive" });
+      return;
+    }
+    if (selectedExams.length > 20) {
+      toast({ title: "You can select up to 20 exams", variant: "destructive" });
       return;
     }
 
