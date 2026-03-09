@@ -79,6 +79,7 @@ const Quiz = () => {
   const [activeSection, setActiveSection] = useState<string>("core");
   const [showQuestionPaper, setShowQuestionPaper] = useState(false);
   const [nightMode, setNightMode] = useState(false);
+  const [language, setLanguage] = useState<"en" | "hi">("en");
   const startTimeRef = useRef(Date.now());
 
   // Detect if this is a JEE Advanced exam
