@@ -53,7 +53,7 @@ const TermsOfService = () => {
 
             <section>
               <h2 className="text-lg font-display font-bold text-foreground">6. Limitation of Liability</h2>
-              <p>EDUMask is provided "as is" without warranties of any kind. We are not liable for any indirect, incidental, or consequential damages arising from your use of the platform.</p>
+              <p>Taiyari Hub is provided "as is" without warranties of any kind. We are not liable for any indirect, incidental, or consequential damages arising from your use of the platform.</p>
             </section>
 
             <section>
