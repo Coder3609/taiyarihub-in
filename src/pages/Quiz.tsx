@@ -75,20 +75,59 @@ const Quiz = () => {
   const [nightMode, setNightMode] = useState(false);
   const startTimeRef = useRef(Date.now());
 
+  // Detect if this is a JEE Advanced exam
+  const isJEEAdvanced = useMemo(() => {
+    const slug = decodeURIComponent(examSlug || "");
+    return slug.toLowerCase().includes("jee-advanced");
+  }, [examSlug]);
+
   // Split questions into sections by category
-  const coreQuestions = useMemo(() => questions.filter((q) => q.question_category !== "reasoning"), [questions]);
-  const reasoningQuestions = useMemo(() => questions.filter((q) => q.question_category === "reasoning"), [questions]);
+  const sectionGroups = useMemo(() => {
+    if (isJEEAdvanced) {
+      // JEE Advanced: Physics, Chemistry, Mathematics
+      const physics = questions.filter((q) => q.question_category === "physics");
+      const chemistry = questions.filter((q) => q.question_category === "chemistry");
+      const mathematics = questions.filter((q) => q.question_category === "mathematics");
+      return { physics, chemistry, mathematics };
+    }
+    return {};
+  }, [questions, isJEEAdvanced]);
+
+  const coreQuestions = useMemo(() => {
+    if (isJEEAdvanced) return [];
+    return questions.filter((q) => q.question_category !== "reasoning");
+  }, [questions, isJEEAdvanced]);
+  const reasoningQuestions = useMemo(() => {
+    if (isJEEAdvanced) return [];
+    return questions.filter((q) => q.question_category === "reasoning");
+  }, [questions, isJEEAdvanced]);
 
   // Determine available sections dynamically
   const availableSections = useMemo(() => {
+    if (isJEEAdvanced) {
+      const sections: { id: string; label: string; icon: string }[] = [];
+      if ((sectionGroups.physics?.length || 0) > 0) sections.push({ id: "physics", label: "Physics", icon: "⚛️" });
+      if ((sectionGroups.chemistry?.length || 0) > 0) sections.push({ id: "chemistry", label: "Chemistry", icon: "🧪" });
+      if ((sectionGroups.mathematics?.length || 0) > 0) sections.push({ id: "mathematics", label: "Mathematics", icon: "📐" });
+      if (sections.length === 0) sections.push({ id: "physics", label: "All Questions", icon: "📝" });
+      return sections;
+    }
     const sections: { id: string; label: string; icon: string }[] = [];
     if (coreQuestions.length > 0) sections.push({ id: "core", label: "Core CS", icon: "⚙️" });
     if (reasoningQuestions.length > 0) sections.push({ id: "reasoning", label: "General Aptitude", icon: "🧠" });
     if (sections.length === 0) sections.push({ id: "core", label: "All Questions", icon: "📝" });
     return sections;
-  }, [coreQuestions, reasoningQuestions]);
+  }, [isJEEAdvanced, sectionGroups, coreQuestions, reasoningQuestions]);
 
-  const currentSectionQuestions = activeSection === "reasoning" ? reasoningQuestions : coreQuestions;
+  const currentSectionQuestions = useMemo(() => {
+    if (isJEEAdvanced) {
+      if (activeSection === "chemistry") return sectionGroups.chemistry || [];
+      if (activeSection === "mathematics") return sectionGroups.mathematics || [];
+      return sectionGroups.physics || [];
+    }
+    return activeSection === "reasoning" ? reasoningQuestions : coreQuestions;
+  }, [isJEEAdvanced, activeSection, sectionGroups, coreQuestions, reasoningQuestions]);
+
   const sectionIndex = Math.min(currentIndex, currentSectionQuestions.length - 1);
   const currentQ = currentSectionQuestions[sectionIndex];
 
