@@ -41,6 +41,10 @@ const examStreams: Record<string, { id: string; slug: string; title: string; sho
     { id: "class-11", slug: "ICSE-Class-11", title: "Class 11", shortName: "11", icon: BookOpen, color: "from-purple-500/20 to-purple-600/5", borderColor: "hover:border-purple-500/50" },
     { id: "class-12", slug: "ICSE-Class-12", title: "Class 12", shortName: "12", icon: BookOpen, color: "from-amber-500/20 to-amber-600/5", borderColor: "hover:border-amber-500/50" },
   ],
+  "JEE-Advanced": [
+    { id: "paper-1", slug: "JEE-Advanced-Paper-1", title: "Paper 1 — Physics, Chemistry, Mathematics", shortName: "P1", icon: FileText, color: "from-orange-500/20 to-red-600/5", borderColor: "hover:border-orange-500/50" },
+    { id: "paper-2", slug: "JEE-Advanced-Paper-2", title: "Paper 2 — Physics, Chemistry, Mathematics", shortName: "P2", icon: FileText, color: "from-indigo-500/20 to-blue-600/5", borderColor: "hover:border-indigo-500/50" },
+  ],
 };
 
 // Map parent exam slugs for back navigation
