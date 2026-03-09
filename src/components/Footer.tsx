@@ -81,7 +81,7 @@ const Footer = () => {
 
         <div className="border-t border-border/50 pt-8 text-center">
           <p className="text-xs text-muted-foreground">
-            © {new Date().getFullYear()} EDUMask. All rights reserved.
+            © {new Date().getFullYear()} Taiyari Hub. All rights reserved.
           </p>
         </div>
       </div>
