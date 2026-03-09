@@ -157,14 +157,20 @@ export type Database = {
           created_at: string
           exam_id: string
           explanation: string | null
+          explanation_hi: string | null
           id: string
           option_a: string
+          option_a_hi: string | null
           option_b: string
+          option_b_hi: string | null
           option_c: string
+          option_c_hi: string | null
           option_d: string
+          option_d_hi: string | null
           question_category: string
           question_number: number
           question_text: string
+          question_text_hi: string | null
           question_type: string
           set_number: number
           source_label: string | null
@@ -174,14 +180,20 @@ export type Database = {
           created_at?: string
           exam_id: string
           explanation?: string | null
+          explanation_hi?: string | null
           id?: string
           option_a: string
+          option_a_hi?: string | null
           option_b: string
+          option_b_hi?: string | null
           option_c: string
+          option_c_hi?: string | null
           option_d: string
+          option_d_hi?: string | null
           question_category?: string
           question_number?: number
           question_text: string
+          question_text_hi?: string | null
           question_type?: string
           set_number?: number
           source_label?: string | null
@@ -191,14 +203,20 @@ export type Database = {
           created_at?: string
           exam_id?: string
           explanation?: string | null
+          explanation_hi?: string | null
           id?: string
           option_a?: string
+          option_a_hi?: string | null
           option_b?: string
+          option_b_hi?: string | null
           option_c?: string
+          option_c_hi?: string | null
           option_d?: string
+          option_d_hi?: string | null
           question_category?: string
           question_number?: number
           question_text?: string
+          question_text_hi?: string | null
           question_type?: string
           set_number?: number
           source_label?: string | null

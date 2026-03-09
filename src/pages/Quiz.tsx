@@ -42,6 +42,11 @@ interface Question {
   question_type: "mcq" | "msq" | "integer";
   question_category: string;
   source_label?: string | null;
+  question_text_hi?: string | null;
+  option_a_hi?: string | null;
+  option_b_hi?: string | null;
+  option_c_hi?: string | null;
+  option_d_hi?: string | null;
 }
 
 type QuestionStatus = "not-visited" | "not-answered" | "answered" | "marked" | "answered-marked";
@@ -74,6 +79,7 @@ const Quiz = () => {
   const [activeSection, setActiveSection] = useState<string>("core");
   const [showQuestionPaper, setShowQuestionPaper] = useState(false);
   const [nightMode, setNightMode] = useState(false);
+  const [language, setLanguage] = useState<"en" | "hi">("en");
   const startTimeRef = useRef(Date.now());
 
   // Detect if this is a JEE Advanced exam
@@ -174,7 +180,7 @@ const Quiz = () => {
 
       const { data: qs } = await supabase
         .from("questions")
-        .select("id, question_number, question_text, option_a, option_b, option_c, option_d, question_type, question_category, source_label")
+        .select("id, question_number, question_text, option_a, option_b, option_c, option_d, question_type, question_category, source_label, question_text_hi, option_a_hi, option_b_hi, option_c_hi, option_d_hi")
         .eq("exam_id", exam.id)
         .eq("set_number", parseInt(setNumber || "1"))
         .order("question_number", { ascending: true });
@@ -302,12 +308,16 @@ const Quiz = () => {
     setCurrentIndex(0);
   };
 
+  const isHindi = language === "hi";
+  const hasHindi = !!(currentQ?.question_text_hi);
+
+  const qText = (isHindi && currentQ?.question_text_hi) ? currentQ.question_text_hi : currentQ?.question_text || "";
   const options = currentQ
     ? [
-        { key: "A", text: currentQ.option_a },
-        { key: "B", text: currentQ.option_b },
-        { key: "C", text: currentQ.option_c },
-        { key: "D", text: currentQ.option_d },
+        { key: "A", text: (isHindi && currentQ.option_a_hi) ? currentQ.option_a_hi : currentQ.option_a },
+        { key: "B", text: (isHindi && currentQ.option_b_hi) ? currentQ.option_b_hi : currentQ.option_b },
+        { key: "C", text: (isHindi && currentQ.option_c_hi) ? currentQ.option_c_hi : currentQ.option_c },
+        { key: "D", text: (isHindi && currentQ.option_d_hi) ? currentQ.option_d_hi : currentQ.option_d },
       ]
     : [];
 
@@ -443,9 +453,28 @@ const Quiz = () => {
           <div className="flex items-center gap-2">
             <Globe className="h-3.5 w-3.5" style={{ color: t.row2Text }} />
             <span className="text-xs" style={{ color: t.row2Text }}>View in:</span>
-            <button className="text-xs font-medium border rounded px-2.5 py-1 flex items-center gap-1" style={{ color: t.langBtnText, borderColor: t.langBtnBorder, background: t.langBtnBg }}>
-              English <ChevronDown className="h-3 w-3" />
-            </button>
+            <div className="flex rounded-lg overflow-hidden border" style={{ borderColor: t.langBtnBorder }}>
+              <button
+                onClick={() => setLanguage("en")}
+                className="text-xs font-medium px-2.5 py-1 transition-all"
+                style={language === "en"
+                  ? { background: "hsl(230 60% 45%)", color: "white" }
+                  : { background: t.langBtnBg, color: t.langBtnText }
+                }
+              >
+                English
+              </button>
+              <button
+                onClick={() => setLanguage("hi")}
+                className="text-xs font-medium px-2.5 py-1 transition-all"
+                style={language === "hi"
+                  ? { background: "hsl(230 60% 45%)", color: "white" }
+                  : { background: t.langBtnBg, color: t.langBtnText }
+                }
+              >
+                हिन्दी
+              </button>
+            </div>
           </div>
 
           <div className="flex items-center gap-3">
@@ -557,7 +586,7 @@ const Quiz = () => {
                   )}
                   <p className="text-sm md:text-[15px] leading-relaxed mb-8" style={{ color: t.questionText }}>
                     <span className="font-semibold" style={{ color: t.questionNum }}>Q{sectionIndex + 1}.</span>{" "}
-                    {currentQ.question_text}
+                    {qText}
                   </p>
 
                   {currentQ.question_type === "integer" ? (
