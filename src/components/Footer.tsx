@@ -50,7 +50,7 @@ const Footer = () => {
             <Link to="/" className="flex items-center gap-2 mb-4">
               <GraduationCap className="h-7 w-7 text-primary" />
               <span className="font-display text-lg font-bold text-foreground">
-                EDU<span className="text-primary">Mask</span>
+                Taiyari<span className="text-primary"> Hub</span>
               </span>
             </Link>
             <p className="text-sm text-muted-foreground leading-relaxed">
