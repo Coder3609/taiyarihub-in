@@ -308,12 +308,16 @@ const Quiz = () => {
     setCurrentIndex(0);
   };
 
+  const isHindi = language === "hi";
+  const hasHindi = !!(currentQ?.question_text_hi);
+
+  const qText = (isHindi && currentQ?.question_text_hi) ? currentQ.question_text_hi : currentQ?.question_text || "";
   const options = currentQ
     ? [
-        { key: "A", text: currentQ.option_a },
-        { key: "B", text: currentQ.option_b },
-        { key: "C", text: currentQ.option_c },
-        { key: "D", text: currentQ.option_d },
+        { key: "A", text: (isHindi && currentQ.option_a_hi) ? currentQ.option_a_hi : currentQ.option_a },
+        { key: "B", text: (isHindi && currentQ.option_b_hi) ? currentQ.option_b_hi : currentQ.option_b },
+        { key: "C", text: (isHindi && currentQ.option_c_hi) ? currentQ.option_c_hi : currentQ.option_c },
+        { key: "D", text: (isHindi && currentQ.option_d_hi) ? currentQ.option_d_hi : currentQ.option_d },
       ]
     : [];
 
