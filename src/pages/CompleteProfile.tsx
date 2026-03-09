@@ -172,7 +172,7 @@ const CompleteProfile = () => {
       return;
     }
 
-    toast({ title: "Profile completed! 🎉", description: "Welcome to EDUMask" });
+    toast({ title: "Profile completed! 🎉", description: "Welcome to Taiyari Hub" });
     navigate("/", { replace: true });
   };
 
