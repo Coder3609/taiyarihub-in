@@ -389,23 +389,31 @@ const Quiz = () => {
 
   return (
     <div className="h-screen flex flex-col overflow-hidden" style={{ background: t.pageBg, color: t.pageText }}>
-      {/* === NTA-Style Top Header === */}
-      <header className="shrink-0" style={{ background: t.headerBg }}>
+      {/* === Top Header === */}
+      <header className="shrink-0" style={{ background: isJEEAdvanced ? "linear-gradient(135deg, hsl(25 80% 28%), hsl(0 65% 22%))" : t.headerBg }}>
         {/* Row 1: Branding + Exam Name + User */}
         <div className="flex items-center justify-between px-4 py-2.5">
           <div className="flex items-center gap-3">
             <div className="w-9 h-9 rounded-full bg-white/10 flex items-center justify-center border border-white/20">
-              <LayoutGrid className="h-4 w-4 text-white" />
+              {isJEEAdvanced ? <GraduationCap className="h-4 w-4 text-white" /> : <LayoutGrid className="h-4 w-4 text-white" />}
             </div>
             <div>
-              <p className="text-[11px] text-white/60 font-medium tracking-wide">National Testing Agency</p>
-              <p className="text-xs text-white/80">Computer Based Test</p>
+              <p className="text-[11px] text-white/60 font-medium tracking-wide">
+                {isJEEAdvanced ? "Joint Admission Board (JAB)" : "National Testing Agency"}
+              </p>
+              <p className="text-xs text-white/80">
+                {isJEEAdvanced ? "IIT JEE Advanced — Computer Based Test" : "Computer Based Test"}
+              </p>
             </div>
           </div>
 
           <div className="text-center">
             <p className="text-sm font-bold text-white tracking-wide">{examName}</p>
-            <p className="text-[11px] text-white/60">Session 1</p>
+            <p className="text-[11px] text-white/60">
+              {isJEEAdvanced
+                ? (examSlug?.includes("Paper-1") ? "Paper 1" : examSlug?.includes("Paper-2") ? "Paper 2" : "Session 1")
+                : "Session 1"}
+            </p>
           </div>
 
           <div className="flex items-center gap-2.5">
