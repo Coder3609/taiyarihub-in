@@ -132,6 +132,13 @@ const Quiz = () => {
   const sectionIndex = Math.min(currentIndex, currentSectionQuestions.length - 1);
   const currentQ = currentSectionQuestions[sectionIndex];
 
+  // Set initial section for JEE Advanced
+  useEffect(() => {
+    if (isJEEAdvanced && questions.length > 0 && activeSection === "core") {
+      setActiveSection("physics");
+    }
+  }, [isJEEAdvanced, questions, activeSection]);
+
   // Mark visited
   useEffect(() => {
     if (currentQ && examStarted) {
