@@ -1,21 +1,43 @@
 import { GraduationCap } from "lucide-react";
+import { Link } from "react-router-dom";
 
 const footerLinks = [
   {
     title: "Exams",
-    links: ["GATE", "UPSC", "JEE", "SSC", "Banking", "GRE/TOEFL"],
+    links: [
+      { label: "GATE", href: "/exams/central" },
+      { label: "UPSC", href: "/exams/central" },
+      { label: "JEE", href: "/exams/school" },
+      { label: "SSC", href: "/exams/central" },
+      { label: "Banking", href: "/exams/central" },
+      { label: "GRE/TOEFL", href: "/exams/foreign" },
+    ],
   },
   {
     title: "Resources",
-    links: ["PYQ Bank", "Mock Tests", "Video Solutions", "Study Plans"],
+    links: [
+      { label: "PYQ Bank", href: "/" },
+      { label: "Mock Tests", href: "/" },
+      { label: "Video Solutions", href: "/" },
+      { label: "Study Plans", href: "/" },
+    ],
   },
   {
     title: "Company",
-    links: ["About Us", "Careers", "Blog", "Contact"],
+    links: [
+      { label: "About Us", href: "/about" },
+      { label: "Careers", href: "/careers" },
+      { label: "Blog", href: "/blog" },
+      { label: "Contact", href: "/contact" },
+    ],
   },
   {
     title: "Legal",
-    links: ["Privacy Policy", "Terms of Service", "Refund Policy"],
+    links: [
+      { label: "Privacy Policy", href: "/privacy" },
+      { label: "Terms of Service", href: "/terms" },
+      { label: "Refund Policy", href: "/refund" },
+    ],
   },
 ];
 
@@ -25,12 +47,12 @@ const Footer = () => {
       <div className="container mx-auto px-4 md:px-6">
         <div className="grid grid-cols-2 md:grid-cols-5 gap-8 mb-12">
           <div className="col-span-2 md:col-span-1">
-            <a href="/" className="flex items-center gap-2 mb-4">
+            <Link to="/" className="flex items-center gap-2 mb-4">
               <GraduationCap className="h-7 w-7 text-primary" />
               <span className="font-display text-lg font-bold text-foreground">
                 EDU<span className="text-primary">Mask</span>
               </span>
-            </a>
+            </Link>
             <p className="text-sm text-muted-foreground leading-relaxed">
               India's most comprehensive exam preparation platform. Learn smarter, score higher.
             </p>
@@ -43,13 +65,13 @@ const Footer = () => {
               </h4>
               <ul className="space-y-2">
                 {group.links.map((link) => (
-                  <li key={link}>
-                    <a
-                      href="#"
+                  <li key={link.label}>
+                    <Link
+                      to={link.href}
                       className="text-sm text-muted-foreground hover:text-foreground transition-colors"
                     >
-                      {link}
-                    </a>
+                      {link.label}
+                    </Link>
                   </li>
                 ))}
               </ul>
