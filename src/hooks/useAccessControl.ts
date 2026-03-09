@@ -18,6 +18,9 @@ export const useAccessControl = () => {
       return;
     }
 
+    // Set loading true before fetching to prevent race condition
+    setLoading(true);
+
     const fetchAccess = async () => {
       const [{ data: roles }, { data: sub }] = await Promise.all([
         supabase
