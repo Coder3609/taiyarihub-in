@@ -247,7 +247,7 @@ const Dashboard = () => {
               <GraduationCap className="h-7 w-7 text-primary" />
             </div>
             <h1 className="font-display text-2xl md:text-3xl font-bold text-foreground">
-              Explore <span className="text-gradient">Edu Mask</span>
+              Explore <span className="text-gradient">Taiyari Hub</span>
             </h1>
           </motion.div>
 
