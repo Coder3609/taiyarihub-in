@@ -27,7 +27,8 @@ import {
 import { Card, CardContent, CardHeader, CardTitle } from "@/components/ui/card";
 import { Button } from "@/components/ui/button";
 import { Badge } from "@/components/ui/badge";
-import { Avatar, AvatarFallback } from "@/components/ui/avatar";
+import { Avatar, AvatarFallback, AvatarImage } from "@/components/ui/avatar";
+import { getAvatarSrc } from "@/components/AvatarPicker";
 import { Separator } from "@/components/ui/separator";
 import {
   Dialog,
@@ -247,7 +248,7 @@ const Dashboard = () => {
               <GraduationCap className="h-7 w-7 text-primary" />
             </div>
             <h1 className="font-display text-2xl md:text-3xl font-bold text-foreground">
-              Explore <span className="text-gradient">Edu Mask</span>
+              Explore <span className="text-gradient">Taiyari Hub</span>
             </h1>
           </motion.div>
 
@@ -260,6 +261,9 @@ const Dashboard = () => {
                   <div className="flex items-start gap-4">
                     <div className="relative">
                       <Avatar className="h-16 w-16 border-2 border-primary/30 ring-4 ring-primary/5">
+                        {getAvatarSrc(profile?.avatar_url) && (
+                          <AvatarImage src={getAvatarSrc(profile?.avatar_url)!} alt="Avatar" />
+                        )}
                         <AvatarFallback className="bg-primary/10 text-primary font-display text-lg">
                           {initials}
                         </AvatarFallback>
