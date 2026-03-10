@@ -261,6 +261,9 @@ const Dashboard = () => {
                   <div className="flex items-start gap-4">
                     <div className="relative">
                       <Avatar className="h-16 w-16 border-2 border-primary/30 ring-4 ring-primary/5">
+                        {getAvatarSrc(profile?.avatar_url) && (
+                          <AvatarImage src={getAvatarSrc(profile?.avatar_url)!} alt="Avatar" />
+                        )}
                         <AvatarFallback className="bg-primary/10 text-primary font-display text-lg">
                           {initials}
                         </AvatarFallback>
