@@ -1,8 +1,11 @@
 import { motion } from "framer-motion";
-import { Check, Crown, Zap, Landmark, GraduationCap, Flame } from "lucide-react";
+import { Check, Crown, Zap, Landmark, GraduationCap, Flame, Loader2 } from "lucide-react";
 import { Button } from "@/components/ui/button";
-import { useEffect, useState } from "react";
+import { useEffect, useState, useCallback } from "react";
 import { supabase } from "@/integrations/supabase/client";
+import { useAuth } from "@/contexts/AuthContext";
+import { useNavigate } from "react-router-dom";
+import { toast } from "sonner";
 
 const OFFER_LIMIT = 500;
 const OFFER_HARD_EXPIRY = 550;
@@ -46,9 +49,32 @@ const plans = [
   },
 ];
 
+declare global {
+  interface Window {
+    Razorpay: any;
+  }
+}
+
+const loadRazorpayScript = (): Promise<boolean> => {
+  return new Promise((resolve) => {
+    if (window.Razorpay) {
+      resolve(true);
+      return;
+    }
+    const script = document.createElement("script");
+    script.src = "https://checkout.razorpay.com/v1/checkout.js";
+    script.onload = () => resolve(true);
+    script.onerror = () => resolve(false);
+    document.body.appendChild(script);
+  });
+};
+
 const PricingSection = () => {
   const [subCount, setSubCount] = useState(0);
   const [loaded, setLoaded] = useState(false);
+  const [processingPlan, setProcessingPlan] = useState<string | null>(null);
+  const { user } = useAuth();
+  const navigate = useNavigate();
 
   useEffect(() => {
     const fetchCount = async () => {
@@ -64,6 +90,107 @@ const PricingSection = () => {
 
   const offerActive = subCount < OFFER_HARD_EXPIRY;
   const spotsLeft = Math.max(0, OFFER_LIMIT - subCount);
+
+  const handleSubscribe = useCallback(
+    async (planId: string) => {
+      if (!user) {
+        toast.info("Please sign in to subscribe");
+        navigate("/auth");
+        return;
+      }
+
+      setProcessingPlan(planId);
+
+      try {
+        const scriptLoaded = await loadRazorpayScript();
+        if (!scriptLoaded) {
+          toast.error("Failed to load payment gateway. Please try again.");
+          return;
+        }
+
+        // Determine plan_type key (offer vs full price)
+        const planType = offerActive ? planId : `${planId}_full`;
+
+        const { data: sessionData } = await supabase.auth.getSession();
+        const accessToken = sessionData?.session?.access_token;
+
+        const { data, error } = await supabase.functions.invoke(
+          "create-razorpay-order",
+          {
+            body: { plan_type: planType },
+            headers: { Authorization: `Bearer ${accessToken}` },
+          }
+        );
+
+        if (error || !data?.order_id) {
+          toast.error("Failed to create order. Please try again.");
+          console.error("Order error:", error, data);
+          return;
+        }
+
+        const plan = plans.find((p) => p.id === planId)!;
+
+        const options = {
+          key: data.key_id,
+          amount: data.amount,
+          currency: data.currency,
+          name: "TaiyariHub",
+          description: plan.name,
+          order_id: data.order_id,
+          handler: async (response: any) => {
+            try {
+              const { data: verifyData, error: verifyError } =
+                await supabase.functions.invoke("verify-razorpay-payment", {
+                  body: {
+                    razorpay_order_id: response.razorpay_order_id,
+                    razorpay_payment_id: response.razorpay_payment_id,
+                    razorpay_signature: response.razorpay_signature,
+                    plan_type: planId,
+                  },
+                  headers: { Authorization: `Bearer ${accessToken}` },
+                });
+
+              if (verifyError || !verifyData?.success) {
+                toast.error("Payment verification failed. Contact support.");
+                console.error("Verify error:", verifyError, verifyData);
+              } else {
+                toast.success("🎉 Subscription activated! Welcome aboard!");
+                navigate("/dashboard");
+              }
+            } catch (e) {
+              console.error("Verification error:", e);
+              toast.error("Payment verification failed. Contact support.");
+            }
+          },
+          prefill: {
+            email: user.email || "",
+          },
+          theme: {
+            color: "#6366f1",
+          },
+          modal: {
+            ondismiss: () => {
+              setProcessingPlan(null);
+            },
+          },
+        };
+
+        const rzp = new window.Razorpay(options);
+        rzp.on("payment.failed", (response: any) => {
+          console.error("Payment failed:", response.error);
+          toast.error(`Payment failed: ${response.error.description}`);
+          setProcessingPlan(null);
+        });
+        rzp.open();
+      } catch (e) {
+        console.error("Checkout error:", e);
+        toast.error("Something went wrong. Please try again.");
+      } finally {
+        setProcessingPlan(null);
+      }
+    },
+    [user, navigate, offerActive]
+  );
 
   return (
     <section id="pricing" className="py-24 md:py-32">
@@ -106,8 +233,9 @@ const PricingSection = () => {
           viewport={{ once: true }}
           className="grid md:grid-cols-2 gap-6 max-w-3xl mx-auto"
         >
-          {plans.map((plan, i) => {
+          {plans.map((plan) => {
             const isSchool = plan.id === "school";
+            const isProcessing = processingPlan === plan.id;
             return (
               <div
                 key={plan.id}
@@ -177,8 +305,19 @@ const PricingSection = () => {
                     isSchool ? "shadow-glow" : ""
                   }`}
                   variant={isSchool ? "default" : "outline"}
+                  disabled={isProcessing}
+                  onClick={() => handleSubscribe(plan.id)}
                 >
-                  {isSchool ? "Get Started" : "Subscribe Now"}
+                  {isProcessing ? (
+                    <>
+                      <Loader2 className="h-4 w-4 mr-2 animate-spin" />
+                      Processing...
+                    </>
+                  ) : isSchool ? (
+                    "Get Started"
+                  ) : (
+                    "Subscribe Now"
+                  )}
                 </Button>
               </div>
             );
