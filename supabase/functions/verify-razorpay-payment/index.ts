@@ -75,20 +75,8 @@ Deno.serve(async (req) => {
     );
 
     // Check if user already has this plan
-    const { data: existing } = await adminClient
-      .from("user_subscriptions")
-      .select("id")
-      .eq("user_id", userId)
-      .eq("plan_type", plan_type)
-      .eq("is_active", true)
-      .maybeSingle();
-
-    if (existing) {
-      return new Response(
-        JSON.stringify({ success: true, message: "Subscription already active" }),
-        { headers: { ...corsHeaders, "Content-Type": "application/json" } }
-      );
-    }
+    // Always insert a new subscription record (supports extending/re-purchasing)
+    // Each payment = one subscription row for audit trail
 
     const { error: insertError } = await adminClient
       .from("user_subscriptions")
