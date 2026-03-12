@@ -53,11 +53,8 @@ Deno.serve(async (req) => {
       });
     }
 
-    const keyId = Deno.env.get("RAZORPAY_KEY_ID") || "";
-    const keySecret = Deno.env.get("RAZORPAY_KEY_SECRET") || "";
-
-    console.log("RAZORPAY_KEY_ID set:", !!keyId, "prefix:", keyId.substring(0, 8));
-    console.log("RAZORPAY_KEY_SECRET set:", !!keySecret, "length:", keySecret.length);
+    const keyId = Deno.env.get("RAZORPAY_KEY_ID")!;
+    const keySecret = Deno.env.get("RAZORPAY_KEY_SECRET")!;
 
     const orderRes = await fetch("https://api.razorpay.com/v1/orders", {
       method: "POST",
