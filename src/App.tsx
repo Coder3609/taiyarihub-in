@@ -53,6 +53,7 @@ const App = () => (
             <Route path="/privacy" element={<PrivacyPolicy />} />
             <Route path="/terms" element={<TermsOfService />} />
             <Route path="/refund" element={<RefundPolicy />} />
+            <Route path="/pricing" element={<Pricing />} />
             <Route path="/exams/central" element={<CentralExams />} />
             <Route path="/exams/school" element={<SchoolExams />} />
             <Route path="/exams/foreign" element={<ForeignExams />} />
