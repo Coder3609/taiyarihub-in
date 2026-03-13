@@ -254,10 +254,37 @@ const Dashboard = () => {
 
   return (
     <div className="min-h-screen bg-background relative overflow-hidden">
-      {/* Ambient background glow */}
+      {/* Animated ambient background */}
       <div className="fixed inset-0 pointer-events-none">
-        <div className="absolute top-0 left-1/4 w-96 h-96 bg-primary/[0.03] rounded-full blur-[120px]" />
-        <div className="absolute bottom-1/4 right-1/4 w-80 h-80 bg-blue-500/[0.02] rounded-full blur-[100px]" />
+        <motion.div
+          animate={{ x: [0, 30, 0], y: [0, -20, 0] }}
+          transition={{ duration: 8, repeat: Infinity, ease: "easeInOut" }}
+          className="absolute top-0 left-1/4 w-96 h-96 bg-primary/[0.04] rounded-full blur-[120px] animate-glow-pulse"
+        />
+        <motion.div
+          animate={{ x: [0, -20, 0], y: [0, 30, 0] }}
+          transition={{ duration: 10, repeat: Infinity, ease: "easeInOut" }}
+          className="absolute bottom-1/4 right-1/4 w-80 h-80 bg-accent/[0.03] rounded-full blur-[100px] animate-glow-pulse"
+          style={{ animationDelay: "2s" }}
+        />
+        <motion.div
+          animate={{ x: [0, 15, 0], y: [0, 15, 0] }}
+          transition={{ duration: 12, repeat: Infinity, ease: "easeInOut" }}
+          className="absolute top-1/2 left-1/2 w-64 h-64 bg-primary/[0.02] rounded-full blur-[100px]"
+        />
+        {/* Floating particles */}
+        {[...Array(6)].map((_, i) => (
+          <div
+            key={i}
+            className="particle"
+            style={{
+              left: `${15 + i * 15}%`,
+              top: `${30 + (i % 3) * 20}%`,
+              animationDelay: `${i * 1.2}s`,
+              animationDuration: `${5 + i}s`,
+            }}
+          />
+        ))}
       </div>
 
       <Navbar />
@@ -265,15 +292,20 @@ const Dashboard = () => {
         <div className="container mx-auto px-4 md:px-6 space-y-8">
           {/* Header */}
           <motion.div
-            initial={{ opacity: 0, y: -10 }}
+            initial={{ opacity: 0, y: -20 }}
             animate={{ opacity: 1, y: 0 }}
+            transition={{ duration: 0.7, ease: [0.16, 1, 0.3, 1] as [number, number, number, number] }}
             className="flex items-center gap-3"
           >
-            <div className="animate-pulse-ring rounded-xl p-2 bg-primary/10">
+            <motion.div
+              className="animate-pulse-ring rounded-xl p-2 bg-primary/10"
+              whileHover={{ rotate: 15, scale: 1.1 }}
+              transition={{ type: "spring", stiffness: 300 }}
+            >
               <GraduationCap className="h-7 w-7 text-primary" />
-            </div>
+            </motion.div>
             <h1 className="font-display text-2xl md:text-3xl font-bold text-foreground">
-              Explore <span className="text-gradient">Taiyari Hub</span>
+              Explore <span className="text-shimmer">Taiyari Hub</span>
             </h1>
           </motion.div>
 
