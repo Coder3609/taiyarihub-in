@@ -11,16 +11,61 @@ import { Label } from "@/components/ui/label";
 import { Select, SelectContent, SelectItem, SelectTrigger, SelectValue } from "@/components/ui/select";
 import { Checkbox } from "@/components/ui/checkbox";
 import { motion } from "framer-motion";
-import { ArrowLeft, User, Mail, Crown, Shield, BookOpen, Loader2, Edit, Camera } from "lucide-react";
+import { Popover, PopoverContent, PopoverTrigger } from "@/components/ui/popover";
+import { ArrowLeft, User, Mail, Crown, Shield, BookOpen, Loader2, Edit, Camera, ChevronDown, X, Check } from "lucide-react";
 import { toast } from "sonner";
 import Navbar from "@/components/Navbar";
 import Footer from "@/components/Footer";
 import AvatarPicker, { getAvatarSrc } from "@/components/AvatarPicker";
 
-const EXAM_OPTIONS = [
-  "UPSC ESE/IES", "GATE", "ISRO", "BARC", "DRDO",
-  "SSC JE", "RRB JE", "State PSC AE/JE",
-  "UPSC Indian Statistical Service", "UPSC IFS",
+const EXAM_CATEGORIES: { category: string; exams: string[] }[] = [
+  {
+    category: "Central Govt — Group A (Officer Level)",
+    exams: [
+      "UPSC Civil Services (IAS/IPS/IFS/IRS)", "UPSC ESE/IES", "UPSC CDS", "UPSC NDA",
+      "UPSC IFoS", "UPSC CAPF (Asst. Commandant)", "UPSC Indian Economic Service",
+      "UPSC Indian Statistical Service", "UPSC CMS", "UPSC Geo-Scientist",
+      "GATE", "RBI Grade B", "NABARD Grade A", "AFCAT",
+      "Indian Coast Guard (Asst. Commandant)", "CAT", "CA (Foundation/Inter/Final)",
+      "BARC", "ISRO",
+    ],
+  },
+  {
+    category: "Central Govt — Group B (Gazetted/Inspector)",
+    exams: [
+      "SSC CGL", "SSC CPO", "SSC JE", "SSC Stenographer Grade B",
+      "IBPS PO", "SBI PO", "IBPS SO", "RBI Assistant Manager", "NABARD Grade B",
+    ],
+  },
+  {
+    category: "Central Govt — Group C (Clerical/Technical)",
+    exams: [
+      "SSC CHSL", "SSC MTS", "SSC Stenographer Grade C", "SSC Selection Post",
+      "IBPS Clerk", "SBI Clerk", "RBI Assistant", "NABARD Assistant",
+      "RRB NTPC", "RRB ALP", "RRB Technician", "India Post GDS",
+      "Postal Assistant", "Sorting Assistant",
+    ],
+  },
+  {
+    category: "Central Govt — Group D (Entry Level)",
+    exams: ["RRB Group D", "SSC MTS (Group D posts)"],
+  },
+  {
+    category: "School — Board Exams",
+    exams: ["CBSE", "ICSE"],
+  },
+  {
+    category: "School — Entrance Exams",
+    exams: ["JEE Mains", "JEE Advanced", "NEET PG", "CUET"],
+  },
+  {
+    category: "State Exams",
+    exams: ["State PSC", "State Police", "State SSC", "Other State Exams"],
+  },
+  {
+    category: "Foreign Exams",
+    exams: ["GRE", "GMAT", "TOEFL", "IELTS", "SAT"],
+  },
 ];
 
 interface ProfileData {
@@ -259,14 +304,56 @@ const Profile = () => {
                   </div>
                   <div className="space-y-2">
                     <Label>Preparing For</Label>
-                    <div className="grid grid-cols-2 gap-2 max-h-48 overflow-y-auto">
-                      {EXAM_OPTIONS.map(exam => (
-                        <label key={exam} className="flex items-center gap-2 text-sm cursor-pointer">
-                          <Checkbox checked={editExams.includes(exam)} onCheckedChange={() => toggleExam(exam)} />
-                          <span className="text-foreground">{exam}</span>
-                        </label>
-                      ))}
-                    </div>
+                    {editExams.length > 0 && (
+                      <div className="flex flex-wrap gap-1.5 mb-2">
+                        {editExams.map(exam => (
+                          <Badge key={exam} variant="secondary" className="text-xs gap-1 pr-1">
+                            {exam}
+                            <button type="button" onClick={() => toggleExam(exam)} className="ml-0.5 hover:text-destructive">
+                              <X className="h-3 w-3" />
+                            </button>
+                          </Badge>
+                        ))}
+                      </div>
+                    )}
+                    <Popover>
+                      <PopoverTrigger asChild>
+                        <Button variant="outline" className="w-full justify-between text-sm font-normal">
+                          {editExams.length === 0 ? "Select exams..." : `${editExams.length} exam(s) selected`}
+                          <ChevronDown className="h-4 w-4 opacity-50" />
+                        </Button>
+                      </PopoverTrigger>
+                      <PopoverContent className="w-80 p-0" align="start">
+                        <div className="max-h-64 overflow-y-auto p-2 space-y-3">
+                          {EXAM_CATEGORIES.map((cat) => (
+                            <div key={cat.category}>
+                              <p className="text-[10px] uppercase tracking-wider font-semibold text-primary mb-1 px-2 sticky top-0 bg-popover py-1">
+                                {cat.category}
+                              </p>
+                              {cat.exams.map((exam) => (
+                                <button
+                                  key={exam}
+                                  type="button"
+                                  onClick={() => toggleExam(exam)}
+                                  className={`flex items-center gap-2 w-full px-2 py-1.5 rounded text-sm transition-colors ${
+                                    editExams.includes(exam)
+                                      ? "bg-primary/10 text-foreground"
+                                      : "text-muted-foreground hover:bg-secondary/60"
+                                  }`}
+                                >
+                                  <div className={`h-4 w-4 rounded-full border-2 flex items-center justify-center flex-shrink-0 ${
+                                    editExams.includes(exam) ? "border-primary bg-primary" : "border-muted-foreground/40"
+                                  }`}>
+                                    {editExams.includes(exam) && <Check className="h-2.5 w-2.5 text-primary-foreground" />}
+                                  </div>
+                                  {exam}
+                                </button>
+                              ))}
+                            </div>
+                          ))}
+                        </div>
+                      </PopoverContent>
+                    </Popover>
                   </div>
                   <Button onClick={handleSave} disabled={saving} className="w-full font-display font-semibold">
                     {saving ? <Loader2 className="h-4 w-4 animate-spin mr-2" /> : null}
