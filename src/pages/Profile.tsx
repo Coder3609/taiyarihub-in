@@ -304,14 +304,56 @@ const Profile = () => {
                   </div>
                   <div className="space-y-2">
                     <Label>Preparing For</Label>
-                    <div className="grid grid-cols-2 gap-2 max-h-48 overflow-y-auto">
-                      {EXAM_OPTIONS.map(exam => (
-                        <label key={exam} className="flex items-center gap-2 text-sm cursor-pointer">
-                          <Checkbox checked={editExams.includes(exam)} onCheckedChange={() => toggleExam(exam)} />
-                          <span className="text-foreground">{exam}</span>
-                        </label>
-                      ))}
-                    </div>
+                    {editExams.length > 0 && (
+                      <div className="flex flex-wrap gap-1.5 mb-2">
+                        {editExams.map(exam => (
+                          <Badge key={exam} variant="secondary" className="text-xs gap-1 pr-1">
+                            {exam}
+                            <button type="button" onClick={() => toggleExam(exam)} className="ml-0.5 hover:text-destructive">
+                              <X className="h-3 w-3" />
+                            </button>
+                          </Badge>
+                        ))}
+                      </div>
+                    )}
+                    <Popover>
+                      <PopoverTrigger asChild>
+                        <Button variant="outline" className="w-full justify-between text-sm font-normal">
+                          {editExams.length === 0 ? "Select exams..." : `${editExams.length} exam(s) selected`}
+                          <ChevronDown className="h-4 w-4 opacity-50" />
+                        </Button>
+                      </PopoverTrigger>
+                      <PopoverContent className="w-80 p-0" align="start">
+                        <div className="max-h-64 overflow-y-auto p-2 space-y-3">
+                          {EXAM_CATEGORIES.map((cat) => (
+                            <div key={cat.category}>
+                              <p className="text-[10px] uppercase tracking-wider font-semibold text-primary mb-1 px-2 sticky top-0 bg-popover py-1">
+                                {cat.category}
+                              </p>
+                              {cat.exams.map((exam) => (
+                                <button
+                                  key={exam}
+                                  type="button"
+                                  onClick={() => toggleExam(exam)}
+                                  className={`flex items-center gap-2 w-full px-2 py-1.5 rounded text-sm transition-colors ${
+                                    editExams.includes(exam)
+                                      ? "bg-primary/10 text-foreground"
+                                      : "text-muted-foreground hover:bg-secondary/60"
+                                  }`}
+                                >
+                                  <div className={`h-4 w-4 rounded-full border-2 flex items-center justify-center flex-shrink-0 ${
+                                    editExams.includes(exam) ? "border-primary bg-primary" : "border-muted-foreground/40"
+                                  }`}>
+                                    {editExams.includes(exam) && <Check className="h-2.5 w-2.5 text-primary-foreground" />}
+                                  </div>
+                                  {exam}
+                                </button>
+                              ))}
+                            </div>
+                          ))}
+                        </div>
+                      </PopoverContent>
+                    </Popover>
                   </div>
                   <Button onClick={handleSave} disabled={saving} className="w-full font-display font-semibold">
                     {saving ? <Loader2 className="h-4 w-4 animate-spin mr-2" /> : null}
