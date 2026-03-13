@@ -325,7 +325,11 @@ const Dashboard = () => {
                           {initials}
                         </AvatarFallback>
                       </Avatar>
-                      <div className="absolute -bottom-1 -right-1 h-4 w-4 rounded-full bg-emerald-500 border-2 border-card" />
+                      <motion.div
+                        className="absolute -bottom-1 -right-1 h-4 w-4 rounded-full bg-primary border-2 border-card"
+                        animate={{ scale: [1, 1.3, 1] }}
+                        transition={{ duration: 2, repeat: Infinity, ease: "easeInOut" }}
+                      />
                     </div>
                     <div className="flex-1 min-w-0">
                       <h2 className="font-display text-lg font-semibold text-foreground truncate">
