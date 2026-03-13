@@ -388,14 +388,20 @@ const Dashboard = () => {
                     {statItems.map((stat, i) => (
                       <motion.div
                         key={stat.label}
-                        initial={{ opacity: 0, scale: 0.9 }}
-                        animate={{ opacity: 1, scale: 1 }}
-                        transition={{ delay: 0.3 + i * 0.1 }}
-                        className={`text-center p-4 rounded-xl bg-gradient-to-br ${stat.color} border border-border/30 hover:border-border/60 transition-all duration-300 group`}
+                        initial={{ opacity: 0, scale: 0.8, y: 20 }}
+                        animate={{ opacity: 1, scale: 1, y: 0 }}
+                        transition={{ delay: 0.3 + i * 0.15, type: "spring", stiffness: 200, damping: 15 }}
+                        whileHover={{ y: -4, scale: 1.05 }}
+                        className={`text-center p-4 rounded-xl bg-gradient-to-br ${stat.color} border border-border/30 hover:border-border/60 transition-all duration-300 group cursor-default`}
                       >
-                        <stat.icon className={`h-6 w-6 ${stat.iconColor} mx-auto mb-2 group-hover:scale-110 transition-transform`} />
+                        <motion.div
+                          whileHover={{ rotate: [0, -10, 10, 0] }}
+                          transition={{ duration: 0.5 }}
+                        >
+                          <stat.icon className={`h-6 w-6 ${stat.iconColor} mx-auto mb-2 group-hover:scale-110 transition-transform`} />
+                        </motion.div>
                         <p className="text-2xl font-display font-bold text-foreground">
-                          {stat.value}
+                          <AnimatedCounter value={typeof stat.value === 'number' ? stat.value : parseInt(String(stat.value)) || 0} suffix={stat.suffix} />
                         </p>
                         <p className="text-xs text-muted-foreground">{stat.label}</p>
                       </motion.div>
