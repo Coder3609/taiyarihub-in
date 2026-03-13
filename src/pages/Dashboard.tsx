@@ -535,12 +535,22 @@ const Dashboard = () => {
           {/* Row 3: Exam Type Selection */}
           <Separator className="my-2" />
           <motion.div custom={4} variants={fadeUp} initial="hidden" animate="visible">
-            <div className="flex items-center gap-2 mb-1">
-              <Zap className="h-5 w-5 text-primary" />
+            <motion.div
+              className="flex items-center gap-2 mb-1"
+              initial={{ opacity: 0, x: -20 }}
+              whileInView={{ opacity: 1, x: 0 }}
+              viewport={{ once: true }}
+            >
+              <motion.div
+                animate={{ rotate: [0, 15, -15, 0] }}
+                transition={{ duration: 2, repeat: Infinity, repeatDelay: 3 }}
+              >
+                <Zap className="h-5 w-5 text-primary" />
+              </motion.div>
               <h2 className="font-display text-xl md:text-2xl font-bold text-foreground">
                 Select Your Exam Type
               </h2>
-            </div>
+            </motion.div>
             <p className="text-sm text-muted-foreground mb-6">
               Choose a category to browse exams and start practicing
             </p>
