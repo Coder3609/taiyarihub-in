@@ -11,16 +11,61 @@ import { Label } from "@/components/ui/label";
 import { Select, SelectContent, SelectItem, SelectTrigger, SelectValue } from "@/components/ui/select";
 import { Checkbox } from "@/components/ui/checkbox";
 import { motion } from "framer-motion";
-import { ArrowLeft, User, Mail, Crown, Shield, BookOpen, Loader2, Edit, Camera } from "lucide-react";
+import { Popover, PopoverContent, PopoverTrigger } from "@/components/ui/popover";
+import { ArrowLeft, User, Mail, Crown, Shield, BookOpen, Loader2, Edit, Camera, ChevronDown, X, Check } from "lucide-react";
 import { toast } from "sonner";
 import Navbar from "@/components/Navbar";
 import Footer from "@/components/Footer";
 import AvatarPicker, { getAvatarSrc } from "@/components/AvatarPicker";
 
-const EXAM_OPTIONS = [
-  "UPSC ESE/IES", "GATE", "ISRO", "BARC", "DRDO",
-  "SSC JE", "RRB JE", "State PSC AE/JE",
-  "UPSC Indian Statistical Service", "UPSC IFS",
+const EXAM_CATEGORIES: { category: string; exams: string[] }[] = [
+  {
+    category: "Central Govt — Group A (Officer Level)",
+    exams: [
+      "UPSC Civil Services (IAS/IPS/IFS/IRS)", "UPSC ESE/IES", "UPSC CDS", "UPSC NDA",
+      "UPSC IFoS", "UPSC CAPF (Asst. Commandant)", "UPSC Indian Economic Service",
+      "UPSC Indian Statistical Service", "UPSC CMS", "UPSC Geo-Scientist",
+      "GATE", "RBI Grade B", "NABARD Grade A", "AFCAT",
+      "Indian Coast Guard (Asst. Commandant)", "CAT", "CA (Foundation/Inter/Final)",
+      "BARC", "ISRO",
+    ],
+  },
+  {
+    category: "Central Govt — Group B (Gazetted/Inspector)",
+    exams: [
+      "SSC CGL", "SSC CPO", "SSC JE", "SSC Stenographer Grade B",
+      "IBPS PO", "SBI PO", "IBPS SO", "RBI Assistant Manager", "NABARD Grade B",
+    ],
+  },
+  {
+    category: "Central Govt — Group C (Clerical/Technical)",
+    exams: [
+      "SSC CHSL", "SSC MTS", "SSC Stenographer Grade C", "SSC Selection Post",
+      "IBPS Clerk", "SBI Clerk", "RBI Assistant", "NABARD Assistant",
+      "RRB NTPC", "RRB ALP", "RRB Technician", "India Post GDS",
+      "Postal Assistant", "Sorting Assistant",
+    ],
+  },
+  {
+    category: "Central Govt — Group D (Entry Level)",
+    exams: ["RRB Group D", "SSC MTS (Group D posts)"],
+  },
+  {
+    category: "School — Board Exams",
+    exams: ["CBSE", "ICSE"],
+  },
+  {
+    category: "School — Entrance Exams",
+    exams: ["JEE Mains", "JEE Advanced", "NEET PG", "CUET"],
+  },
+  {
+    category: "State Exams",
+    exams: ["State PSC", "State Police", "State SSC", "Other State Exams"],
+  },
+  {
+    category: "Foreign Exams",
+    exams: ["GRE", "GMAT", "TOEFL", "IELTS", "SAT"],
+  },
 ];
 
 interface ProfileData {
