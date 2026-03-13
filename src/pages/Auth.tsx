@@ -150,6 +150,9 @@ const Auth = () => {
     setLoading(true);
     const { error } = await lovable.auth.signInWithOAuth("google", {
       redirect_uri: window.location.origin,
+      extraParams: {
+        prompt: "select_account",
+      },
     });
     if (error) {
       toast({ title: "Error", description: error.message, variant: "destructive" });
