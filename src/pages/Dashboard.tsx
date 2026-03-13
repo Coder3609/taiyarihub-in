@@ -1,6 +1,6 @@
-import { useEffect, useState, useMemo } from "react";
+import { useEffect, useState, useMemo, useRef } from "react";
 import { useNavigate } from "react-router-dom";
-import { motion, AnimatePresence } from "framer-motion";
+import { motion, AnimatePresence, useInView, useMotionValue, useTransform, animate } from "framer-motion";
 import {
   GraduationCap,
   User,
@@ -23,6 +23,7 @@ import {
   X,
   TicketPlus,
   Zap,
+  Star,
 } from "lucide-react";
 import { Card, CardContent, CardHeader, CardTitle } from "@/components/ui/card";
 import { Button } from "@/components/ui/button";
@@ -213,26 +214,77 @@ const Dashboard = () => {
       .slice(0, 2) ?? "U";
 
   const fadeUp = {
-    hidden: { opacity: 0, y: 20 },
+    hidden: { opacity: 0, y: 30, scale: 0.97 },
     visible: (i: number) => ({
       opacity: 1,
       y: 0,
-      transition: { delay: i * 0.08, duration: 0.5, ease: "easeOut" as const },
+      scale: 1,
+      transition: { delay: i * 0.1, duration: 0.6, ease: [0.16, 1, 0.3, 1] as [number, number, number, number] },
     }),
   };
 
+  // Animated counter component
+  const AnimatedCounter = ({ value, suffix = "" }: { value: number; suffix?: string }) => {
+    const ref = useRef<HTMLSpanElement>(null);
+    const isInView = useInView(ref, { once: true });
+    const motionVal = useMotionValue(0);
+    const rounded = useTransform(motionVal, (v) => Math.round(v));
+
+    useEffect(() => {
+      if (isInView) {
+        animate(motionVal, value, { duration: 1.2, ease: [0.16, 1, 0.3, 1] });
+      }
+    }, [isInView, value]);
+
+    useEffect(() => {
+      const unsub = rounded.on("change", (v) => {
+        if (ref.current) ref.current.textContent = `${v}${suffix}`;
+      });
+      return unsub;
+    }, [rounded, suffix]);
+
+    return <span ref={ref}>0{suffix}</span>;
+  };
+
   const statItems = [
-    { icon: BookOpen, value: stats.totalQuizzes, label: "Quizzes Taken", color: "from-primary/20 to-primary/5", iconColor: "text-primary" },
-    { icon: Target, value: `${stats.avgScore}%`, label: "Average Score", color: "from-blue-500/20 to-blue-500/5", iconColor: "text-blue-400" },
-    { icon: Trophy, value: `${stats.bestScore}%`, label: "Best Score", color: "from-emerald-500/20 to-emerald-500/5", iconColor: "text-emerald-400" },
+    { icon: BookOpen, value: stats.totalQuizzes, label: "Quizzes Taken", color: "from-primary/20 to-primary/5", iconColor: "text-primary", suffix: "" },
+    { icon: Target, value: stats.avgScore, label: "Average Score", color: "from-blue-500/20 to-blue-500/5", iconColor: "text-blue-400", suffix: "%" },
+    { icon: Trophy, value: stats.bestScore, label: "Best Score", color: "from-emerald-500/20 to-emerald-500/5", iconColor: "text-emerald-400", suffix: "%" },
   ];
 
   return (
     <div className="min-h-screen bg-background relative overflow-hidden">
-      {/* Ambient background glow */}
+      {/* Animated ambient background */}
       <div className="fixed inset-0 pointer-events-none">
-        <div className="absolute top-0 left-1/4 w-96 h-96 bg-primary/[0.03] rounded-full blur-[120px]" />
-        <div className="absolute bottom-1/4 right-1/4 w-80 h-80 bg-blue-500/[0.02] rounded-full blur-[100px]" />
+        <motion.div
+          animate={{ x: [0, 30, 0], y: [0, -20, 0] }}
+          transition={{ duration: 8, repeat: Infinity, ease: "easeInOut" }}
+          className="absolute top-0 left-1/4 w-96 h-96 bg-primary/[0.04] rounded-full blur-[120px] animate-glow-pulse"
+        />
+        <motion.div
+          animate={{ x: [0, -20, 0], y: [0, 30, 0] }}
+          transition={{ duration: 10, repeat: Infinity, ease: "easeInOut" }}
+          className="absolute bottom-1/4 right-1/4 w-80 h-80 bg-accent/[0.03] rounded-full blur-[100px] animate-glow-pulse"
+          style={{ animationDelay: "2s" }}
+        />
+        <motion.div
+          animate={{ x: [0, 15, 0], y: [0, 15, 0] }}
+          transition={{ duration: 12, repeat: Infinity, ease: "easeInOut" }}
+          className="absolute top-1/2 left-1/2 w-64 h-64 bg-primary/[0.02] rounded-full blur-[100px]"
+        />
+        {/* Floating particles */}
+        {[...Array(6)].map((_, i) => (
+          <div
+            key={i}
+            className="particle"
+            style={{
+              left: `${15 + i * 15}%`,
+              top: `${30 + (i % 3) * 20}%`,
+              animationDelay: `${i * 1.2}s`,
+              animationDuration: `${5 + i}s`,
+            }}
+          />
+        ))}
       </div>
 
       <Navbar />
@@ -240,15 +292,20 @@ const Dashboard = () => {
         <div className="container mx-auto px-4 md:px-6 space-y-8">
           {/* Header */}
           <motion.div
-            initial={{ opacity: 0, y: -10 }}
+            initial={{ opacity: 0, y: -20 }}
             animate={{ opacity: 1, y: 0 }}
+            transition={{ duration: 0.7, ease: [0.16, 1, 0.3, 1] as [number, number, number, number] }}
             className="flex items-center gap-3"
           >
-            <div className="animate-pulse-ring rounded-xl p-2 bg-primary/10">
+            <motion.div
+              className="animate-pulse-ring rounded-xl p-2 bg-primary/10"
+              whileHover={{ rotate: 15, scale: 1.1 }}
+              transition={{ type: "spring", stiffness: 300 }}
+            >
               <GraduationCap className="h-7 w-7 text-primary" />
-            </div>
+            </motion.div>
             <h1 className="font-display text-2xl md:text-3xl font-bold text-foreground">
-              Explore <span className="text-gradient">Taiyari Hub</span>
+              Explore <span className="text-shimmer">Taiyari Hub</span>
             </h1>
           </motion.div>
 
@@ -256,7 +313,7 @@ const Dashboard = () => {
           <div className="grid grid-cols-1 lg:grid-cols-3 gap-6">
             {/* Profile Card */}
             <motion.div custom={0} variants={fadeUp} initial="hidden" animate="visible">
-              <Card className="bg-gradient-card border-border/50 h-full card-shine hover:shadow-card-hover transition-shadow duration-500">
+              <Card className="bg-gradient-card border-border/50 h-full card-shine gradient-border hover:shadow-card-hover transition-shadow duration-500">
                 <CardContent className="pt-6">
                   <div className="flex items-start gap-4">
                     <div className="relative">
@@ -268,7 +325,11 @@ const Dashboard = () => {
                           {initials}
                         </AvatarFallback>
                       </Avatar>
-                      <div className="absolute -bottom-1 -right-1 h-4 w-4 rounded-full bg-emerald-500 border-2 border-card" />
+                      <motion.div
+                        className="absolute -bottom-1 -right-1 h-4 w-4 rounded-full bg-primary border-2 border-card"
+                        animate={{ scale: [1, 1.3, 1] }}
+                        transition={{ duration: 2, repeat: Infinity, ease: "easeInOut" }}
+                      />
                     </div>
                     <div className="flex-1 min-w-0">
                       <h2 className="font-display text-lg font-semibold text-foreground truncate">
@@ -331,14 +392,20 @@ const Dashboard = () => {
                     {statItems.map((stat, i) => (
                       <motion.div
                         key={stat.label}
-                        initial={{ opacity: 0, scale: 0.9 }}
-                        animate={{ opacity: 1, scale: 1 }}
-                        transition={{ delay: 0.3 + i * 0.1 }}
-                        className={`text-center p-4 rounded-xl bg-gradient-to-br ${stat.color} border border-border/30 hover:border-border/60 transition-all duration-300 group`}
+                        initial={{ opacity: 0, scale: 0.8, y: 20 }}
+                        animate={{ opacity: 1, scale: 1, y: 0 }}
+                        transition={{ delay: 0.3 + i * 0.15, type: "spring", stiffness: 200, damping: 15 }}
+                        whileHover={{ y: -4, scale: 1.05 }}
+                        className={`text-center p-4 rounded-xl bg-gradient-to-br ${stat.color} border border-border/30 hover:border-border/60 transition-all duration-300 group cursor-default`}
                       >
-                        <stat.icon className={`h-6 w-6 ${stat.iconColor} mx-auto mb-2 group-hover:scale-110 transition-transform`} />
+                        <motion.div
+                          whileHover={{ rotate: [0, -10, 10, 0] }}
+                          transition={{ duration: 0.5 }}
+                        >
+                          <stat.icon className={`h-6 w-6 ${stat.iconColor} mx-auto mb-2 group-hover:scale-110 transition-transform`} />
+                        </motion.div>
                         <p className="text-2xl font-display font-bold text-foreground">
-                          {stat.value}
+                          <AnimatedCounter value={typeof stat.value === 'number' ? stat.value : parseInt(String(stat.value)) || 0} suffix={stat.suffix} />
                         </p>
                         <p className="text-xs text-muted-foreground">{stat.label}</p>
                       </motion.div>
@@ -468,12 +535,22 @@ const Dashboard = () => {
           {/* Row 3: Exam Type Selection */}
           <Separator className="my-2" />
           <motion.div custom={4} variants={fadeUp} initial="hidden" animate="visible">
-            <div className="flex items-center gap-2 mb-1">
-              <Zap className="h-5 w-5 text-primary" />
+            <motion.div
+              className="flex items-center gap-2 mb-1"
+              initial={{ opacity: 0, x: -20 }}
+              whileInView={{ opacity: 1, x: 0 }}
+              viewport={{ once: true }}
+            >
+              <motion.div
+                animate={{ rotate: [0, 15, -15, 0] }}
+                transition={{ duration: 2, repeat: Infinity, repeatDelay: 3 }}
+              >
+                <Zap className="h-5 w-5 text-primary" />
+              </motion.div>
               <h2 className="font-display text-xl md:text-2xl font-bold text-foreground">
                 Select Your Exam Type
               </h2>
-            </div>
+            </motion.div>
             <p className="text-sm text-muted-foreground mb-6">
               Choose a category to browse exams and start practicing
             </p>
@@ -485,8 +562,8 @@ const Dashboard = () => {
                   variants={fadeUp}
                   initial="hidden"
                   animate="visible"
-                  whileHover={cat.comingSoon ? {} : { y: -4, scale: 1.02 }}
-                  whileTap={cat.comingSoon ? {} : { scale: 0.98 }}
+                  whileHover={cat.comingSoon ? {} : { y: -6, scale: 1.03 }}
+                  whileTap={cat.comingSoon ? {} : { scale: 0.97 }}
                 >
                   <Card
                     className={`bg-gradient-card border-border/50 transition-all duration-500 group ${cat.comingSoon ? "opacity-60 cursor-not-allowed" : `hover:border-primary/30 cursor-pointer ${cat.glowColor}`}`}
@@ -497,18 +574,25 @@ const Dashboard = () => {
                   >
                     <CardContent className="pt-6 pb-5 relative overflow-hidden">
                       {/* Decorative orb */}
-                      <div className={`absolute -right-6 -top-6 w-24 h-24 rounded-full bg-gradient-to-br ${cat.color} blur-2xl opacity-0 group-hover:opacity-100 transition-opacity duration-700 pointer-events-none`} />
+                      <motion.div
+                        className={`absolute -right-6 -top-6 w-24 h-24 rounded-full bg-gradient-to-br ${cat.color} blur-2xl pointer-events-none`}
+                        initial={{ opacity: 0, scale: 0.5 }}
+                        whileHover={{ opacity: 1, scale: 1.2 }}
+                        transition={{ duration: 0.5 }}
+                      />
 
                       {cat.comingSoon && (
                         <span className="absolute top-3 right-3 px-2 py-0.5 rounded-full text-[10px] font-semibold bg-muted text-muted-foreground border border-border">
                           COMING SOON
                         </span>
                       )}
-                      <div
-                        className={`w-12 h-12 rounded-xl bg-gradient-to-br ${cat.color} flex items-center justify-center mb-4 group-hover:scale-110 transition-transform duration-300`}
+                      <motion.div
+                        className={`w-12 h-12 rounded-xl bg-gradient-to-br ${cat.color} flex items-center justify-center mb-4`}
+                        whileHover={{ rotate: [0, -5, 5, 0], scale: 1.15 }}
+                        transition={{ duration: 0.4 }}
                       >
                         <cat.icon className={`h-6 w-6 ${cat.iconColor}`} />
-                      </div>
+                      </motion.div>
                       <h3 className="font-display font-semibold text-foreground mb-1">
                         {cat.title}
                       </h3>
@@ -516,9 +600,14 @@ const Dashboard = () => {
                         {cat.description}
                       </p>
                       {!cat.comingSoon && (
-                        <div className="mt-3 flex items-center gap-1 text-xs text-primary opacity-0 group-hover:opacity-100 transition-all duration-300 group-hover:translate-x-1">
-                          Browse exams <ArrowRight className="h-3 w-3" />
-                        </div>
+                        <motion.div
+                          className="mt-3 flex items-center gap-1 text-xs text-primary"
+                          initial={{ opacity: 0, x: -10 }}
+                          whileInView={{ opacity: 1, x: 0 }}
+                          transition={{ delay: 0.5 + i * 0.1 }}
+                        >
+                          Browse exams <ArrowRight className="h-3 w-3 group-hover:translate-x-1 transition-transform" />
+                        </motion.div>
                       )}
                     </CardContent>
                   </Card>
