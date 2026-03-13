@@ -313,7 +313,7 @@ const Dashboard = () => {
           <div className="grid grid-cols-1 lg:grid-cols-3 gap-6">
             {/* Profile Card */}
             <motion.div custom={0} variants={fadeUp} initial="hidden" animate="visible">
-              <Card className="bg-gradient-card border-border/50 h-full card-shine hover:shadow-card-hover transition-shadow duration-500">
+              <Card className="bg-gradient-card border-border/50 h-full card-shine gradient-border hover:shadow-card-hover transition-shadow duration-500">
                 <CardContent className="pt-6">
                   <div className="flex items-start gap-4">
                     <div className="relative">
