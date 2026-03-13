@@ -562,8 +562,8 @@ const Dashboard = () => {
                   variants={fadeUp}
                   initial="hidden"
                   animate="visible"
-                  whileHover={cat.comingSoon ? {} : { y: -4, scale: 1.02 }}
-                  whileTap={cat.comingSoon ? {} : { scale: 0.98 }}
+                  whileHover={cat.comingSoon ? {} : { y: -6, scale: 1.03 }}
+                  whileTap={cat.comingSoon ? {} : { scale: 0.97 }}
                 >
                   <Card
                     className={`bg-gradient-card border-border/50 transition-all duration-500 group ${cat.comingSoon ? "opacity-60 cursor-not-allowed" : `hover:border-primary/30 cursor-pointer ${cat.glowColor}`}`}
@@ -574,18 +574,25 @@ const Dashboard = () => {
                   >
                     <CardContent className="pt-6 pb-5 relative overflow-hidden">
                       {/* Decorative orb */}
-                      <div className={`absolute -right-6 -top-6 w-24 h-24 rounded-full bg-gradient-to-br ${cat.color} blur-2xl opacity-0 group-hover:opacity-100 transition-opacity duration-700 pointer-events-none`} />
+                      <motion.div
+                        className={`absolute -right-6 -top-6 w-24 h-24 rounded-full bg-gradient-to-br ${cat.color} blur-2xl pointer-events-none`}
+                        initial={{ opacity: 0, scale: 0.5 }}
+                        whileHover={{ opacity: 1, scale: 1.2 }}
+                        transition={{ duration: 0.5 }}
+                      />
 
                       {cat.comingSoon && (
                         <span className="absolute top-3 right-3 px-2 py-0.5 rounded-full text-[10px] font-semibold bg-muted text-muted-foreground border border-border">
                           COMING SOON
                         </span>
                       )}
-                      <div
-                        className={`w-12 h-12 rounded-xl bg-gradient-to-br ${cat.color} flex items-center justify-center mb-4 group-hover:scale-110 transition-transform duration-300`}
+                      <motion.div
+                        className={`w-12 h-12 rounded-xl bg-gradient-to-br ${cat.color} flex items-center justify-center mb-4`}
+                        whileHover={{ rotate: [0, -5, 5, 0], scale: 1.15 }}
+                        transition={{ duration: 0.4 }}
                       >
                         <cat.icon className={`h-6 w-6 ${cat.iconColor}`} />
-                      </div>
+                      </motion.div>
                       <h3 className="font-display font-semibold text-foreground mb-1">
                         {cat.title}
                       </h3>
@@ -593,9 +600,14 @@ const Dashboard = () => {
                         {cat.description}
                       </p>
                       {!cat.comingSoon && (
-                        <div className="mt-3 flex items-center gap-1 text-xs text-primary opacity-0 group-hover:opacity-100 transition-all duration-300 group-hover:translate-x-1">
-                          Browse exams <ArrowRight className="h-3 w-3" />
-                        </div>
+                        <motion.div
+                          className="mt-3 flex items-center gap-1 text-xs text-primary"
+                          initial={{ opacity: 0, x: -10 }}
+                          whileInView={{ opacity: 1, x: 0 }}
+                          transition={{ delay: 0.5 + i * 0.1 }}
+                        >
+                          Browse exams <ArrowRight className="h-3 w-3 group-hover:translate-x-1 transition-transform" />
+                        </motion.div>
                       )}
                     </CardContent>
                   </Card>
