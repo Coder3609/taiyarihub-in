@@ -214,18 +214,42 @@ const Dashboard = () => {
       .slice(0, 2) ?? "U";
 
   const fadeUp = {
-    hidden: { opacity: 0, y: 20 },
+    hidden: { opacity: 0, y: 30, scale: 0.97 },
     visible: (i: number) => ({
       opacity: 1,
       y: 0,
-      transition: { delay: i * 0.08, duration: 0.5, ease: "easeOut" as const },
+      scale: 1,
+      transition: { delay: i * 0.1, duration: 0.6, ease: [0.16, 1, 0.3, 1] },
     }),
   };
 
+  // Animated counter component
+  const AnimatedCounter = ({ value, suffix = "" }: { value: number; suffix?: string }) => {
+    const ref = useRef<HTMLSpanElement>(null);
+    const isInView = useInView(ref, { once: true });
+    const motionVal = useMotionValue(0);
+    const rounded = useTransform(motionVal, (v) => Math.round(v));
+
+    useEffect(() => {
+      if (isInView) {
+        animate(motionVal, value, { duration: 1.2, ease: [0.16, 1, 0.3, 1] });
+      }
+    }, [isInView, value]);
+
+    useEffect(() => {
+      const unsub = rounded.on("change", (v) => {
+        if (ref.current) ref.current.textContent = `${v}${suffix}`;
+      });
+      return unsub;
+    }, [rounded, suffix]);
+
+    return <span ref={ref}>0{suffix}</span>;
+  };
+
   const statItems = [
-    { icon: BookOpen, value: stats.totalQuizzes, label: "Quizzes Taken", color: "from-primary/20 to-primary/5", iconColor: "text-primary" },
-    { icon: Target, value: `${stats.avgScore}%`, label: "Average Score", color: "from-blue-500/20 to-blue-500/5", iconColor: "text-blue-400" },
-    { icon: Trophy, value: `${stats.bestScore}%`, label: "Best Score", color: "from-emerald-500/20 to-emerald-500/5", iconColor: "text-emerald-400" },
+    { icon: BookOpen, value: stats.totalQuizzes, label: "Quizzes Taken", color: "from-primary/20 to-primary/5", iconColor: "text-primary", suffix: "" },
+    { icon: Target, value: stats.avgScore, label: "Average Score", color: "from-blue-500/20 to-blue-500/5", iconColor: "text-blue-400", suffix: "%" },
+    { icon: Trophy, value: stats.bestScore, label: "Best Score", color: "from-emerald-500/20 to-emerald-500/5", iconColor: "text-emerald-400", suffix: "%" },
   ];
 
   return (
