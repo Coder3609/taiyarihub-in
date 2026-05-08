@@ -1,6 +1,7 @@
 import { motion } from "framer-motion";
-import { Check, Crown, Zap, Landmark, GraduationCap, Flame, Loader2 } from "lucide-react";
+import { Check, Crown, Zap, Landmark, GraduationCap, Flame, Loader2, BookOpen } from "lucide-react";
 import { Button } from "@/components/ui/button";
+import { Select, SelectContent, SelectItem, SelectTrigger, SelectValue } from "@/components/ui/select";
 import { useEffect, useState, useCallback } from "react";
 import { supabase } from "@/integrations/supabase/client";
 import { useAuth } from "@/contexts/AuthContext";
@@ -9,6 +10,8 @@ import { toast } from "sonner";
 
 const OFFER_LIMIT = 500;
 const OFFER_HARD_EXPIRY = 550;
+const SINGLE_EXAM_OFFER_PRICE = "₹149";
+const SINGLE_EXAM_FULL_PRICE = "₹199";
 
 const plans = [
   {
