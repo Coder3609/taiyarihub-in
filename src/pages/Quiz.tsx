@@ -155,8 +155,8 @@ const Quiz = () => {
   // Check access
   useEffect(() => {
     const setNum = parseInt(setNumber || "1");
-    if (!canAccessSet(setNum)) navigate(-1);
-  }, [canAccessSet, setNumber, navigate]);
+    if (!canAccessSet(setNum, examSlug)) navigate(-1);
+  }, [canAccessSet, setNumber, navigate, examSlug]);
 
   // Fetch questions
   useEffect(() => {
