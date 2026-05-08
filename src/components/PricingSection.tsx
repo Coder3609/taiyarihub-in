@@ -101,7 +101,7 @@ const PricingSection = () => {
   const spotsLeft = Math.max(0, OFFER_LIMIT - subCount);
 
   const handleSubscribe = useCallback(
-    async (planId: string) => {
+    async (planId: string, opts?: { customPlanType?: string; description?: string }) => {
       if (!user) {
         toast.info("Please sign in to subscribe");
         navigate("/auth");
@@ -118,7 +118,8 @@ const PricingSection = () => {
         }
 
         // Determine plan_type key (offer vs full price)
-        const planType = offerActive ? planId : `${planId}_full`;
+        const planType = opts?.customPlanType
+          ?? (offerActive ? planId : `${planId}_full`);
 
         const { data: sessionData } = await supabase.auth.getSession();
         const accessToken = sessionData?.session?.access_token;
@@ -137,14 +138,16 @@ const PricingSection = () => {
           return;
         }
 
-        const plan = plans.find((p) => p.id === planId)!;
+        const description = opts?.description
+          ?? plans.find((p) => p.id === planId)?.name
+          ?? "TaiyariHub Subscription";
 
         const options = {
           key: data.key_id,
           amount: data.amount,
           currency: data.currency,
           name: "TaiyariHub",
-          description: plan.name,
+          description,
           order_id: data.order_id,
           handler: async (response: any) => {
             try {
@@ -154,7 +157,7 @@ const PricingSection = () => {
                     razorpay_order_id: response.razorpay_order_id,
                     razorpay_payment_id: response.razorpay_payment_id,
                     razorpay_signature: response.razorpay_signature,
-                    plan_type: planId,
+                    plan_type: planType,
                   },
                   headers: { Authorization: `Bearer ${accessToken}` },
                 });
@@ -164,24 +167,16 @@ const PricingSection = () => {
                 console.error("Verify error:", verifyError, verifyData);
               } else {
                 toast.success("🎉 Subscription activated! Welcome aboard!");
-                navigate("/dashboard");
+                navigate("/");
               }
             } catch (e) {
               console.error("Verification error:", e);
               toast.error("Payment verification failed. Contact support.");
             }
           },
-          prefill: {
-            email: user.email || "",
-          },
-          theme: {
-            color: "#6366f1",
-          },
-          modal: {
-            ondismiss: () => {
-              setProcessingPlan(null);
-            },
-          },
+          prefill: { email: user.email || "" },
+          theme: { color: "#6366f1" },
+          modal: { ondismiss: () => setProcessingPlan(null) },
         };
 
         const rzp = new window.Razorpay(options);
@@ -200,6 +195,21 @@ const PricingSection = () => {
     },
     [user, navigate, offerActive]
   );
+
+  const handleSingleExamSubscribe = () => {
+    if (!selectedExam) {
+      toast.info("Please select an exam first");
+      return;
+    }
+    const exam = exams.find((e) => e.slug === selectedExam);
+    const customPlanType = offerActive
+      ? `single:${selectedExam}`
+      : `single_full:${selectedExam}`;
+    handleSubscribe("single", {
+      customPlanType,
+      description: `Single Exam Access: ${exam?.name ?? selectedExam}`,
+    });
+  };
 
   return (
     <section id="pricing" className="py-24 md:py-32">
