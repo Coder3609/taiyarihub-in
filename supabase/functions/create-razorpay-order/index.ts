@@ -80,7 +80,7 @@ Deno.serve(async (req) => {
       body: JSON.stringify({
         amount: plan.amount,
         currency: "INR",
-        receipt: `${plan_type}_${userId.slice(0, 8)}_${Date.now()}`,
+        receipt: `r_${userId.slice(0, 8)}_${Date.now()}`.slice(0, 40),
         notes: {
           plan_type,
           user_id: userId,
