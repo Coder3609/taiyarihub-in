@@ -342,6 +342,78 @@ const PricingSection = () => {
             );
           })}
         </motion.div>
+
+        {/* Single Exam — affordable per-exam access */}
+        <motion.div
+          initial={{ opacity: 0, y: 10 }}
+          whileInView={{ opacity: 1, y: 0 }}
+          viewport={{ once: true }}
+          className="max-w-3xl mx-auto mt-8"
+        >
+          <div className="relative flex flex-col md:flex-row md:items-center gap-6 rounded-2xl p-6 md:p-8 border border-border/50 bg-card">
+            <div className="flex-1">
+              <div className="flex items-center gap-3 mb-2">
+                <BookOpen className="h-6 w-6 text-primary" />
+                <h3 className="font-display font-bold text-xl text-foreground">
+                  Single Exam Access
+                </h3>
+              </div>
+              <p className="text-xs text-muted-foreground mb-4">
+                Only need one exam? Pick it from the list and pay a fraction of the bundle price.
+              </p>
+              <div className="flex items-baseline gap-3 mb-4">
+                {offerActive ? (
+                  <>
+                    <span className="font-display text-3xl font-bold text-foreground">
+                      {SINGLE_EXAM_OFFER_PRICE}
+                    </span>
+                    <span className="font-display text-base text-muted-foreground line-through">
+                      {SINGLE_EXAM_FULL_PRICE}
+                    </span>
+                  </>
+                ) : (
+                  <span className="font-display text-3xl font-bold text-foreground">
+                    {SINGLE_EXAM_FULL_PRICE}
+                  </span>
+                )}
+                <span className="text-xs text-muted-foreground">/ exam</span>
+              </div>
+            </div>
+
+            <div className="flex flex-col sm:flex-row md:flex-col gap-3 md:w-72">
+              <Select value={selectedExam} onValueChange={setSelectedExam}>
+                <SelectTrigger>
+                  <SelectValue placeholder="Choose an exam" />
+                </SelectTrigger>
+                <SelectContent className="max-h-72">
+                  {exams.length === 0 ? (
+                    <SelectItem value="__none" disabled>Loading exams…</SelectItem>
+                  ) : (
+                    exams.map((e) => (
+                      <SelectItem key={e.slug} value={e.slug}>
+                        {e.name}
+                      </SelectItem>
+                    ))
+                  )}
+                </SelectContent>
+              </Select>
+              <Button
+                className="w-full font-display font-semibold"
+                disabled={processingPlan === "single" || !selectedExam}
+                onClick={handleSingleExamSubscribe}
+              >
+                {processingPlan === "single" ? (
+                  <>
+                    <Loader2 className="h-4 w-4 mr-2 animate-spin" />
+                    Processing...
+                  </>
+                ) : (
+                  "Buy this exam"
+                )}
+              </Button>
+            </div>
+          </div>
+        </motion.div>
       </div>
     </section>
   );
