@@ -1,6 +1,7 @@
 import { motion } from "framer-motion";
-import { Check, Crown, Zap, Landmark, GraduationCap, Flame, Loader2 } from "lucide-react";
+import { Check, Crown, Zap, Landmark, GraduationCap, Flame, Loader2, BookOpen } from "lucide-react";
 import { Button } from "@/components/ui/button";
+import { Select, SelectContent, SelectItem, SelectTrigger, SelectValue } from "@/components/ui/select";
 import { useEffect, useState, useCallback } from "react";
 import { supabase } from "@/integrations/supabase/client";
 import { useAuth } from "@/contexts/AuthContext";
@@ -9,6 +10,8 @@ import { toast } from "sonner";
 
 const OFFER_LIMIT = 500;
 const OFFER_HARD_EXPIRY = 550;
+const SINGLE_EXAM_OFFER_PRICE = "₹149";
+const SINGLE_EXAM_FULL_PRICE = "₹199";
 
 const plans = [
   {
@@ -73,26 +76,32 @@ const PricingSection = () => {
   const [subCount, setSubCount] = useState(0);
   const [loaded, setLoaded] = useState(false);
   const [processingPlan, setProcessingPlan] = useState<string | null>(null);
+  const [exams, setExams] = useState<{ slug: string; name: string }[]>([]);
+  const [selectedExam, setSelectedExam] = useState<string>("");
   const { user } = useAuth();
   const navigate = useNavigate();
 
   useEffect(() => {
-    const fetchCount = async () => {
-      const { count } = await supabase
-        .from("user_subscriptions")
-        .select("*", { count: "exact", head: true })
-        .eq("is_active", true);
+    const fetchData = async () => {
+      const [{ count }, { data: examData }] = await Promise.all([
+        supabase
+          .from("user_subscriptions")
+          .select("*", { count: "exact", head: true })
+          .eq("is_active", true),
+        supabase.from("exams").select("slug, name").order("name"),
+      ]);
       setSubCount(count ?? 0);
+      setExams(examData ?? []);
       setLoaded(true);
     };
-    fetchCount();
+    fetchData();
   }, []);
 
   const offerActive = subCount < OFFER_HARD_EXPIRY;
   const spotsLeft = Math.max(0, OFFER_LIMIT - subCount);
 
   const handleSubscribe = useCallback(
-    async (planId: string) => {
+    async (planId: string, opts?: { customPlanType?: string; description?: string }) => {
       if (!user) {
         toast.info("Please sign in to subscribe");
         navigate("/auth");
@@ -109,7 +118,8 @@ const PricingSection = () => {
         }
 
         // Determine plan_type key (offer vs full price)
-        const planType = offerActive ? planId : `${planId}_full`;
+        const planType = opts?.customPlanType
+          ?? (offerActive ? planId : `${planId}_full`);
 
         const { data: sessionData } = await supabase.auth.getSession();
         const accessToken = sessionData?.session?.access_token;
@@ -128,14 +138,16 @@ const PricingSection = () => {
           return;
         }
 
-        const plan = plans.find((p) => p.id === planId)!;
+        const description = opts?.description
+          ?? plans.find((p) => p.id === planId)?.name
+          ?? "TaiyariHub Subscription";
 
         const options = {
           key: data.key_id,
           amount: data.amount,
           currency: data.currency,
           name: "TaiyariHub",
-          description: plan.name,
+          description,
           order_id: data.order_id,
           handler: async (response: any) => {
             try {
@@ -145,7 +157,7 @@ const PricingSection = () => {
                     razorpay_order_id: response.razorpay_order_id,
                     razorpay_payment_id: response.razorpay_payment_id,
                     razorpay_signature: response.razorpay_signature,
-                    plan_type: planId,
+                    plan_type: planType,
                   },
                   headers: { Authorization: `Bearer ${accessToken}` },
                 });
@@ -155,24 +167,16 @@ const PricingSection = () => {
                 console.error("Verify error:", verifyError, verifyData);
               } else {
                 toast.success("🎉 Subscription activated! Welcome aboard!");
-                navigate("/dashboard");
+                navigate("/");
               }
             } catch (e) {
               console.error("Verification error:", e);
               toast.error("Payment verification failed. Contact support.");
             }
           },
-          prefill: {
-            email: user.email || "",
-          },
-          theme: {
-            color: "#6366f1",
-          },
-          modal: {
-            ondismiss: () => {
-              setProcessingPlan(null);
-            },
-          },
+          prefill: { email: user.email || "" },
+          theme: { color: "#6366f1" },
+          modal: { ondismiss: () => setProcessingPlan(null) },
         };
 
         const rzp = new window.Razorpay(options);
@@ -191,6 +195,21 @@ const PricingSection = () => {
     },
     [user, navigate, offerActive]
   );
+
+  const handleSingleExamSubscribe = () => {
+    if (!selectedExam) {
+      toast.info("Please select an exam first");
+      return;
+    }
+    const exam = exams.find((e) => e.slug === selectedExam);
+    const customPlanType = offerActive
+      ? `single:${selectedExam}`
+      : `single_full:${selectedExam}`;
+    handleSubscribe("single", {
+      customPlanType,
+      description: `Single Exam Access: ${exam?.name ?? selectedExam}`,
+    });
+  };
 
   return (
     <section id="pricing" className="py-24 md:py-32">
@@ -322,6 +341,78 @@ const PricingSection = () => {
               </div>
             );
           })}
+        </motion.div>
+
+        {/* Single Exam — affordable per-exam access */}
+        <motion.div
+          initial={{ opacity: 0, y: 10 }}
+          whileInView={{ opacity: 1, y: 0 }}
+          viewport={{ once: true }}
+          className="max-w-3xl mx-auto mt-8"
+        >
+          <div className="relative flex flex-col md:flex-row md:items-center gap-6 rounded-2xl p-6 md:p-8 border border-border/50 bg-card">
+            <div className="flex-1">
+              <div className="flex items-center gap-3 mb-2">
+                <BookOpen className="h-6 w-6 text-primary" />
+                <h3 className="font-display font-bold text-xl text-foreground">
+                  Single Exam Access
+                </h3>
+              </div>
+              <p className="text-xs text-muted-foreground mb-4">
+                Only need one exam? Pick it from the list and pay a fraction of the bundle price.
+              </p>
+              <div className="flex items-baseline gap-3 mb-4">
+                {offerActive ? (
+                  <>
+                    <span className="font-display text-3xl font-bold text-foreground">
+                      {SINGLE_EXAM_OFFER_PRICE}
+                    </span>
+                    <span className="font-display text-base text-muted-foreground line-through">
+                      {SINGLE_EXAM_FULL_PRICE}
+                    </span>
+                  </>
+                ) : (
+                  <span className="font-display text-3xl font-bold text-foreground">
+                    {SINGLE_EXAM_FULL_PRICE}
+                  </span>
+                )}
+                <span className="text-xs text-muted-foreground">/ exam</span>
+              </div>
+            </div>
+
+            <div className="flex flex-col sm:flex-row md:flex-col gap-3 md:w-72">
+              <Select value={selectedExam} onValueChange={setSelectedExam}>
+                <SelectTrigger>
+                  <SelectValue placeholder="Choose an exam" />
+                </SelectTrigger>
+                <SelectContent className="max-h-72">
+                  {exams.length === 0 ? (
+                    <SelectItem value="__none" disabled>Loading exams…</SelectItem>
+                  ) : (
+                    exams.map((e) => (
+                      <SelectItem key={e.slug} value={e.slug}>
+                        {e.name}
+                      </SelectItem>
+                    ))
+                  )}
+                </SelectContent>
+              </Select>
+              <Button
+                className="w-full font-display font-semibold"
+                disabled={processingPlan === "single" || !selectedExam}
+                onClick={handleSingleExamSubscribe}
+              >
+                {processingPlan === "single" ? (
+                  <>
+                    <Loader2 className="h-4 w-4 mr-2 animate-spin" />
+                    Processing...
+                  </>
+                ) : (
+                  "Buy this exam"
+                )}
+              </Button>
+            </div>
+          </div>
         </motion.div>
       </div>
     </section>

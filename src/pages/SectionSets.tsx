@@ -152,7 +152,7 @@ const SectionSets = () => {
       setShowLoginPrompt(true);
       return;
     }
-    if (!canAccessSet(num)) {
+    if (!canAccessSet(num, examSlug)) {
       setShowPaywall(true);
       return;
     }
@@ -199,7 +199,7 @@ const SectionSets = () => {
             className="grid grid-cols-3 sm:grid-cols-4 lg:grid-cols-5 xl:grid-cols-6 gap-2.5"
           >
             {sets.map((num) => {
-              const locked = !user || (!accessLoading && !canAccessSet(num));
+              const locked = !user || (!accessLoading && !canAccessSet(num, examSlug));
               const stats = setStats[num];
               return (
                 <motion.div

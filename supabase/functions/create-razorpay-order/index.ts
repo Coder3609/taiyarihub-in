@@ -13,6 +13,10 @@ const PLAN_PRICES: Record<string, { amount: number; label: string }> = {
   school_full: { amount: 99900, label: "School & Entrance Bundle" },
 };
 
+// Single-exam pricing (smaller price)
+const SINGLE_EXAM_OFFER = 14900; // ₹149
+const SINGLE_EXAM_FULL = 19900;  // ₹199
+
 Deno.serve(async (req) => {
   if (req.method === "OPTIONS") {
     return new Response(null, { headers: corsHeaders });
@@ -45,7 +49,18 @@ Deno.serve(async (req) => {
     const userEmail = user.email;
 
     const { plan_type } = await req.json();
-    const plan = PLAN_PRICES[plan_type];
+
+    let plan: { amount: number; label: string } | undefined = PLAN_PRICES[plan_type];
+
+    // Handle single-exam plans: format "single:<exam-slug>" or "single_full:<exam-slug>"
+    if (!plan && typeof plan_type === "string") {
+      if (plan_type.startsWith("single:")) {
+        plan = { amount: SINGLE_EXAM_OFFER, label: `Single Exam: ${plan_type.slice(7)}` };
+      } else if (plan_type.startsWith("single_full:")) {
+        plan = { amount: SINGLE_EXAM_FULL, label: `Single Exam: ${plan_type.slice(12)}` };
+      }
+    }
+
     if (!plan) {
       return new Response(JSON.stringify({ error: "Invalid plan" }), {
         status: 400,
@@ -65,7 +80,7 @@ Deno.serve(async (req) => {
       body: JSON.stringify({
         amount: plan.amount,
         currency: "INR",
-        receipt: `${plan_type}_${userId.slice(0, 8)}_${Date.now()}`,
+        receipt: `r_${userId.slice(0, 8)}_${Date.now()}`.slice(0, 40),
         notes: {
           plan_type,
           user_id: userId,
