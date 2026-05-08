@@ -76,19 +76,25 @@ const PricingSection = () => {
   const [subCount, setSubCount] = useState(0);
   const [loaded, setLoaded] = useState(false);
   const [processingPlan, setProcessingPlan] = useState<string | null>(null);
+  const [exams, setExams] = useState<{ slug: string; name: string }[]>([]);
+  const [selectedExam, setSelectedExam] = useState<string>("");
   const { user } = useAuth();
   const navigate = useNavigate();
 
   useEffect(() => {
-    const fetchCount = async () => {
-      const { count } = await supabase
-        .from("user_subscriptions")
-        .select("*", { count: "exact", head: true })
-        .eq("is_active", true);
+    const fetchData = async () => {
+      const [{ count }, { data: examData }] = await Promise.all([
+        supabase
+          .from("user_subscriptions")
+          .select("*", { count: "exact", head: true })
+          .eq("is_active", true),
+        supabase.from("exams").select("slug, name").order("name"),
+      ]);
       setSubCount(count ?? 0);
+      setExams(examData ?? []);
       setLoaded(true);
     };
-    fetchCount();
+    fetchData();
   }, []);
 
   const offerActive = subCount < OFFER_HARD_EXPIRY;
