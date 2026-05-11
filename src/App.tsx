@@ -73,6 +73,8 @@ const App = () => (
             <Route path="/exam/:examSlug/:sectionId/:sourceId/:setNumber" element={<ProtectedRoute><Quiz /></ProtectedRoute>} />
             <Route path="/exam/:examSlug/:sectionId/:setNumber" element={<ProtectedRoute><Quiz /></ProtectedRoute>} />
             <Route path="/exam/:examSlug/:sectionId" element={<ProtectedRoute><SectionSets /></ProtectedRoute>} />
+            <Route path="/live-test/:id" element={<ProtectedRoute><LiveTest /></ProtectedRoute>} />
+            <Route path="/live-test/:id/leaderboard" element={<ProtectedRoute><LiveTestLeaderboard /></ProtectedRoute>} />
 
             {/* Admin-only route — requires admin role */}
             <Route path="/admin" element={<AdminRoute><AdminPanel /></AdminRoute>} />
