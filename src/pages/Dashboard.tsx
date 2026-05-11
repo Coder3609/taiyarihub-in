@@ -616,6 +616,9 @@ const Dashboard = () => {
             </div>
           </motion.div>
 
+          <Separator className="my-2" />
+          <LiveTestsSection />
+
           {/* Row 4: Subscription Plans — only shown if user has NO active plan */}
           {userPlans.length === 0 && (
             <>
