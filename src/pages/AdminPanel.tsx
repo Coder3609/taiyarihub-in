@@ -14,7 +14,7 @@ import { Tabs, TabsContent, TabsList, TabsTrigger } from "@/components/ui/tabs";
 import { toast } from "@/hooks/use-toast";
 import {
   ArrowLeft, Plus, Loader2, ShieldCheck, CheckCircle2, RotateCcw, List,
-  Database, Upload, FileText, Pencil, Trash2, BookOpen, RefreshCw, AlertTriangle,
+  Database, Upload, FileText, Pencil, Trash2, BookOpen, RefreshCw, AlertTriangle, Radio,
 } from "lucide-react";
 
 interface Exam {
