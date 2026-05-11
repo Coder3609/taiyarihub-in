@@ -32,6 +32,8 @@ import TermsOfService from "./pages/TermsOfService";
 import RefundPolicy from "./pages/RefundPolicy";
 import NotFound from "./pages/NotFound";
 import Pricing from "./pages/Pricing";
+import LiveTest from "./pages/LiveTest";
+import LiveTestLeaderboard from "./pages/LiveTestLeaderboard";
 
 const queryClient = new QueryClient();
 
