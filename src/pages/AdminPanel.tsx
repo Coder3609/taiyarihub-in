@@ -74,7 +74,7 @@ const AdminPanel = () => {
           </div>
 
           <Tabs defaultValue="exams" className="space-y-6">
-            <TabsList className="grid w-full grid-cols-4 h-auto">
+            <TabsList className="grid w-full grid-cols-5 h-auto">
               <TabsTrigger value="exams" className="flex items-center gap-1.5 text-xs py-2.5">
                 <Database className="h-3.5 w-3.5" /> Exams
               </TabsTrigger>
@@ -87,27 +87,16 @@ const AdminPanel = () => {
               <TabsTrigger value="sets" className="flex items-center gap-1.5 text-xs py-2.5">
                 <BookOpen className="h-3.5 w-3.5" /> Set Names
               </TabsTrigger>
+              <TabsTrigger value="live" className="flex items-center gap-1.5 text-xs py-2.5">
+                <Radio className="h-3.5 w-3.5" /> Live Tests
+              </TabsTrigger>
             </TabsList>
 
-            {/* ===== TAB 1: EXAMS CRUD ===== */}
-            <TabsContent value="exams">
-              <ExamsTab exams={exams} onRefresh={fetchExams} loading={loadingExams} />
-            </TabsContent>
-
-            {/* ===== TAB 2: BULK IMPORT ===== */}
-            <TabsContent value="bulk">
-              <BulkImportTab exams={exams} />
-            </TabsContent>
-
-            {/* ===== TAB 3: SINGLE QUESTION ===== */}
-            <TabsContent value="single">
-              <SingleQuestionTab exams={exams} />
-            </TabsContent>
-
-            {/* ===== TAB 4: SET NAMES ===== */}
-            <TabsContent value="sets">
-              <SetNamesTab exams={exams} />
-            </TabsContent>
+            <TabsContent value="exams"><ExamsTab exams={exams} onRefresh={fetchExams} loading={loadingExams} /></TabsContent>
+            <TabsContent value="bulk"><BulkImportTab exams={exams} /></TabsContent>
+            <TabsContent value="single"><SingleQuestionTab exams={exams} /></TabsContent>
+            <TabsContent value="sets"><SetNamesTab exams={exams} /></TabsContent>
+            <TabsContent value="live"><LiveTestsTab exams={exams} /></TabsContent>
           </Tabs>
         </div>
       </main>
