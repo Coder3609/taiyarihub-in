@@ -41,6 +41,7 @@ import { useAuth } from "@/contexts/AuthContext";
 import { supabase } from "@/integrations/supabase/client";
 import Navbar from "@/components/Navbar";
 import Footer from "@/components/Footer";
+import LiveTestsSection from "@/components/LiveTestsSection";
 
 interface Profile {
   full_name: string | null;
@@ -615,6 +616,9 @@ const Dashboard = () => {
               ))}
             </div>
           </motion.div>
+
+          <Separator className="my-2" />
+          <LiveTestsSection />
 
           {/* Row 4: Subscription Plans — only shown if user has NO active plan */}
           {userPlans.length === 0 && (

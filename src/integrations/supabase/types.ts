@@ -112,6 +112,107 @@ export type Database = {
         }
         Relationships: []
       }
+      live_test_attempts: {
+        Row: {
+          answers: Json
+          correct_count: number
+          created_at: string
+          id: string
+          incorrect_count: number
+          live_test_id: string
+          score: number
+          submitted_at: string
+          time_taken_seconds: number
+          total: number
+          unanswered_count: number
+          user_id: string
+        }
+        Insert: {
+          answers?: Json
+          correct_count?: number
+          created_at?: string
+          id?: string
+          incorrect_count?: number
+          live_test_id: string
+          score?: number
+          submitted_at?: string
+          time_taken_seconds?: number
+          total?: number
+          unanswered_count?: number
+          user_id: string
+        }
+        Update: {
+          answers?: Json
+          correct_count?: number
+          created_at?: string
+          id?: string
+          incorrect_count?: number
+          live_test_id?: string
+          score?: number
+          submitted_at?: string
+          time_taken_seconds?: number
+          total?: number
+          unanswered_count?: number
+          user_id?: string
+        }
+        Relationships: [
+          {
+            foreignKeyName: "live_test_attempts_live_test_id_fkey"
+            columns: ["live_test_id"]
+            isOneToOne: false
+            referencedRelation: "live_tests"
+            referencedColumns: ["id"]
+          },
+        ]
+      }
+      live_tests: {
+        Row: {
+          created_at: string
+          created_by: string | null
+          description: string | null
+          duration_minutes: number
+          end_at: string
+          exam_name: string
+          exam_slug: string
+          id: string
+          is_published: boolean
+          questions: Json
+          start_at: string
+          title: string
+          updated_at: string
+        }
+        Insert: {
+          created_at?: string
+          created_by?: string | null
+          description?: string | null
+          duration_minutes?: number
+          end_at: string
+          exam_name: string
+          exam_slug: string
+          id?: string
+          is_published?: boolean
+          questions?: Json
+          start_at: string
+          title: string
+          updated_at?: string
+        }
+        Update: {
+          created_at?: string
+          created_by?: string | null
+          description?: string | null
+          duration_minutes?: number
+          end_at?: string
+          exam_name?: string
+          exam_slug?: string
+          id?: string
+          is_published?: boolean
+          questions?: Json
+          start_at?: string
+          title?: string
+          updated_at?: string
+        }
+        Relationships: []
+      }
       profiles: {
         Row: {
           avatar_url: string | null

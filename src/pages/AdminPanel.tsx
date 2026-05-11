@@ -14,7 +14,7 @@ import { Tabs, TabsContent, TabsList, TabsTrigger } from "@/components/ui/tabs";
 import { toast } from "@/hooks/use-toast";
 import {
   ArrowLeft, Plus, Loader2, ShieldCheck, CheckCircle2, RotateCcw, List,
-  Database, Upload, FileText, Pencil, Trash2, BookOpen, RefreshCw, AlertTriangle,
+  Database, Upload, FileText, Pencil, Trash2, BookOpen, RefreshCw, AlertTriangle, Radio,
 } from "lucide-react";
 
 interface Exam {
@@ -74,7 +74,7 @@ const AdminPanel = () => {
           </div>
 
           <Tabs defaultValue="exams" className="space-y-6">
-            <TabsList className="grid w-full grid-cols-4 h-auto">
+            <TabsList className="grid w-full grid-cols-5 h-auto">
               <TabsTrigger value="exams" className="flex items-center gap-1.5 text-xs py-2.5">
                 <Database className="h-3.5 w-3.5" /> Exams
               </TabsTrigger>
@@ -87,27 +87,16 @@ const AdminPanel = () => {
               <TabsTrigger value="sets" className="flex items-center gap-1.5 text-xs py-2.5">
                 <BookOpen className="h-3.5 w-3.5" /> Set Names
               </TabsTrigger>
+              <TabsTrigger value="live" className="flex items-center gap-1.5 text-xs py-2.5">
+                <Radio className="h-3.5 w-3.5" /> Live Tests
+              </TabsTrigger>
             </TabsList>
 
-            {/* ===== TAB 1: EXAMS CRUD ===== */}
-            <TabsContent value="exams">
-              <ExamsTab exams={exams} onRefresh={fetchExams} loading={loadingExams} />
-            </TabsContent>
-
-            {/* ===== TAB 2: BULK IMPORT ===== */}
-            <TabsContent value="bulk">
-              <BulkImportTab exams={exams} />
-            </TabsContent>
-
-            {/* ===== TAB 3: SINGLE QUESTION ===== */}
-            <TabsContent value="single">
-              <SingleQuestionTab exams={exams} />
-            </TabsContent>
-
-            {/* ===== TAB 4: SET NAMES ===== */}
-            <TabsContent value="sets">
-              <SetNamesTab exams={exams} />
-            </TabsContent>
+            <TabsContent value="exams"><ExamsTab exams={exams} onRefresh={fetchExams} loading={loadingExams} /></TabsContent>
+            <TabsContent value="bulk"><BulkImportTab exams={exams} /></TabsContent>
+            <TabsContent value="single"><SingleQuestionTab exams={exams} /></TabsContent>
+            <TabsContent value="sets"><SetNamesTab exams={exams} /></TabsContent>
+            <TabsContent value="live"><LiveTestsTab exams={exams} /></TabsContent>
           </Tabs>
         </div>
       </main>
@@ -710,4 +699,261 @@ const SetNamesTab = ({ exams }: { exams: Exam[] }) => {
   );
 };
 
+// ========================
+// TAB 5: LIVE TESTS
+// ========================
+interface LiveTestRow {
+  id: string;
+  exam_slug: string;
+  exam_name: string;
+  title: string;
+  description: string | null;
+  start_at: string;
+  end_at: string;
+  duration_minutes: number;
+  questions: any[];
+  is_published: boolean;
+}
+
+const LiveTestsTab = ({ exams }: { exams: Exam[] }) => {
+  const [tests, setTests] = useState<LiveTestRow[]>([]);
+  const [loading, setLoading] = useState(true);
+  const [showForm, setShowForm] = useState(false);
+  const [editing, setEditing] = useState<LiveTestRow | null>(null);
+  const [saving, setSaving] = useState(false);
+  const [importExamId, setImportExamId] = useState<string>("");
+  const [importSet, setImportSet] = useState<string>("1");
+  const [form, setForm] = useState({
+    exam_slug: "", title: "", description: "",
+    start_at: "", end_at: "", duration_minutes: "60",
+    questions_json: "[]", is_published: true,
+  });
+
+  const fetchTests = async () => {
+    setLoading(true);
+    const { data } = await supabase.from("live_tests").select("*").order("start_at", { ascending: false });
+    setTests((data as any) || []);
+    setLoading(false);
+  };
+
+  useEffect(() => { fetchTests(); }, []);
+
+  const reset = () => {
+    setForm({ exam_slug: "", title: "", description: "", start_at: "", end_at: "", duration_minutes: "60", questions_json: "[]", is_published: true });
+    setEditing(null);
+    setShowForm(false);
+    setImportExamId("");
+    setImportSet("1");
+  };
+
+  const startEdit = (t: LiveTestRow) => {
+    setEditing(t);
+    setForm({
+      exam_slug: t.exam_slug,
+      title: t.title,
+      description: t.description ?? "",
+      start_at: new Date(t.start_at).toISOString().slice(0, 16),
+      end_at: new Date(t.end_at).toISOString().slice(0, 16),
+      duration_minutes: String(t.duration_minutes),
+      questions_json: JSON.stringify(t.questions, null, 2),
+      is_published: t.is_published,
+    });
+    setShowForm(true);
+  };
+
+  const importFromExam = async () => {
+    if (!importExamId) { toast({ title: "Pick an exam to import from" }); return; }
+    const { data, error } = await supabase
+      .from("questions")
+      .select("question_text, option_a, option_b, option_c, option_d, correct_answer")
+      .eq("exam_id", importExamId)
+      .eq("set_number", parseInt(importSet) || 1)
+      .order("question_number");
+    if (error) { toast({ title: "Import failed", description: error.message }); return; }
+    const formatted = (data || []).map((q: any) => ({
+      question_text: q.question_text,
+      option_a: q.option_a, option_b: q.option_b, option_c: q.option_c, option_d: q.option_d,
+      correct_answer: q.correct_answer,
+    }));
+    setForm((f) => ({ ...f, questions_json: JSON.stringify(formatted, null, 2) }));
+    toast({ title: `Imported ${formatted.length} questions` });
+  };
+
+  const save = async () => {
+    if (!form.exam_slug || !form.title || !form.start_at || !form.end_at) {
+      toast({ title: "Fill exam, title, start and end" });
+      return;
+    }
+    let parsed: any[];
+    try { parsed = JSON.parse(form.questions_json); if (!Array.isArray(parsed)) throw new Error(); }
+    catch { toast({ title: "Questions JSON must be an array" }); return; }
+
+    const exam = exams.find((e) => e.slug === form.exam_slug);
+    setSaving(true);
+    const payload = {
+      exam_slug: form.exam_slug,
+      exam_name: exam?.name || form.exam_slug,
+      title: form.title,
+      description: form.description || null,
+      start_at: new Date(form.start_at).toISOString(),
+      end_at: new Date(form.end_at).toISOString(),
+      duration_minutes: parseInt(form.duration_minutes) || 60,
+      questions: parsed,
+      is_published: form.is_published,
+    };
+    const { error } = editing
+      ? await supabase.from("live_tests").update(payload).eq("id", editing.id)
+      : await supabase.from("live_tests").insert(payload);
+    setSaving(false);
+    if (error) { toast({ title: "Error", description: error.message }); return; }
+    toast({ title: editing ? "Live test updated" : "Live test created" });
+    reset();
+    fetchTests();
+  };
+
+  const remove = async (id: string) => {
+    if (!confirm("Delete this live test and all attempts?")) return;
+    const { error } = await supabase.from("live_tests").delete().eq("id", id);
+    if (error) { toast({ title: "Error", description: error.message }); return; }
+    toast({ title: "Deleted" });
+    fetchTests();
+  };
+
+  const statusOf = (t: LiveTestRow) => {
+    const n = Date.now();
+    if (n < new Date(t.start_at).getTime()) return { label: "UPCOMING", color: "bg-primary/15 text-primary" };
+    if (n > new Date(t.end_at).getTime()) return { label: "ENDED", color: "bg-muted text-muted-foreground" };
+    return { label: "LIVE", color: "bg-destructive/15 text-destructive" };
+  };
+
+  return (
+    <div className="space-y-4">
+      <Card className="bg-gradient-card border-border/50">
+        <CardHeader className="flex flex-row items-center justify-between">
+          <div>
+            <CardTitle className="font-display flex items-center gap-2">
+              <Radio className="h-5 w-5 text-primary" /> Live Tests
+            </CardTitle>
+            <CardDescription>Schedule live tests with leaderboards</CardDescription>
+          </div>
+          <Button onClick={() => setShowForm((s) => !s)} variant={showForm ? "outline" : "default"}>
+            {showForm ? "Cancel" : <><Plus className="h-4 w-4 mr-1.5" /> New Live Test</>}
+          </Button>
+        </CardHeader>
+        {showForm && (
+          <CardContent className="space-y-3 border-t border-border/50 pt-4">
+            <div className="grid grid-cols-1 md:grid-cols-2 gap-3">
+              <div>
+                <label className="text-xs text-muted-foreground mb-1 block">Exam</label>
+                <Select value={form.exam_slug} onValueChange={(v) => setForm((f) => ({ ...f, exam_slug: v }))}>
+                  <SelectTrigger><SelectValue placeholder="Select exam" /></SelectTrigger>
+                  <SelectContent className="max-h-72">
+                    {exams.map((e) => <SelectItem key={e.id} value={e.slug}>{e.name}</SelectItem>)}
+                  </SelectContent>
+                </Select>
+              </div>
+              <div>
+                <label className="text-xs text-muted-foreground mb-1 block">Duration (minutes)</label>
+                <Input type="number" value={form.duration_minutes} onChange={(e) => setForm((f) => ({ ...f, duration_minutes: e.target.value }))} />
+              </div>
+              <div className="md:col-span-2">
+                <label className="text-xs text-muted-foreground mb-1 block">Title</label>
+                <Input value={form.title} onChange={(e) => setForm((f) => ({ ...f, title: e.target.value }))} placeholder="GATE CS Live Mock 1" />
+              </div>
+              <div className="md:col-span-2">
+                <label className="text-xs text-muted-foreground mb-1 block">Description (optional)</label>
+                <Input value={form.description} onChange={(e) => setForm((f) => ({ ...f, description: e.target.value }))} />
+              </div>
+              <div>
+                <label className="text-xs text-muted-foreground mb-1 block">Start At</label>
+                <Input type="datetime-local" value={form.start_at} onChange={(e) => setForm((f) => ({ ...f, start_at: e.target.value }))} />
+              </div>
+              <div>
+                <label className="text-xs text-muted-foreground mb-1 block">End At</label>
+                <Input type="datetime-local" value={form.end_at} onChange={(e) => setForm((f) => ({ ...f, end_at: e.target.value }))} />
+              </div>
+            </div>
+
+            <div className="rounded-lg border border-dashed border-border/60 p-3 space-y-2">
+              <p className="text-xs font-semibold text-foreground">Quick Import Questions from Existing Exam</p>
+              <div className="flex flex-col md:flex-row gap-2">
+                <Select value={importExamId} onValueChange={setImportExamId}>
+                  <SelectTrigger className="md:flex-1"><SelectValue placeholder="Source exam" /></SelectTrigger>
+                  <SelectContent className="max-h-72">
+                    {exams.map((e) => <SelectItem key={e.id} value={e.id}>{e.name}</SelectItem>)}
+                  </SelectContent>
+                </Select>
+                <Input className="md:w-32" type="number" value={importSet} onChange={(e) => setImportSet(e.target.value)} placeholder="Set #" />
+                <Button onClick={importFromExam} variant="outline"><Upload className="h-4 w-4 mr-1.5" /> Import</Button>
+              </div>
+            </div>
+
+            <div>
+              <label className="text-xs text-muted-foreground mb-1 block">
+                Questions JSON (array of {"{ question_text, option_a, option_b, option_c, option_d, correct_answer }"})
+              </label>
+              <Textarea
+                value={form.questions_json}
+                onChange={(e) => setForm((f) => ({ ...f, questions_json: e.target.value }))}
+                rows={10}
+                className="font-mono text-xs"
+              />
+            </div>
+
+            <label className="flex items-center gap-2 text-sm">
+              <input type="checkbox" checked={form.is_published} onChange={(e) => setForm((f) => ({ ...f, is_published: e.target.checked }))} />
+              Published (visible to users)
+            </label>
+
+            <div className="flex gap-2">
+              <Button onClick={save} disabled={saving}>
+                {saving ? <Loader2 className="h-4 w-4 mr-1.5 animate-spin" /> : <CheckCircle2 className="h-4 w-4 mr-1.5" />}
+                {editing ? "Update" : "Create"}
+              </Button>
+              <Button variant="outline" onClick={reset}>Cancel</Button>
+            </div>
+          </CardContent>
+        )}
+      </Card>
+
+      <Card className="bg-gradient-card border-border/50">
+        <CardHeader>
+          <CardTitle className="font-display text-base">All Live Tests ({tests.length})</CardTitle>
+        </CardHeader>
+        <CardContent>
+          {loading ? (
+            <div className="flex justify-center py-6"><Loader2 className="h-5 w-5 animate-spin text-primary" /></div>
+          ) : tests.length === 0 ? (
+            <p className="text-sm text-muted-foreground text-center py-6">No live tests yet</p>
+          ) : (
+            <div className="space-y-2">
+              {tests.map((t) => {
+                const s = statusOf(t);
+                return (
+                  <div key={t.id} className="flex items-center gap-3 p-3 rounded-lg border border-border/50 bg-background/50">
+                    <div className="flex-1 min-w-0">
+                      <div className="flex items-center gap-2 flex-wrap">
+                        <span className={`px-1.5 py-0.5 rounded text-[10px] font-bold ${s.color}`}>{s.label}</span>
+                        <span className="text-xs text-muted-foreground">{t.exam_name}</span>
+                        {!t.is_published && <Badge variant="outline" className="text-[10px]">DRAFT</Badge>}
+                      </div>
+                      <p className="font-semibold text-sm text-foreground truncate">{t.title}</p>
+                      <p className="text-xs text-muted-foreground">
+                        {new Date(t.start_at).toLocaleString()} → {new Date(t.end_at).toLocaleString()} • {(t.questions || []).length} Qs
+                      </p>
+                    </div>
+                    <Button size="sm" variant="ghost" onClick={() => startEdit(t)}><Pencil className="h-3.5 w-3.5" /></Button>
+                    <Button size="sm" variant="ghost" onClick={() => remove(t.id)}><Trash2 className="h-3.5 w-3.5 text-destructive" /></Button>
+                  </div>
+                );
+              })}
+            </div>
+          )}
+        </CardContent>
+      </Card>
+    </div>
+  );
+};
+
 export default AdminPanel;
+
