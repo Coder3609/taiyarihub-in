@@ -1,0 +1,18 @@
+# Taiyari Hub
+
+> India's exam preparation platform for GATE, UPSC, JEE, SSC, Banking, school boards, and more — with AI-powered practice, real exam simulations, live tests, and expert solutions. Tagline: "Taiyari karo, topper bano."
+
+## Pages
+
+- [Home](/): Overview of exams and features.
+- [About](/about): Mission and team behind Taiyari Hub.
+- [Pricing](/pricing): Subscription bundles and single-exam plans.
+- [Central Exams](/exams/central): GATE, UPSC, JEE, SSC, Banking, ISRO and more.
+- [State Exams](/exams/state): State-level competitive exams.
+- [School Exams](/exams/school): CBSE, ICSE board prep.
+- [Foreign Exams](/exams/foreign): International exams.
+- [Blog](/blog): Strategies, tips, and updates.
+- [Contact](/contact): Reach support at @taiyarihub.in.
+- [Privacy](/privacy): Privacy policy.
+- [Terms](/terms): Terms of service.
+- [Refund](/refund): Refund policy.
