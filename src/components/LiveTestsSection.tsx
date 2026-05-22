@@ -45,10 +45,29 @@ const formatCountdown = (target: string, now: Date) => {
   return `${h.toString().padStart(2, "0")}:${m.toString().padStart(2, "0")}:${s.toString().padStart(2, "0")}`;
 };
 
+const getExamScheduleMessage = (slug: string, name: string) => {
+  const lower = slug.toLowerCase();
+  if (lower.includes("gate")) {
+    return `Live tests for ${name} will start in November (exactly 3 months before the GATE exam in February).`;
+  }
+  if (lower.includes("neet")) {
+    return `Live tests for ${name} will start in February (exactly 3 months before the NEET exam in May).`;
+  }
+  if (lower.includes("jee")) {
+    return `Live tests for ${name} will start in October (exactly 3 months before the JEE Mains exam in January).`;
+  }
+  return `Live tests for ${name} will start exactly 3 months before the official exam date.`;
+};
+
 const LiveTestsSection = () => {
   const navigate = useNavigate();
   const [exams, setExams] = useState<ExamRow[]>([]);
   const [selectedSlug, setSelectedSlug] = useState<string>("__all");
+
+  const selectedExamName = useMemo(() => {
+    if (selectedSlug === "__all") return "";
+    return exams.find(e => e.slug === selectedSlug)?.name ?? selectedSlug;
+  }, [selectedSlug, exams]);
   const [tests, setTests] = useState<LiveTest[]>([]);
   const [loading, setLoading] = useState(true);
   const [now, setNow] = useState(new Date());
@@ -136,6 +155,14 @@ const LiveTestsSection = () => {
             <p className="text-sm text-muted-foreground">
               No live tests scheduled {selectedSlug !== "__all" ? "for this exam" : "yet"}. Check back soon!
             </p>
+            <div className="mt-4 p-3 bg-primary/5 border border-primary/20 rounded-lg text-xs text-muted-foreground max-w-md mx-auto flex items-center justify-center gap-2">
+              <span>💡</span>
+              <p>
+                 {selectedSlug === "__all" 
+                  ? "Live mock tests will start exactly 3 months before each exam. (e.g., GATE tests commence in November, JEE in October, NEET in February)."
+                  : getExamScheduleMessage(selectedSlug, selectedExamName)}
+              </p>
+            </div>
           </CardContent>
         </Card>
       ) : (
